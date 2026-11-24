@@ -18,7 +18,11 @@ Aplikasi web game petualangan luar angkasa interaktif yang dirancang khusus untu
   * Melihat rekap nilai seluruh siswa secara lengkap (bisa dicetak / diunduh PDF).
 * **👨‍🏫 Guru Pengampu**:
   * **Hanya bisa** membuat dan mengelola soal pada mata pelajaran yang diampunya.
+  * Satu akun guru dapat ditugaskan ke beberapa mata pelajaran sekaligus; guru memilih mapel aktif dari dashboard.
+  * Mengatur pembagian nilai Pilihan Ganda, Isian, dan Uraian per mapel, dengan total bobot wajib 100.
   * Mengatur **Hak Akses Siswa**: memilih siswa mana saja yang diizinkan mendarat di planet pelajarannya, lengkap dengan badge kelas dan filter per kelas (Kelas 1 - Kelas 6).
+  * Menambahkan gambar pada opsi jawaban Isian dan kunci jawaban Uraian dengan mengunggah atau menempel gambar.
+  * Menambahkan pilihan amunisi Isian sebanyak yang diperlukan.
   * Membuat 3 jenis soal lengkap dengan fitur upload gambar ilustrasi:
     1. **15 Soal Pilihan Ganda (PG)**: Bobot 2 poin/soal (Total 30 poin).
     2. **10 Soal Isian**: Bobot 3 poin/soal (Total 30 poin).
@@ -40,18 +44,18 @@ Aplikasi web game petualangan luar angkasa interaktif yang dirancang khusus untu
 3. **Tantangan 1 — 15 Soal Pilihan Ganda (Rintangan Drone & Asteroid)**:
    * Soal ditampilkan sebagai rintangan luar angkasa.
    * Siswa memilih opsi A, B, C, atau D.
-   * **Jika Benar**: Meriam laser kokpit menembakkan blaster ganda menghancurkan rintangan, dan pesawat melaju maju (*warp speed*). (+2 Poin).
+   * **Jika Benar**: Meriam laser kokpit menembakkan blaster ganda menghancurkan rintangan, dan pesawat melaju maju (*warp speed*). (+2 Poin dengan bobot awal).
    * **Jika Salah**: Pesawat bermanuver miring darurat ke sisi lain, alarm berbunyi, rintangan terlewatkan tanpa nilai (+0 Poin).
 4. **Tantangan 2 — 10 Soal Isian (Peluncur Amunisi Rudal Taktis)**:
    * Soal disajikan dengan target kapal penjelajah musuh.
    * Disediakan dropdown jawaban berupa **Slot Amunisi Rudal Taktis**.
-   * Siswa memilih amunisi yang tepat dan meluncurkannya ke kapal musuh. (+3 Poin jika tepat sasaran).
+   * Siswa memilih amunisi yang tepat dan meluncurkannya ke kapal musuh. (+3 Poin dengan bobot awal jika tepat sasaran).
 5. **Tantangan 3 — 5 Soal Uraian (5 Boss Jurang & Kristal Tebing Jurang)**:
    * 5 musuh Boss menghadang di jurang kosmik yang dalam (*Cosmic Canyon*).
    * Di dinding tebing jurang terdapat **Artefak / Petunjuk Tebing**. Siswa dapat mengklik tombol *"Ambil ke Jawaban"* untuk mengambil kata kunci dari tebing ke dalam lembar jawaban dan merumuskan jawaban uraiannya.
-   * Mengalahkan boss memberikan +8 Poin per soal.
+   * Mengalahkan boss memberikan +8 Poin per soal dengan bobot awal.
 6. **Penilaian Akhir (Skor Maksimal 100)**:
-   * Total Poin: 30 (PG) + 30 (Isian) + 40 (Uraian) = **100 Poin**.
+   * Bobot awal: 30 (PG) + 30 (Isian) + 40 (Uraian) = **100 Poin**. Guru dapat mengubah pembagian bobot per mapel; aplikasi membagi bobot tiap kategori rata ke jumlah soal dan memastikan totalnya tetap 100.
    * Evaluasi Nilai:
      * Nilai **≥ 80**: Tampil pesan kebanggaan: **`"Masya Allah kamu keren"`** disertai medali kosmik.
      * Nilai **< 80**: Tampil pesan motivasi: **`"ayo semangat belajar lagi ya"`**.
@@ -70,7 +74,7 @@ Aplikasi ini memiliki fitur *Dual Mode*:
 ### Langkah-langkah Setup Supabase (Gratis):
 1. Buka [https://supabase.com](https://supabase.com) dan buat proyek baru (misalnya bernama `bina-ilmu-uas`).
 2. Masuk ke menu **SQL Editor** pada dashboard Supabase.
-3. Buka file `supabase_schema.sql` pada proyek ini, salin seluruh kodenya, tempel di SQL Editor Supabase, lalu klik **Run**.
+3. Buka file `supabase_schema.sql` pada proyek ini, salin seluruh kodenya, tempel di SQL Editor Supabase, lalu klik **Run**. Jika proyek Supabase sudah memakai skema versi sebelumnya, jalankan kembali file terbaru ini untuk menambahkan kolom bobot nilai, gambar kunci jawaban, dan rincian nilai maksimum.
 4. Masuk ke menu **Project Settings -> API** di Supabase. Salin:
    - **Project URL**
    - **anon public key**

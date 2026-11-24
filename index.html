@@ -1,0 +1,3718 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Petualangan Luar Angkasa - SD Bina Ilmu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Supabase JS Client v2 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --primary: #4f46e5;
+  --primary-glow: rgba(79, 70, 229, 0.4);
+  --accent: #00f0ff;
+  --accent-glow: rgba(0, 240, 255, 0.4);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --space-dark: #070913;
+  --space-card: rgba(15, 23, 42, 0.85);
+  --space-border: rgba(99, 102, 241, 0.3);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--space-dark);
+  color: var(--text-main);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  user-select: none;
+}
+
+h1, h2, h3, h4, .brand-font {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.5); border-radius: 3px; }
+
+/* Background Canvas */
+#bgCanvas {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* TOP STATUS BAR */
+.top-status-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 48px;
+  background: rgba(10, 15, 30, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--space-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+}
+.status-left { display: flex; align-items: center; gap: 12px; }
+.status-brand { font-size: 14px; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+.db-pill {
+  font-size: 11px; padding: 3px 10px; border-radius: 12px;
+  background: rgba(16, 185, 129, 0.15); color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  cursor: pointer; display: flex; align-items: center; gap: 5px;
+}
+.db-pill.offline {
+  background: rgba(245, 158, 11, 0.15); color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.4);
+}
+.status-right { display: flex; align-items: center; gap: 10px; }
+.btn-icon {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-main); border-radius: 8px; width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-icon:hover { background: rgba(255,255,255,0.15); border-color: var(--accent); }
+
+/* SCREEN CONTAINER */
+.screen {
+  position: absolute;
+  top: 48px; left: 0; right: 0; bottom: 0;
+  display: none;
+  overflow: hidden;
+  z-index: 10;
+}
+.screen.active { display: flex; }
+
+/* ==============================================================================
+   1. LOGIN SCREEN
+   ============================================================================== */
+#loginScreen {
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: radial-gradient(circle at center, rgba(30, 27, 75, 0.6) 0%, rgba(7, 9, 19, 0.95) 75%);
+}
+.login-card {
+  width: 440px;
+  max-width: 95%;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 50px rgba(79, 70, 229, 0.3), inset 0 0 20px rgba(0, 240, 255, 0.1);
+  border-radius: 24px;
+  padding: 36px 32px;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+}
+.login-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #4f46e5, #00f0ff, #a855f7);
+}
+.login-emblem {
+  width: 72px; height: 72px; margin: 0 auto 16px;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.2), transparent 70%);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 38px; border: 1px solid rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+  animation: floatRocket 3s ease-in-out infinite alternate;
+}
+@keyframes floatRocket {
+  0% { transform: translateY(-4px) rotate(-3deg); }
+  100% { transform: translateY(4px) rotate(3deg); }
+}
+.login-card h1 { font-size: 20px; color: var(--accent); margin-bottom: 6px; }
+.login-card h2 { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom: 24px; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+.form-field { margin-bottom: 14px; text-align: left; }
+.form-field label { display: block; font-size: 12px; font-weight: 600; color: #94a3b8; margin-bottom: 6px; }
+.input-wrap {
+  position: relative; display: flex; align-items: center;
+}
+.input-wrap input, .input-wrap select, .form-control {
+  width: 100%; padding: 12px 14px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  border-radius: 10px; color: #fff;
+  font-size: 14px; outline: none;
+  transition: all 0.2s;
+}
+.input-wrap input:focus, .input-wrap select:focus, .form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  background: rgba(30, 41, 59, 0.8);
+}
+.btn-login {
+  width: 100%; padding: 14px; margin-top: 10px;
+  background: linear-gradient(135deg, #4f46e5, #00f0ff);
+  color: #fff; border: none; border-radius: 12px;
+  font-size: 15px; font-weight: 700; font-family: 'Orbitron', sans-serif;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4);
+}
+.btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(0, 240, 255, 0.5); }
+.login-error { color: #f87171; font-size: 12px; min-height: 20px; margin-top: 8px; font-weight: 600; }
+
+.demo-credentials-box {
+  margin-top: 20px; padding: 12px; border-radius: 10px;
+  background: rgba(0,0,0,0.3); border: 1px dashed rgba(255,255,255,0.15);
+  font-size: 11px; color: #94a3b8; text-align: left;
+}
+.demo-tag {
+  display: inline-block; padding: 2px 6px; border-radius: 4px;
+  background: rgba(99, 102, 241, 0.2); color: #818cf8; font-weight: 700;
+  cursor: pointer; margin-right: 4px; margin-top: 4px;
+}
+.demo-tag:hover { background: rgba(0, 240, 255, 0.3); color: #fff; }
+
+/* ==============================================================================
+   2. DASHBOARD (KEPSEK & GURU)
+   ============================================================================== */
+.dashboard-layout {
+  width: 100%; height: 100%;
+  display: flex;
+}
+.dash-sidebar {
+  width: 250px;
+  background: rgba(11, 17, 33, 0.95);
+  border-right: 1px solid var(--space-border);
+  display: flex; flex-direction: column;
+}
+.dash-user-profile {
+  padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.dash-user-name { font-weight: 700; font-size: 14px; color: #fff; margin-bottom: 2px; }
+.dash-user-role { font-size: 12px; color: var(--accent); }
+.dash-nav { flex: 1; padding: 15px 10px; overflow-y: auto; }
+.nav-item {
+  width: 100%; padding: 12px 16px; margin-bottom: 6px;
+  border-radius: 10px; border: 1px solid transparent;
+  background: transparent; color: #94a3b8;
+  font-size: 13px; font-weight: 600; text-align: left;
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-item:hover { color: #fff; background: rgba(99, 102, 241, 0.1); }
+.nav-item.active {
+  color: var(--accent); background: rgba(0, 240, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+}
+.dash-sidebar-bottom { padding: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+
+.dash-main {
+  flex: 1; overflow-y: auto; padding: 28px;
+  background: radial-gradient(circle at 80% 20%, rgba(30, 27, 75, 0.2), transparent 50%);
+}
+.dash-header-title {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
+}
+.dash-header-title h2 { font-size: 20px; color: #fff; }
+
+/* Cards & Tables */
+.glass-card {
+  background: var(--space-card);
+  border: 1px solid var(--space-border);
+  border-radius: 16px; padding: 22px; margin-bottom: 20px;
+  backdrop-filter: blur(12px);
+}
+.glass-card h3 { font-size: 15px; color: var(--accent); margin-bottom: 14px; }
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.form-grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+
+.btn {
+  padding: 10px 20px; border-radius: 10px; border: none;
+  font-weight: 700; font-size: 13px; cursor: pointer;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #4f46e5, #00f0ff);
+  color: #fff; box-shadow: 0 3px 12px rgba(79, 70, 229, 0.3);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 18px rgba(0, 240, 255, 0.4); }
+.btn-success { background: #10b981; color: #fff; }
+.btn-danger { background: #ef4444; color: #fff; }
+.btn-secondary { background: rgba(255,255,255,0.1); color: #e2e8f0; }
+.btn-secondary:hover { background: rgba(255,255,255,0.18); }
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 7px; }
+
+.table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
+table.cosmic-table { width: 100%; border-collapse: collapse; text-align: left; }
+table.cosmic-table th {
+  background: rgba(30, 41, 59, 0.7); color: var(--accent);
+  font-size: 12px; font-weight: 700; padding: 12px 14px;
+  border-bottom: 1px solid var(--space-border);
+}
+table.cosmic-table td {
+  padding: 12px 14px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
+
+.badge {
+  display: inline-block; padding: 3px 9px; border-radius: 12px;
+  font-size: 11px; font-weight: 700;
+}
+.badge-blue { background: rgba(0, 240, 255, 0.15); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.3); }
+.badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+.badge-orange { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+/* Question Creation Tabs */
+.q-type-tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+.q-tab-btn {
+  padding: 8px 18px; border-radius: 8px; background: rgba(255,255,255,0.05);
+  border: 1px solid transparent; color: #94a3b8; font-weight: 700; font-size: 13px; cursor: pointer;
+}
+.q-tab-btn.active {
+  background: rgba(0, 240, 255, 0.15); color: #00f0ff; border-color: rgba(0, 240, 255, 0.4);
+}
+.image-upload-box {
+  border: 2px dashed rgba(99, 102, 241, 0.35); border-radius: 10px;
+  padding: 14px; text-align: center; cursor: pointer; transition: all 0.2s;
+  background: rgba(0,0,0,0.2);
+}
+.image-upload-box:hover { border-color: var(--accent); background: rgba(0, 240, 255, 0.05); }
+.preview-img { max-height: 120px; max-width: 100%; border-radius: 8px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.2); }
+
+/* ==============================================================================
+   3. SISWA: PLANET SELECTION GALAXY
+   ============================================================================== */
+#planetScreen {
+  flex-direction: column; align-items: center; justify-content: center;
+  padding: 30px 20px; text-align: center;
+}
+.galaxy-header h2 { font-size: 26px; color: var(--accent); margin-bottom: 8px; }
+.galaxy-header p { font-size: 14px; color: var(--text-muted); margin-bottom: 30px; }
+.planet-orbit-container {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 36px;
+  max-width: 950px; z-index: 20;
+}
+.planet-item {
+  width: 170px; display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; position: relative; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.planet-item:hover { transform: translateY(-8px) scale(1.05); }
+.planet-globe {
+  width: 110px; height: 110px; border-radius: 50%;
+  position: relative; margin-bottom: 14px;
+  box-shadow: 0 0 35px rgba(255,255,255,0.2), inset -15px -15px 25px rgba(0,0,0,0.6);
+  transition: all 0.6s ease;
+}
+.planet-ring {
+  position: absolute; top: 50%; left: 50%; width: 140px; height: 35px;
+  border-radius: 50%; border: 3px solid rgba(255,255,255,0.3);
+  transform: translate(-50%, -50%) rotate(-25deg);
+  pointer-events: none;
+}
+.planet-name { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.planet-meta { font-size: 11px; padding: 3px 8px; border-radius: 10px; font-weight: 600; }
+.planet-meta.ready { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.planet-meta.incomplete { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+/* Disappearing Planet Animation Effect */
+@keyframes planetBlackHoleVanish {
+  0% { transform: scale(1) rotate(0deg); opacity: 1; filter: brightness(1) drop-shadow(0 0 10px #f00); }
+  30% { transform: scale(1.2) rotate(45deg); opacity: 0.9; filter: brightness(2) contrast(2); }
+  60% { transform: scale(0.6) rotate(360deg); opacity: 0.6; filter: blur(4px) hue-rotate(180deg); }
+  100% { transform: scale(0) rotate(720deg); opacity: 0; filter: blur(20px); }
+}
+.planet-item.vanishing {
+  animation: planetBlackHoleVanish 1.2s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+  pointer-events: none;
+}
+
+/* ==============================================================================
+   4. GAMEPLAY SCREEN (COCKPIT FLIGHT)
+   ============================================================================== */
+#gameScreen {
+  position: absolute; top: 48px; left: 0; right: 0; bottom: 0;
+  display: none; background: #000;
+}
+#gameScreen.active { display: block; }
+#gameCanvas { width: 100%; height: 100%; display: block; }
+
+/* Cockpit HUD UI Overlay */
+.cockpit-hud-overlay {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 16px 24px;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  pointer-events: none; z-index: 30;
+}
+.hud-panel {
+  background: rgba(10, 15, 30, 0.8);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  border-radius: 12px; padding: 10px 18px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+  pointer-events: auto;
+}
+.hud-mission-badge {
+  font-size: 11px; font-weight: 700; color: var(--accent);
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px;
+}
+.hud-score-value {
+  font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900;
+  color: #fff; text-shadow: 0 0 10px var(--accent);
+}
+.hud-progress-container { width: 180px; }
+.hud-progress-bar {
+  width: 100%; height: 8px; background: rgba(255,255,255,0.1);
+  border-radius: 4px; overflow: hidden; margin-top: 6px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.hud-progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #4f46e5, #00f0ff);
+  transition: width 0.4s ease;
+}
+
+/* Question Modal Overlay in Cockpit */
+.flight-dialog-overlay {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(4, 7, 20, 0.75);
+  backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 50; padding: 20px;
+}
+.flight-dialog-overlay.active { display: flex; }
+.flight-modal-card {
+  width: 650px; max-width: 95%; max-height: 85vh;
+  background: rgba(13, 19, 40, 0.95);
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 40px rgba(0, 240, 255, 0.25), inset 0 0 20px rgba(79, 70, 229, 0.2);
+  border-radius: 20px; padding: 26px;
+  overflow-y: auto; text-align: center;
+  animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes modalPop {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.modal-phase-tag {
+  display: inline-block; padding: 4px 14px; border-radius: 20px;
+  font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; margin-bottom: 12px;
+}
+.phase-mc { background: rgba(0, 240, 255, 0.2); color: #00f0ff; border: 1px solid #00f0ff; }
+.phase-fill { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #fbbf24; }
+.phase-essay { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid #c084fc; }
+
+.q-body-text { font-size: 16px; line-height: 1.6; color: #fff; margin-bottom: 18px; font-weight: 500; }
+.q-body-img { max-height: 180px; max-width: 90%; border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.2); }
+
+/* Multiple Choice Buttons */
+.mc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; margin-bottom: 20px; }
+.mc-choice-btn {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
+  padding: 14px 16px; border-radius: 12px; color: #e2e8f0;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; gap: 10px; transition: all 0.2s;
+}
+.mc-choice-btn:hover {
+  background: rgba(0, 240, 255, 0.1); border-color: var(--accent); color: #fff;
+}
+.mc-choice-btn.selected {
+  background: rgba(0, 240, 255, 0.25); border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); color: #fff;
+}
+.mc-choice-btn.correct { background: rgba(16, 185, 129, 0.3) !important; border-color: #10b981 !important; color: #fff; }
+.mc-choice-btn.wrong { background: rgba(239, 68, 68, 0.3) !important; border-color: #ef4444 !important; color: #fff; }
+.mc-badge {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700;
+}
+
+/* Fill-in Missile Dropdown */
+.missile-ammo-dock {
+  background: rgba(0,0,0,0.4); border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 14px; padding: 18px; margin-bottom: 20px; text-align: left;
+}
+.ammo-title { font-size: 12px; font-weight: 700; color: #fbbf24; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.missile-select {
+  width: 100%; padding: 14px 16px;
+  background: rgba(20, 25, 45, 0.95);
+  border: 2px solid #f59e0b; border-radius: 10px;
+  color: #fff; font-size: 15px; font-weight: 600; outline: none; cursor: pointer;
+}
+.missile-select:focus { box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+
+/* Canyon Boss & Cliff Answers */
+.canyon-cliff-box {
+  background: rgba(45, 20, 15, 0.4); border: 1px solid rgba(249, 115, 22, 0.4);
+  border-radius: 14px; padding: 16px; margin-bottom: 16px; text-align: left;
+}
+.cliff-scroll-list {
+  display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-height: 140px; overflow-y: auto;
+}
+.cliff-rune-pill {
+  padding: 8px 12px; border-radius: 8px; background: rgba(249, 115, 22, 0.15);
+  border: 1px solid rgba(249, 115, 22, 0.4); color: #fed7aa;
+  font-size: 12px; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cliff-rune-pill:hover { background: rgba(249, 115, 22, 0.3); color: #fff; }
+
+.essay-textarea {
+  width: 100%; min-height: 90px; padding: 12px;
+  background: rgba(10, 15, 30, 0.8);
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  border-radius: 10px; color: #fff; font-size: 14px;
+  outline: none; resize: vertical; margin-bottom: 16px;
+}
+.essay-textarea:focus { border-color: #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
+
+.btn-fire-action {
+  width: 100%; padding: 15px;
+  background: linear-gradient(135deg, #4f46e5, #00f0ff);
+  border: none; border-radius: 12px; color: #fff;
+  font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 700;
+  letter-spacing: 1px; cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3);
+}
+.btn-fire-action:hover { transform: scale(1.02); box-shadow: 0 6px 25px rgba(0, 240, 255, 0.5); }
+
+/* ==============================================================================
+   5. SCORE SCREEN (EVALUATION & COMPLETION)
+   ============================================================================== */
+#scoreScreen {
+  position: absolute; top: 48px; left: 0; right: 0; bottom: 0;
+  display: none; align-items: center; justify-content: center;
+  background: radial-gradient(circle at center, rgba(30, 27, 75, 0.8), #000 85%);
+  z-index: 60; padding: 20px;
+}
+#scoreScreen.active { display: flex; }
+.score-card {
+  width: 520px; max-width: 95%;
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid var(--accent);
+  border-radius: 24px; padding: 36px 30px;
+  text-align: center; backdrop-filter: blur(16px);
+  box-shadow: 0 0 60px rgba(0, 240, 255, 0.25);
+  animation: modalPop 0.5s ease;
+}
+.score-badge-circle {
+  width: 130px; height: 130px; margin: 0 auto 16px;
+  border-radius: 50%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.2), rgba(15, 23, 42, 0.9));
+  border: 3px solid var(--accent);
+  box-shadow: 0 0 30px var(--accent-glow);
+}
+.score-number {
+  font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 900;
+  color: #fff; line-height: 1; text-shadow: 0 0 15px var(--accent);
+}
+.score-max { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+
+.score-eval-message {
+  font-size: 20px; font-weight: 800; margin: 18px 0 10px;
+  line-height: 1.4;
+}
+.score-eval-message.success {
+  color: #34d399; text-shadow: 0 0 15px rgba(52, 211, 153, 0.5);
+}
+.score-eval-message.encourage {
+  color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+}
+
+.score-breakdown-row {
+  display: flex; justify-content: space-around;
+  margin: 20px 0 25px; padding: 14px;
+  background: rgba(0,0,0,0.3); border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.score-stat-box { text-align: center; }
+.stat-val { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 700; color: #fff; }
+.stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+.score-actions-group {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+}
+
+/* ==============================================================================
+   6. MODAL & NOTIFICATIONS
+   ============================================================================== */
+.app-modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.8); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 200; padding: 20px;
+}
+.app-modal-overlay.active { display: flex; }
+.app-modal-box {
+  width: 500px; max-width: 95%; max-height: 85vh; overflow-y: auto;
+  background: rgba(15, 23, 42, 0.98);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  border-radius: 18px; padding: 24px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.8);
+}
+.app-modal-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;
+}
+.app-modal-header h3 { font-size: 16px; color: var(--accent); }
+.btn-close-modal { background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; }
+.btn-close-modal:hover { color: #fff; }
+
+.toast-container {
+  position: fixed; bottom: 24px; right: 24px; z-index: 999;
+  display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+}
+.toast-msg {
+  padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 700;
+  color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  animation: slideToast 0.3s ease;
+  pointer-events: auto;
+}
+.toast-success { background: #10b981; border: 1px solid #34d399; }
+.toast-error { background: #ef4444; border: 1px solid #f87171; }
+.toast-info { background: #3b82f6; border: 1px solid #60a5fa; }
+@keyframes slideToast {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@media(max-width: 768px) {
+  .dash-sidebar { width: 70px; }
+  .dash-sidebar .nav-text, .dash-user-profile { display: none; }
+  .nav-item { justify-content: center; padding: 14px; }
+  .dash-main { padding: 16px; }
+  .form-grid-2, .form-grid-3, .form-grid-4, .mc-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND CANVAS FOR STARS & NEBULA -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- TOP STATUS BAR -->
+<div class="top-status-bar">
+  <div class="status-left">
+    <div class="status-brand">
+      <span>🚀</span>
+      <span>SD BINA ILMU</span>
+    </div>
+    <div class="db-pill offline" id="dbStatusPill" onclick="openSupabaseModal()">
+      <span id="dbDot">●</span>
+      <span id="dbText">Supabase: Offline (Local)</span>
+    </div>
+  </div>
+  <div class="status-right">
+    <button class="btn-icon" title="Pengaturan Audio" id="btnAudioToggle" onclick="toggleAudio()">🔊</button>
+    <button class="btn-icon" title="Pengaturan Cloud Supabase" onclick="openSupabaseModal()">⚙️</button>
+    <div id="currentUserBadge" style="display:none;font-size:12px;color:#94a3b8;margin-left:8px;"></div>
+    <button class="btn btn-sm btn-danger" id="btnLogoutBar" style="display:none;" onclick="doLogout()">Keluar</button>
+  </div>
+</div>
+
+<!-- ==============================================================================
+     SCREEN 1: LOGIN
+     ============================================================================== -->
+<div class="screen active" id="loginScreen">
+  <div class="login-card">
+    <div class="login-emblem">🪐</div>
+    <h1>PETUALANGAN LUAR ANGKASA</h1>
+    <h2>Ujian Akhir Semester • SD Bina Ilmu</h2>
+
+    <div class="form-field">
+      <label>Peran Pengguna</label>
+      <div class="input-wrap">
+        <select id="loginRole" class="form-control">
+          <option value="siswa">👦 Siswa (Peserta Ujian)</option>
+          <option value="guru">👨‍🏫 Guru (Pembuat Soal)</option>
+          <option value="kepsek">🏫 Kepala Sekolah (Administrator)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label>Nama Pengguna / Username</label>
+      <div class="input-wrap">
+        <input type="text" id="loginUsername" placeholder="Masukkan username..." autocomplete="off">
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label>Kata Sandi / Password</label>
+      <div class="input-wrap">
+        <input type="password" id="loginPassword" placeholder="Masukkan password...">
+      </div>
+    </div>
+
+    <button class="btn-login" onclick="handleLogin()">LUNCURKAN MISI 🚀</button>
+    <div class="login-error" id="loginErrorMsg"></div>
+
+    <div class="demo-credentials-box">
+      <strong>Kredensial Demo Cepat:</strong><br>
+      <span class="demo-tag" onclick="fillDemo('admin','admin123','kepsek')">Kepsek: admin</span>
+      <span class="demo-tag" onclick="fillDemo('guru_ipa','guru123','guru')">Guru IPA: guru_ipa</span>
+      <span class="demo-tag" onclick="fillDemo('siswa_budi','siswa123','siswa')">Siswa Kls 6: siswa_budi</span>
+      <span class="demo-tag" onclick="fillDemo('siswa_rara','siswa123','siswa')">Siswa Kls 1: siswa_rara</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==============================================================================
+     SCREEN 2: DASHBOARD KEPALA SEKOLAH
+     ============================================================================== -->
+<div class="screen" id="dashKepsekScreen">
+  <div class="dashboard-layout">
+    <div class="dash-sidebar">
+      <div class="dash-user-profile">
+        <div class="dash-user-name" id="ksProfileName">Kepala Sekolah</div>
+        <div class="dash-user-role">🏫 Administrator & Pengawas</div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:8px;width:100%;font-size:11px;padding:5px 8px" onclick="openAdminProfileModal()">✏️ Edit Profil</button>
+      </div>
+      <div class="dash-nav">
+        <button class="nav-item active" onclick="switchKsTab('guru', this)">
+          <span>👨‍🏫</span> <span class="nav-text">Kelola Guru</span>
+        </button>
+        <button class="nav-item" onclick="switchKsTab('mapel', this)">
+          <span>🪐</span> <span class="nav-text">Kelola Mapel (Planet)</span>
+        </button>
+        <button class="nav-item" onclick="switchKsTab('siswa', this)">
+          <span>👦</span> <span class="nav-text">Kelola Siswa</span>
+        </button>
+        <button class="nav-item" onclick="switchKsTab('soal', this)">
+          <span>📝</span> <span class="nav-text">Semua Soal Guru</span>
+        </button>
+        <button class="nav-item" onclick="switchKsTab('nilai', this)">
+          <span>📊</span> <span class="nav-text">Rekap Nilai Siswa</span>
+        </button>
+      </div>
+      <div class="dash-sidebar-bottom">
+        <button class="btn btn-secondary btn-sm" style="width:100%" onclick="seedFullDemoQuestions()">🌱 Muat 30 Soal Demo</button>
+      </div>
+    </div>
+    <div class="dash-main">
+      <!-- TAB GURU -->
+      <div id="ksTabGuru">
+        <div class="dash-header-title">
+          <h2>👨‍🏫 Manajemen Guru & Penugasan Mapel</h2>
+        </div>
+        <div class="glass-card">
+          <h3>Tambah Guru Pengampu</h3>
+          <div class="form-grid-2">
+            <div class="form-field">
+              <label>Username Guru</label>
+              <input type="text" id="ksNewGuruUser" class="form-control" placeholder="Contoh: guru_ipa">
+            </div>
+            <div class="form-field">
+              <label>Password Akun</label>
+              <input type="password" id="ksNewGuruPass" class="form-control" placeholder="Contoh: rahasia123">
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-field">
+              <label>Nama Lengkap Guru</label>
+              <input type="text" id="ksNewGuruName" class="form-control" placeholder="Contoh: Ibu Nurhayati, S.Pd.">
+            </div>
+            <div class="form-field">
+              <label>Mata Pelajaran yang Diampu (Pilih satu atau lebih):</label>
+              <div id="ksNewGuruMapelCheckboxes" style="max-height:140px;overflow-y:auto;background:rgba(0,0,0,0.3);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);display:flex;flex-direction:column;gap:6px">
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="ksAddGuru()">+ Daftarkan Guru</button>
+        </div>
+
+        <div class="glass-card">
+          <h3>Daftar Guru Terdaftar</h3>
+          <div class="table-wrap">
+            <table class="cosmic-table">
+              <thead>
+                <tr><th>Username</th><th>Nama Lengkap</th><th>Mapel yang Diampu</th><th>Aksi</th></tr>
+              </thead>
+              <tbody id="ksGuruTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB MAPEL -->
+      <div id="ksTabMapel" style="display:none">
+        <div class="dash-header-title">
+          <h2>🪐 Manajemen Mata Pelajaran (Planet Tujuan)</h2>
+        </div>
+        <div class="glass-card">
+          <h3>Tambah Planet Mata Pelajaran Baru</h3>
+          <div class="form-grid-3">
+            <div class="form-field">
+              <label>Nama Mata Pelajaran</label>
+              <input type="text" id="ksNewMapelName" class="form-control" placeholder="Contoh: Matematika Antariksa">
+            </div>
+            <div class="form-field">
+              <label>Warna Aura Planet</label>
+              <select id="ksNewMapelColor" class="form-control">
+                <option value="#2ecc71">🟢 Hijau Zamrud (IPA / Biosfer)</option>
+                <option value="#3498db">🔵 Biru Kosmik (Matematika)</option>
+                <option value="#e67e22">🟠 Oranye Surya (B. Indonesia)</option>
+                <option value="#9b59b6">🟣 Ungu Nebula (Pendidikan Agama)</option>
+                <option value="#e74c3c">🔴 Merah Mars (PPKn / Sejarah)</option>
+                <option value="#f1c40f">🟡 Emas Bintang (B. Inggris)</option>
+                <option value="#00f0ff">🩵 Cyan Aurora (PJOK / SBdP)</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Tingkat Kelas</label>
+              <select id="ksNewMapelKelas" class="form-control">
+                <option value="1">Kelas 1</option>
+                <option value="2">Kelas 2</option>
+                <option value="3">Kelas 3</option>
+                <option value="4">Kelas 4</option>
+                <option value="5">Kelas 5</option>
+                <option value="6" selected>Kelas 6 (Ujian Akhir)</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="ksAddMapel()">+ Buat Planet Baru</button>
+        </div>
+
+        <div class="glass-card">
+          <h3>Daftar Planet Mapel Aktif</h3>
+          <div class="table-wrap">
+            <table class="cosmic-table">
+              <thead>
+                <tr><th>Visual Planet</th><th>Nama Mata Pelajaran</th><th>Kelas</th><th>Status Soal</th><th>Aksi</th></tr>
+              </thead>
+              <tbody id="ksMapelTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB SISWA -->
+      <div id="ksTabSiswa" style="display:none">
+        <div class="dash-header-title">
+          <h2>👦 Manajemen Data Siswa</h2>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:12px;color:#94a3b8">Filter Kelas:</span>
+            <select id="ksFilterSiswaKelas" class="form-control" style="width:140px;padding:6px 10px;font-size:12px" onchange="ksRenderSiswaTable()">
+              <option value="">-- Semua Kelas --</option>
+              <option value="1">Kelas 1</option>
+              <option value="2">Kelas 2</option>
+              <option value="3">Kelas 3</option>
+              <option value="4">Kelas 4</option>
+              <option value="5">Kelas 5</option>
+              <option value="6">Kelas 6</option>
+            </select>
+          </div>
+        </div>
+        <div class="glass-card">
+          <h3>Daftarkan Siswa Peserta Ujian</h3>
+          <div class="form-grid-4">
+            <div class="form-field">
+              <label>Username Siswa</label>
+              <input type="text" id="ksNewSiswaUser" class="form-control" placeholder="Contoh: siswa_budi">
+            </div>
+            <div class="form-field">
+              <label>Password Siswa</label>
+              <input type="password" id="ksNewSiswaPass" class="form-control" placeholder="Contoh: siswa123">
+            </div>
+            <div class="form-field">
+              <label>Nama Lengkap Siswa</label>
+              <input type="text" id="ksNewSiswaName" class="form-control" placeholder="Contoh: Budi Santoso">
+            </div>
+            <div class="form-field">
+              <label>Tingkat Kelas</label>
+              <select id="ksNewSiswaKelas" class="form-control">
+                <option value="1">Kelas 1</option>
+                <option value="2">Kelas 2</option>
+                <option value="3">Kelas 3</option>
+                <option value="4">Kelas 4</option>
+                <option value="5">Kelas 5</option>
+                <option value="6" selected>Kelas 6</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="ksAddSiswa()">+ Daftarkan Siswa</button>
+        </div>
+
+        <div class="glass-card">
+          <h3>Daftar Siswa Terdaftar</h3>
+          <div class="table-wrap">
+            <table class="cosmic-table">
+              <thead>
+                <tr><th>Username</th><th>Nama Siswa</th><th>Kelas</th><th>Aksi</th></tr>
+              </thead>
+              <tbody id="ksSiswaTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB SEMUA SOAL -->
+      <div id="ksTabSoal" style="display:none">
+        <div class="dash-header-title">
+          <h2>📝 Pantau Seluruh Soal Ujian</h2>
+          <div style="width:250px">
+            <select id="ksFilterSoalMapel" class="form-control" onchange="ksRenderAllQuestions()">
+              <option value="">-- Semua Mata Pelajaran --</option>
+            </select>
+          </div>
+        </div>
+        <div id="ksAllQuestionsContainer"></div>
+      </div>
+
+      <!-- TAB NILAI -->
+      <div id="ksTabNilai" style="display:none">
+        <div class="dash-header-title">
+          <h2>📊 Rekap Nilai Ujian Siswa</h2>
+          <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Cetak / PDF</button>
+        </div>
+        <div class="glass-card">
+          <div class="table-wrap">
+            <table class="cosmic-table">
+              <thead>
+                <tr>
+                  <th>Nama Siswa</th>
+                  <th>Mata Pelajaran</th>
+                  <th>Pilihan Ganda</th>
+                  <th>Isian</th>
+                  <th>Uraian</th>
+                  <th>Total Nilai (100)</th>
+                  <th>Status & Pesan</th>
+                  <th>Waktu Selesai</th>
+                </tr>
+              </thead>
+              <tbody id="ksNilaiTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==============================================================================
+     SCREEN 3: DASHBOARD GURU
+     ============================================================================== -->
+<div class="screen" id="dashGuruScreen">
+  <div class="dashboard-layout">
+    <div class="dash-sidebar">
+      <div class="dash-user-profile">
+        <div class="dash-user-name" id="guruProfileName">Guru</div>
+        <div class="dash-user-role" id="guruProfileMapel">Mapel: -</div>
+      </div>
+      <div class="dash-nav">
+        <button class="nav-item active" onclick="switchGuruTab('inputSoal', this)">
+          <span>✍️</span> <span class="nav-text">Buat Soal Ujian</span>
+        </button>
+        <button class="nav-item" onclick="switchGuruTab('daftarSoal', this)">
+          <span>📋</span> <span class="nav-text">Daftar Soal Saya</span>
+        </button>
+        <button class="nav-item" onclick="switchGuruTab('aksesSiswa', this)">
+          <span>🔑</span> <span class="nav-text">Akses Siswa Planet</span>
+        </button>
+      </div>
+    </div>
+    <div class="dash-main">
+      <div class="form-field" id="guruMapelPickerWrap" style="max-width:420px">
+        <label for="guruMapelPicker">Mata Pelajaran yang Dikelola</label>
+        <select id="guruMapelPicker" class="form-control" onchange="guruSelectMapel(this.value)"></select>
+      </div>
+      <!-- TAB BUAT SOAL -->
+      <div id="guruTabInputSoal">
+        <div class="dash-header-title">
+          <h2>✍️ Input Soal Ujian: <span id="guruMapelHeaderTitle" style="color:var(--accent)"></span></h2>
+          <div id="guruQSummaryBadge"></div>
+        </div>
+
+        <div class="glass-card">
+          <h3>⚖️ Pembagian Nilai (Total harus 100)</h3>
+          <div class="form-grid-2">
+            <div class="form-field">
+              <label for="guruMcPoints">Pilihan Ganda (dari 100)</label>
+              <input type="number" id="guruMcPoints" class="form-control" min="0" max="100" step="1" value="30" oninput="guruUpdateScoreTotal()">
+            </div>
+            <div class="form-field">
+              <label for="guruFillPoints">Isian (dari 100)</label>
+              <input type="number" id="guruFillPoints" class="form-control" min="0" max="100" step="1" value="30" oninput="guruUpdateScoreTotal()">
+            </div>
+            <div class="form-field">
+              <label for="guruEssayPoints">Uraian (dari 100)</label>
+              <input type="number" id="guruEssayPoints" class="form-control" min="0" max="100" step="1" value="40" oninput="guruUpdateScoreTotal()">
+            </div>
+          </div>
+          <p id="guruScoreWeightTotal" style="font-size:12px;color:#94a3b8;margin-bottom:12px">Total bobot: 100 / 100</p>
+          <button class="btn btn-secondary btn-sm" onclick="guruSaveScoreSettings()">💾 Simpan Pembagian Nilai</button>
+        </div>
+
+        <div class="q-type-tabs">
+          <button class="q-tab-btn active" onclick="guruSwitchQForm('mc', this)">1. Pilihan Ganda (15 Soal)</button>
+          <button class="q-tab-btn" onclick="guruSwitchQForm('fill', this)">2. Isian Rudal (10 Soal)</button>
+          <button class="q-tab-btn" onclick="guruSwitchQForm('essay', this)">3. Uraian Tebing Jurang (5 Soal)</button>
+        </div>
+
+        <!-- FORM 1: PILIHAN GANDA (15 SOAL) -->
+        <div id="guruFormMc" class="glass-card">
+          <h3>Rintangan Luar Angkasa: Pilihan Ganda (<span id="guruMcCounter">1</span> / 15)</h3>
+          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">Soal ini akan muncul sebagai rintangan pesawat luar angkasa yang harus ditembak hancur dengan laser.</p>
+          <div class="form-field">
+            <label>Teks Soal</label>
+            <textarea id="mcInputText" class="form-control" style="min-height:70px" placeholder="Tuliskan teks pertanyaan..."></textarea>
+          </div>
+          <div class="form-field">
+            <label>Gambar Soal / Bahan Ilustrasi (Opsional)</label>
+            <input type="file" id="mcInputFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'mcImgPrev')">
+            <img id="mcImgPrev" class="preview-img" style="display:none">
+          </div>
+          <div class="form-field">
+            <label>Pilihan Jawaban (Tandai radio button pada opsi yang BENAR)</label>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="mcCorrectRad" value="0" checked>
+                <input type="text" id="mcOptText0" class="form-control" placeholder="Pilihan A">
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="mcCorrectRad" value="1">
+                <input type="text" id="mcOptText1" class="form-control" placeholder="Pilihan B">
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="mcCorrectRad" value="2">
+                <input type="text" id="mcOptText2" class="form-control" placeholder="Pilihan C">
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="mcCorrectRad" value="3">
+                <input type="text" id="mcOptText3" class="form-control" placeholder="Pilihan D">
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="guruSaveMcQuestion()">💾 Simpan Soal Pilihan Ganda</button>
+        </div>
+
+        <!-- FORM 2: ISIAN (10 SOAL) -->
+        <div id="guruFormFill" class="glass-card" style="display:none">
+          <h3>Amunisi Rudal Taktis: Soal Isian (<span id="guruFillCounter">1</span> / 10)</h3>
+          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">Soal isian akan dilengkapi dropdown amunisi rudal tempat siswa memilih amunisi yang tepat untuk menghantam kapal musuh.</p>
+          <div class="form-field">
+            <label>Teks Soal Isian</label>
+            <textarea id="fillInputText" class="form-control" style="min-height:70px" placeholder="Tuliskan kalimat atau pertanyaan isian..."></textarea>
+          </div>
+          <div class="form-field">
+            <label>Gambar Soal (Opsional)</label>
+            <input type="file" id="fillInputFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'fillImgPrev')">
+            <img id="fillImgPrev" class="preview-img" style="display:none">
+          </div>
+          <div class="form-field">
+            <label>Pilihan Amunisi (Tandai opsi yang BENAR)</label>
+            <div id="fillOptionsList" style="display:flex;flex-direction:column;gap:10px"></div>
+            <p style="font-size:11px;color:#94a3b8;margin-top:8px">Tambahkan pilihan sebanyak yang diperlukan. Setiap pilihan dapat berupa teks atau gambar (unggah atau tempel dengan Ctrl+V); minimal dua pilihan.</p>
+            <button type="button" class="btn btn-secondary btn-sm" style="margin-top:10px" onclick="guruAddFillOption()">+ Tambah Pilihan Amunisi</button>
+          </div>
+          <button class="btn btn-primary" onclick="guruSaveFillQuestion()">💾 Simpan Soal Isian</button>
+        </div>
+
+        <!-- FORM 3: URAIAN (5 SOAL) -->
+        <div id="guruFormEssay" class="glass-card" style="display:none">
+          <h3>Boss Jurang Kosmik: Soal Uraian (<span id="guruEssayCounter">1</span> / 5)</h3>
+          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">5 musuh boss menghadang di jurang. Siswa dapat mengambil petunjuk/kunci jawaban di dinding tebing jurang untuk merumuskan jawaban.</p>
+          <div class="form-field">
+            <label>Teks Soal Uraian</label>
+            <textarea id="essayInputText" class="form-control" style="min-height:70px" placeholder="Tuliskan pertanyaan uraian mendalam..."></textarea>
+          </div>
+          <div class="form-field">
+            <label>Gambar Ilustrasi Soal (Opsional)</label>
+            <input type="file" id="essayInputFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'essayImgPrev')">
+            <img id="essayImgPrev" class="preview-img" style="display:none">
+          </div>
+          <div class="form-field">
+            <label>Kunci Jawaban Uraian (Konsep/Kata Kunci; boleh ditempel teks)</label>
+            <textarea id="essayInputAnswer" class="form-control" style="min-height:50px" placeholder="Tuliskan kata kunci atau rumusan jawaban yang benar..." onpaste="handleImagePaste(event, 'essayAnswerImgPrev')"></textarea>
+            <label style="margin-top:8px">Gambar pada Kunci Jawaban (Opsional; unggah atau tempel gambar)</label>
+            <input type="file" id="essayAnswerFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'essayAnswerImgPrev')">
+            <img id="essayAnswerImgPrev" class="preview-img" style="display:none">
+          </div>
+          <div class="form-field">
+            <label>Petunjuk / Kristal Jawaban di Tebing Jurang (Siswa dapat mengambil ini)</label>
+            <input type="text" id="essayInputCliffHint" class="form-control" placeholder="Contoh petunjuk tebing: 'Perhatikan zat cair, oksigen dan atmosfer bumi'">
+          </div>
+          <button class="btn btn-primary" onclick="guruSaveEssayQuestion()">💾 Simpan Soal Uraian</button>
+        </div>
+      </div>
+
+      <!-- TAB DAFTAR SOAL SAYA -->
+      <div id="guruTabDaftarSoal" style="display:none">
+        <div class="dash-header-title">
+          <h2>📋 Daftar Soal Saya</h2>
+        </div>
+        <div id="guruMyQuestionsContainer"></div>
+      </div>
+
+      <!-- TAB AKSES SISWA -->
+      <div id="guruTabAksesSiswa" style="display:none">
+        <div class="dash-header-title">
+          <h2>🔑 Atur Hak Akses Siswa ke Planet</h2>
+        </div>
+        <div class="glass-card">
+          <h3>Pilih Siswa yang Diizinkan Mendarat di Planet Ini</h3>
+          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">Hanya siswa yang dicentang yang dapat melihat dan mengerjakan ujian pada planet mata pelajaran Anda.</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px">
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm" onclick="guruToggleAllStudents(true)">Pilih Semua</button>
+              <button class="btn btn-secondary btn-sm" onclick="guruToggleAllStudents(false)">Hapus Semua</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:12px;color:#94a3b8">Filter Kelas:</span>
+              <select id="guruFilterAksesKelas" class="form-control" style="width:130px;padding:6px 10px;font-size:12px" onchange="guruRenderStudentAccess()">
+                <option value="">-- Semua Kelas --</option>
+                <option value="1">Kelas 1</option>
+                <option value="2">Kelas 2</option>
+                <option value="3">Kelas 3</option>
+                <option value="4">Kelas 4</option>
+                <option value="5">Kelas 5</option>
+                <option value="6">Kelas 6</option>
+              </select>
+            </div>
+          </div>
+          <div id="guruAksesStudentList" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div>
+          <br>
+          <button class="btn btn-primary" onclick="guruSaveStudentAccess()">💾 Simpan Hak Akses Siswa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==============================================================================
+     SCREEN 4: SISWA - GALAXY PLANET SELECT
+     ============================================================================== -->
+<div class="screen" id="planetScreen">
+  <div class="galaxy-header">
+    <h2>🪐 SISTEM RADAR PLANET UJIAN</h2>
+    <p>Pilih planet mata pelajaran yang akan kamu tuju untuk memulai persiapan Ujian Akhir Semester!</p>
+  </div>
+  <div class="planet-orbit-container" id="planetOrbitGrid"></div>
+</div>
+
+<!-- ==============================================================================
+     SCREEN 5: COCKPIT GAMEPLAY
+     ============================================================================== -->
+<div id="gameScreen">
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- Cockpit HUD -->
+  <div class="cockpit-hud-overlay">
+    <div class="hud-panel">
+      <div class="hud-mission-badge" id="hudPlanetBadge">PLANET: SAINS</div>
+      <div class="hud-score-value">⭐ <span id="hudScoreVal">0</span> / 100</div>
+    </div>
+
+    <div class="hud-panel">
+      <div style="font-size:11px;font-weight:700;color:#94a3b8">PROGRESS MISI</div>
+      <div style="font-size:14px;font-weight:700;color:#fff">
+        Soal <span id="hudCurrentQ">1</span> / <span id="hudTotalQ">30</span>
+      </div>
+      <div class="hud-progress-container">
+        <div class="hud-progress-bar">
+          <div class="hud-progress-fill" id="hudProgressFill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flight Dialog Modal -->
+  <div class="flight-dialog-overlay" id="flightDialog">
+    <div class="flight-modal-card" id="flightModalContent"></div>
+  </div>
+</div>
+
+<!-- ==============================================================================
+     SCREEN 6: SCORE & EVALUATION
+     ============================================================================== -->
+<div id="scoreScreen">
+  <div class="score-card">
+    <div class="score-badge-circle">
+      <div class="score-number" id="finalScoreDisplay">0</div>
+      <div class="score-max">POIN TOTAL</div>
+    </div>
+
+    <div class="score-eval-message" id="scoreEvalMsg">Masya Allah kamu keren</div>
+
+    <div class="score-breakdown-row">
+      <div class="score-stat-box">
+        <div class="stat-val" id="statScoreMc">0 / 30</div>
+        <div class="stat-lbl">15 Pilihan Ganda</div>
+      </div>
+      <div class="score-stat-box">
+        <div class="stat-val" id="statScoreFill">0 / 30</div>
+        <div class="stat-lbl">10 Isian Rudal</div>
+      </div>
+      <div class="score-stat-box">
+        <div class="stat-val" id="statScoreEssay">0 / 40</div>
+        <div class="stat-lbl">5 Boss Tebing</div>
+      </div>
+    </div>
+
+    <div class="score-actions-group" id="scoreActionsContainer"></div>
+  </div>
+</div>
+
+<!-- ==============================================================================
+     MODAL: SUPABASE CONFIGURATION
+     ============================================================================== -->
+<div class="app-modal-overlay" id="supabaseModal">
+  <div class="app-modal-box">
+    <div class="app-modal-header">
+      <h3>⚙️ Pengaturan Cloud Supabase & Vercel</h3>
+      <button class="btn-close-modal" onclick="closeSupabaseModal()">✕</button>
+    </div>
+    <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">
+      Masukkan URL & Anon Key Supabase Anda agar data guru, soal, gambar, dan nilai tersimpan secara online di cloud dan dapat diakses dari mana saja saat di-deploy ke Vercel.
+    </p>
+    <div class="form-field">
+      <label>Supabase Project URL</label>
+      <input type="text" id="cfgSupabaseUrl" class="form-control" placeholder="https://xyzcompany.supabase.co">
+    </div>
+    <div class="form-field">
+      <label>Supabase Anon Key (Public Key)</label>
+      <input type="text" id="cfgSupabaseKey" class="form-control" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6...">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-primary" onclick="saveSupabaseConfig()">💾 Simpan & Hubungkan</button>
+      <button class="btn btn-secondary" onclick="disconnectSupabase()">Mode Offline</button>
+    </div>
+    <div id="sbTestResult" style="font-size:12px;margin-top:10px;min-height:20px;font-weight:600"></div>
+    <hr style="border-color:rgba(255,255,255,0.1);margin:16px 0">
+    <p style="font-size:11px;color:#64748b">
+      💡 <em>Tips:</em> Skrip SQL tabel Supabase telah tersedia di file <code>supabase_schema.sql</code>. Tinggal jalankan di SQL Editor dashboard Supabase Anda.
+    </p>
+  </div>
+</div>
+
+<!-- ==============================================================================
+     MODAL: EDIT PROFIL KEPALA SEKOLAH
+     ============================================================================== -->
+<div class="app-modal-overlay" id="adminProfileModal">
+  <div class="app-modal-box">
+    <div class="app-modal-header">
+      <h3>✏️ Edit Profil Kepala Sekolah</h3>
+      <button class="btn-close-modal" onclick="closeAdminProfileModal()">✕</button>
+    </div>
+    <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">
+      Ubah nama tampilan Kepala Sekolah / Administrator dan perbarui kata sandi akun jika diperlukan.
+    </p>
+    <div class="form-field">
+      <label>Nama Lengkap & Gelar Kepala Sekolah</label>
+      <input type="text" id="adminProfileNameInput" class="form-control" placeholder="Contoh: Bapak H. Ahmad Dahlan, M.Pd.">
+    </div>
+    <div class="form-field">
+      <label>Username (ID Akun)</label>
+      <input type="text" id="adminProfileUserInput" class="form-control" disabled style="opacity:0.6;cursor:not-allowed">
+    </div>
+    <div class="form-field">
+      <label>Kata Sandi Baru (Kosongkan jika tidak ingin diubah)</label>
+      <input type="password" id="adminProfilePassInput" class="form-control" placeholder="Masukkan kata sandi baru...">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px">
+      <button class="btn btn-primary" onclick="saveAdminProfile()">💾 Simpan Perubahan Profil</button>
+      <button class="btn btn-secondary" onclick="closeAdminProfileModal()">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastBox"></div>
+
+<!-- ==============================================================================
+     JAVASCRIPT LOGIC ENGINE
+     ============================================================================== -->
+<script>
+/* ==============================================================================
+   A. AUDIO SYNTHESIZER ENGINE (Web Audio API)
+   ============================================================================== */
+class SoundEngine {
+  constructor() {
+    this.ctx = null;
+    this.enabled = true;
+  }
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+  playLaser() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(880, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(110, this.ctx.currentTime + 0.18);
+    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.18);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.18);
+  }
+  playMissile() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.35);
+    gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.35);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.35);
+  }
+  playExplosion() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const bufferSize = this.ctx.sampleRate * 0.4;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(800, this.ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.4);
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start();
+  }
+  playEvasion() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.4);
+    gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.4);
+  }
+  playPlanetVanish() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(60, this.ctx.currentTime + 0.8);
+    gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.8);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.8);
+  }
+  playVictory() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.12);
+      gain.gain.setValueAtTime(0.25, this.ctx.currentTime + idx * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.12 + 0.4);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(this.ctx.currentTime + idx * 0.12);
+      osc.stop(this.ctx.currentTime + idx * 0.12 + 0.4);
+    });
+  }
+}
+const sound = new SoundEngine();
+
+function toggleAudio() {
+  sound.enabled = !sound.enabled;
+  document.getElementById('btnAudioToggle').textContent = sound.enabled ? '🔊' : '🔇';
+  showToast(sound.enabled ? 'Audio Diaktifkan' : 'Audio Disenyapkan', 'info');
+}
+
+/* ==============================================================================
+   B. DATA STORAGE & SUPABASE CLOUD CONNECTOR
+   ============================================================================== */
+let supabaseClient = null;
+
+const DEFAULT_STATE = {
+  users: [
+    { username:'admin', password:'admin123', role:'kepsek', nama:'Bpk. H. Kepala Sekolah, M.Pd.', kelas:'Semua' },
+    { username:'guru_ipa', password:'guru123', role:'guru', nama:'Ibu Nurhayati, S.Pd.', kelas:'6' },
+    { username:'guru_mat', password:'guru123', role:'guru', nama:'Bpk. Rahmad, S.Pd.', kelas:'6' },
+    { username:'siswa_rara', password:'siswa123', role:'siswa', nama:'Rara Aulia', kelas:'1' },
+    { username:'siswa_fajar', password:'siswa123', role:'siswa', nama:'Fajar Nugraha', kelas:'2' },
+    { username:'siswa_dina', password:'siswa123', role:'siswa', nama:'Dina Safitri', kelas:'3' },
+    { username:'siswa_rizki', password:'siswa123', role:'siswa', nama:'Rizki Maulana', kelas:'4' },
+    { username:'siswa_andi', password:'siswa123', role:'siswa', nama:'Andi Pratama', kelas:'5' },
+    { username:'siswa_budi', password:'siswa123', role:'siswa', nama:'Budi Santoso', kelas:'6' },
+    { username:'siswa_siti', password:'siswa123', role:'siswa', nama:'Siti Rahmawati', kelas:'6' }
+  ],
+  mapel: [
+    { id:'mapel_ipa', nama:'Ilmu Pengetahuan Alam (IPA)', warna:'#2ecc71', kelas:'6', deskripsi:'Planet Biosfer', mc_points:30, fill_points:30, essay_points:40 },
+    { id:'mapel_matematika', nama:'Matematika Antariksa', warna:'#3498db', kelas:'6', deskripsi:'Planet Logika', mc_points:30, fill_points:30, essay_points:40 },
+    { id:'mapel_indo', nama:'Bahasa Indonesia Galaksi', warna:'#e67e22', kelas:'5', deskripsi:'Planet Sastra', mc_points:30, fill_points:30, essay_points:40 }
+  ],
+  guru_mapel: [
+    { guru_username:'guru_ipa', mapel_id:'mapel_ipa' },
+    { guru_username:'guru_mat', mapel_id:'mapel_matematika' }
+  ],
+  akses: {
+    'mapel_ipa': ['siswa_budi', 'siswa_siti', 'siswa_andi'],
+    'mapel_matematika': ['siswa_budi']
+  },
+  questions: [],
+  scores: []
+};
+
+function getScoreSettings(mapel) {
+  const defaults = { mc: 30, fill: 30, essay: 40 };
+  if (!mapel) return defaults;
+  const settings = {
+    mc: Number(mapel.mc_points),
+    fill: Number(mapel.fill_points),
+    essay: Number(mapel.essay_points)
+  };
+  const values = Object.values(settings);
+  return values.every(Number.isInteger) && values.every(value => value >= 0) && values.reduce((sum, value) => sum + value, 0) === 100
+    ? settings
+    : defaults;
+}
+
+function getLocalData() {
+  const raw = localStorage.getItem('space_game_data_v2');
+  if (!raw) {
+    localStorage.setItem('space_game_data_v2', JSON.stringify(DEFAULT_STATE));
+    return JSON.parse(JSON.stringify(DEFAULT_STATE));
+  }
+  try { return JSON.parse(raw); } catch(e) { return DEFAULT_STATE; }
+}
+
+function saveLocalData(data) {
+  localStorage.setItem('space_game_data_v2', JSON.stringify(data));
+}
+
+// Supabase Default Cloud Credentials (Bina Ilmu Project)
+const DEFAULT_SB_URL = 'https://rutnriqytxhitylzpfhx.supabase.co';
+const DEFAULT_SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1dG5yaXF5dHhoaXR5bHpwZmh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQxOTkyMjMsImV4cCI6MjEwOTc3NTIyM30._SZCy-YfTSykTXrKqgxB9dmtJmEFBJBEwa1NIGn0gFc';
+
+// Supabase Init Check
+function initSupabase() {
+  const url = localStorage.getItem('sb_url') || DEFAULT_SB_URL;
+  const key = localStorage.getItem('sb_key') || DEFAULT_SB_KEY;
+  const pill = document.getElementById('dbStatusPill');
+  const text = document.getElementById('dbText');
+
+  if (url && key && window.supabase) {
+    try {
+      supabaseClient = window.supabase.createClient(url, key);
+      pill.classList.remove('offline');
+      text.textContent = 'Supabase: Cloud Aktif 🟢';
+      syncFromSupabase();
+    } catch(err) {
+      console.warn('Supabase init error:', err);
+      pill.classList.add('offline');
+      text.textContent = 'Supabase: Offline (Local)';
+    }
+  } else {
+    pill.classList.add('offline');
+    text.textContent = 'Supabase: Offline (Local)';
+  }
+}
+
+async function syncFromSupabase() {
+  if (!supabaseClient) return;
+  try {
+    const { data: u } = await supabaseClient.from('users').select('*');
+    const { data: m } = await supabaseClient.from('mapel').select('*');
+    const { data: gm } = await supabaseClient.from('guru_mapel').select('*');
+    const { data: q } = await supabaseClient.from('questions').select('*');
+    const { data: ak } = await supabaseClient.from('akses_siswa').select('*');
+    const { data: sc } = await supabaseClient.from('scores').select('*');
+
+    const local = getLocalData();
+    if (u && u.length > 0) local.users = u;
+    if (m && m.length > 0) local.mapel = m;
+    if (gm && gm.length > 0) local.guru_mapel = gm;
+    if (q && q.length > 0) local.questions = q;
+    if (sc && sc.length > 0) local.scores = sc;
+
+    if (ak && ak.length > 0) {
+      local.akses = {};
+      ak.forEach(item => {
+        if (!local.akses[item.mapel_id]) local.akses[item.mapel_id] = [];
+        local.akses[item.mapel_id].push(item.siswa_username);
+      });
+    }
+    saveLocalData(local);
+    console.log('Synced successfully from Supabase Cloud!');
+  } catch(e) {
+    console.warn('Sync from Supabase failed, using local cache:', e);
+  }
+}
+
+function openSupabaseModal() {
+  document.getElementById('cfgSupabaseUrl').value = localStorage.getItem('sb_url') || DEFAULT_SB_URL;
+  document.getElementById('cfgSupabaseKey').value = localStorage.getItem('sb_key') || DEFAULT_SB_KEY;
+  document.getElementById('sbTestResult').textContent = '';
+  document.getElementById('supabaseModal').classList.add('active');
+}
+function closeSupabaseModal() {
+  document.getElementById('supabaseModal').classList.remove('active');
+}
+
+async function saveSupabaseConfig() {
+  const url = document.getElementById('cfgSupabaseUrl').value.trim();
+  const key = document.getElementById('cfgSupabaseKey').value.trim();
+  const res = document.getElementById('sbTestResult');
+
+  if (!url || !key) {
+    res.style.color = '#f87171';
+    res.textContent = 'Harap isi URL dan Anon Key Supabase!';
+    return;
+  }
+  try {
+    res.style.color = '#38bdf8';
+    res.textContent = 'Menguji koneksi ke Supabase...';
+    const testClient = window.supabase.createClient(url, key);
+    const { data, error } = await testClient.from('users').select('username').limit(1);
+    if (error) throw error;
+
+    localStorage.setItem('sb_url', url);
+    localStorage.setItem('sb_key', key);
+    supabaseClient = testClient;
+    initSupabase();
+
+    res.style.color = '#34d399';
+    res.textContent = 'Berhasil terhubung ke Supabase Cloud! 🎉';
+    setTimeout(() => closeSupabaseModal(), 1200);
+    showToast('Supabase Cloud aktif!', 'success');
+  } catch(err) {
+    res.style.color = '#f87171';
+    res.textContent = 'Koneksi gagal: ' + (err.message || 'Periksa URL / Key');
+  }
+}
+
+function disconnectSupabase() {
+  localStorage.removeItem('sb_url');
+  localStorage.removeItem('sb_key');
+  supabaseClient = null;
+  initSupabase();
+  closeSupabaseModal();
+  showToast('Beralih ke mode offline (LocalStorage)', 'info');
+}
+
+/* ==============================================================================
+   C. APP STATE & AUTH
+   ============================================================================== */
+let currentUser = null;
+
+function showToast(msg, type='info') {
+  const container = document.getElementById('toastBox');
+  const t = document.createElement('div');
+  t.className = `toast-msg toast-${type}`;
+  t.textContent = msg;
+  container.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+
+function fillDemo(user, pass, role) {
+  document.getElementById('loginRole').value = role;
+  document.getElementById('loginUsername').value = user;
+  document.getElementById('loginPassword').value = pass;
+  document.getElementById('loginErrorMsg').textContent = '';
+}
+
+async function handleLogin() {
+  sound.init();
+  const role = document.getElementById('loginRole').value;
+  const user = document.getElementById('loginUsername').value.trim();
+  const pass = document.getElementById('loginPassword').value.trim();
+  const errEl = document.getElementById('loginErrorMsg');
+
+  if (!user || !pass) {
+    errEl.textContent = 'Harap masukkan username dan password!';
+    return;
+  }
+
+  const data = getLocalData();
+  const found = data.users.find(u => u.username.toLowerCase() === user.toLowerCase() && u.password === pass && u.role === role);
+
+  if (!found) {
+    errEl.textContent = 'Username atau password salah, atau peran tidak cocok!';
+    return;
+  }
+
+  currentUser = found;
+  errEl.textContent = '';
+
+  // Update top bar
+  document.getElementById('currentUserBadge').style.display = 'block';
+  document.getElementById('currentUserBadge').textContent = `${found.nama} (${found.role.toUpperCase()})`;
+  document.getElementById('btnLogoutBar').style.display = 'inline-flex';
+
+  // Navigate to appropriate screen
+  document.getElementById('loginScreen').classList.remove('active');
+
+  if (role === 'kepsek') {
+    initKepsekDash();
+  } else if (role === 'guru') {
+    initGuruDash();
+  } else if (role === 'siswa') {
+    initSiswaGalaxy();
+  }
+}
+
+function doLogout() {
+  currentUser = null;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('gameScreen').classList.remove('active');
+  document.getElementById('gameScreen').style.display = 'none';
+  document.getElementById('scoreScreen').classList.remove('active');
+  document.getElementById('loginScreen').classList.add('active');
+
+  document.getElementById('currentUserBadge').style.display = 'none';
+  document.getElementById('btnLogoutBar').style.display = 'none';
+  document.getElementById('loginUsername').value = '';
+  document.getElementById('loginPassword').value = '';
+
+  if (gameAnimId) cancelAnimationFrame(gameAnimId);
+  showToast('Sampai jumpa di misi berikutnya! 🚀', 'info');
+}
+
+/* ==============================================================================
+   D. KEPALA SEKOLAH DASHBOARD LOGIC
+   ============================================================================== */
+function initKepsekDash() {
+  document.getElementById('dashKepsekScreen').classList.add('active');
+  document.getElementById('ksProfileName').textContent = currentUser.nama;
+  ksRefreshMapelDropdown();
+  ksRenderGuruTable();
+  ksRenderMapelTable();
+  ksRenderSiswaTable();
+  ksRenderAllQuestions();
+  ksRenderNilaiTable();
+}
+
+function openAdminProfileModal() {
+  document.getElementById('adminProfileNameInput').value = currentUser.nama || '';
+  document.getElementById('adminProfileUserInput').value = currentUser.username || '';
+  document.getElementById('adminProfilePassInput').value = '';
+  document.getElementById('adminProfileModal').classList.add('active');
+}
+
+function closeAdminProfileModal() {
+  document.getElementById('adminProfileModal').classList.remove('active');
+}
+
+async function saveAdminProfile() {
+  const newName = document.getElementById('adminProfileNameInput').value.trim();
+  const newPass = document.getElementById('adminProfilePassInput').value.trim();
+
+  if (!newName) {
+    showToast('Nama Kepala Sekolah tidak boleh kosong!', 'error');
+    return;
+  }
+
+  const data = getLocalData();
+  const userObj = data.users.find(u => u.username === currentUser.username);
+  if (userObj) {
+    userObj.nama = newName;
+    if (newPass) userObj.password = newPass;
+  }
+  currentUser.nama = newName;
+  if (newPass) currentUser.password = newPass;
+  saveLocalData(data);
+
+  if (supabaseClient) {
+    const updatePayload = { nama: newName };
+    if (newPass) updatePayload.password = newPass;
+    try {
+      await supabaseClient.from('users').update(updatePayload).eq('username', currentUser.username);
+    } catch(err) {
+      console.warn('Gagal sinkron profil ke Supabase:', err);
+    }
+  }
+
+  document.getElementById('ksProfileName').textContent = newName;
+  const userBadge = document.getElementById('currentUserBadge');
+  if (userBadge) {
+    userBadge.textContent = `${newName} (${currentUser.role.toUpperCase()})`;
+  }
+
+  closeAdminProfileModal();
+  showToast('Profil Kepala Sekolah berhasil diperbarui! 🎉', 'success');
+}
+
+function switchKsTab(tab, btn) {
+  ['Guru','Mapel','Siswa','Soal','Nilai'].forEach(t => {
+    const el = document.getElementById('ksTab' + t);
+    if (el) el.style.display = 'none';
+  });
+  const activeEl = document.getElementById('ksTab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+  if (activeEl) activeEl.style.display = 'block';
+
+  document.querySelectorAll('#dashKepsekScreen .nav-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  if (tab === 'soal') ksRenderAllQuestions();
+  if (tab === 'nilai') ksRenderNilaiTable();
+}
+
+function ksRefreshMapelDropdown() {
+  const data = getLocalData();
+  const selFilter = document.getElementById('ksFilterSoalMapel');
+  const checkboxes = document.getElementById('ksNewGuruMapelCheckboxes');
+
+  selFilter.innerHTML = '<option value="">-- Semua Mata Pelajaran --</option>';
+  checkboxes.innerHTML = '';
+
+  data.mapel.forEach(m => {
+    selFilter.innerHTML += `<option value="${m.id}">${m.nama}</option>`;
+    const label = document.createElement('label');
+    label.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;color:#e2e8f0';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = m.id;
+    checkbox.className = 'ks-new-guru-mapel';
+    checkbox.style.cssText = 'width:16px;height:16px';
+    const name = document.createElement('span');
+    name.textContent = m.nama;
+    label.append(checkbox, name);
+    checkboxes.appendChild(label);
+  });
+  if (data.mapel.length === 0) checkboxes.textContent = 'Daftarkan mata pelajaran terlebih dahulu.';
+}
+
+async function ksAddGuru() {
+  const u = document.getElementById('ksNewGuruUser').value.trim();
+  const p = document.getElementById('ksNewGuruPass').value.trim();
+  const n = document.getElementById('ksNewGuruName').value.trim();
+  const selectedMapelIds = Array.from(document.querySelectorAll('.ks-new-guru-mapel:checked')).map(input => input.value);
+
+  if (!u || !p || !n || selectedMapelIds.length === 0) {
+    showToast('Lengkapi semua data guru!', 'error');
+    return;
+  }
+  const data = getLocalData();
+  if (data.users.some(x => x.username.toLowerCase() === u.toLowerCase())) {
+    showToast('Username guru sudah digunakan!', 'error');
+    return;
+  }
+  const newGuru = { username: u, password: p, role: 'guru', nama: n, kelas: '6' };
+  const newRelations = selectedMapelIds.map(mapel_id => ({ guru_username: u, mapel_id }));
+  if (supabaseClient) {
+    try {
+      const { error: userError } = await supabaseClient.from('users').insert([newGuru]);
+      if (userError) throw userError;
+      const { error: relationsError } = await supabaseClient.from('guru_mapel').insert(newRelations);
+      if (relationsError) {
+        await supabaseClient.from('users').delete().eq('username', u);
+        throw relationsError;
+      }
+    } catch (error) {
+      showToast(`Guru gagal disimpan ke Supabase: ${error.message}`, 'error');
+      return;
+    }
+  }
+  data.users.push(newGuru);
+  data.guru_mapel.push(...newRelations);
+  saveLocalData(data);
+
+  document.getElementById('ksNewGuruUser').value = '';
+  document.getElementById('ksNewGuruPass').value = '';
+  document.getElementById('ksNewGuruName').value = '';
+  document.querySelectorAll('.ks-new-guru-mapel').forEach(input => input.checked = false);
+  ksRenderGuruTable();
+  showToast('Guru berhasil didaftarkan!', 'success');
+}
+
+function ksRenderGuruTable() {
+  const data = getLocalData();
+  const tb = document.getElementById('ksGuruTableBody');
+  tb.innerHTML = '';
+  const gurus = data.users.filter(u => u.role === 'guru');
+
+  gurus.forEach(g => {
+    const mapelNames = data.guru_mapel
+      .filter(gm => gm.guru_username === g.username)
+      .map(gm => data.mapel.find(m => m.id === gm.mapel_id))
+      .filter(Boolean)
+      .map(mapel => `<span class="badge badge-blue">${mapel.nama}</span>`)
+      .join(' ');
+    const mapelName = mapelNames || '<span style="color:#f87171">Belum ada</span>';
+
+    tb.innerHTML += `
+      <tr>
+        <td><strong>${g.username}</strong></td>
+        <td>${g.nama}</td>
+        <td>${mapelName}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="ksDeleteGuru('${g.username}')">Hapus</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function ksDeleteGuru(username) {
+  if (!confirm(`Hapus akun guru ${username}?`)) return;
+  const data = getLocalData();
+  data.users = data.users.filter(u => u.username !== username);
+  data.guru_mapel = data.guru_mapel.filter(gm => gm.guru_username !== username);
+  saveLocalData(data);
+
+  if (supabaseClient) {
+    supabaseClient.from('users').delete().eq('username', username).then();
+    supabaseClient.from('guru_mapel').delete().eq('guru_username', username).then();
+  }
+  ksRenderGuruTable();
+  showToast('Guru dihapus', 'info');
+}
+
+function ksAddMapel() {
+  const name = document.getElementById('ksNewMapelName').value.trim();
+  const color = document.getElementById('ksNewMapelColor').value;
+  const kelas = document.getElementById('ksNewMapelKelas').value;
+
+  if (!name) {
+    showToast('Tuliskan nama mata pelajaran!', 'error');
+    return;
+  }
+  const id = 'mapel_' + Date.now();
+  const newMapel = { id, nama: name, warna: color, kelas, deskripsi: 'Planet Ujian SD' };
+
+  const data = getLocalData();
+  data.mapel.push(newMapel);
+  saveLocalData(data);
+
+  if (supabaseClient) {
+    supabaseClient.from('mapel').insert([newMapel]).then();
+  }
+
+  document.getElementById('ksNewMapelName').value = '';
+  ksRefreshMapelDropdown();
+  ksRenderMapelTable();
+  showToast('Planet mapel berhasil dibuat!', 'success');
+}
+
+function ksRenderMapelTable() {
+  const data = getLocalData();
+  const tb = document.getElementById('ksMapelTableBody');
+  tb.innerHTML = '';
+
+  data.mapel.forEach(m => {
+    const qs = data.questions.filter(q => q.mapel_id === m.id);
+    const mcC = qs.filter(q => q.type === 'mc').length;
+    const fillC = qs.filter(q => q.type === 'fill').length;
+    const essayC = qs.filter(q => q.type === 'essay').length;
+    const isReady = (mcC >= 15 && fillC >= 10 && essayC >= 5);
+
+    tb.innerHTML += `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:${m.warna};box-shadow:0 0 10px ${m.warna}"></span>
+            <span>${m.nama}</span>
+          </div>
+        </td>
+        <td>${m.nama}</td>
+        <td><span class="badge badge-blue">Kelas ${m.kelas || '6'}</span></td>
+        <td>
+          ${isReady 
+            ? '<span class="badge badge-green">Lengkap (15 PG, 10 Isian, 5 Uraian)</span>' 
+            : `<span class="badge badge-orange">Belum Lengkap (${mcC}/15 PG, ${fillC}/10 Isian, ${essayC}/5 Uraian)</span>`}
+        </td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="ksDeleteMapel('${m.id}')">Hapus</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function ksDeleteMapel(id) {
+  if (!confirm('Hapus planet mata pelajaran ini beserta soalnya?')) return;
+  const data = getLocalData();
+  data.mapel = data.mapel.filter(m => m.id !== id);
+  data.questions = data.questions.filter(q => q.mapel_id !== id);
+  data.guru_mapel = data.guru_mapel.filter(gm => gm.mapel_id !== id);
+  if (data.akses[id]) delete data.akses[id];
+  saveLocalData(data);
+
+  if (supabaseClient) {
+    supabaseClient.from('mapel').delete().eq('id', id).then();
+  }
+  ksRefreshMapelDropdown();
+  ksRenderMapelTable();
+  showToast('Planet mapel dihapus', 'info');
+}
+
+function ksAddSiswa() {
+  const u = document.getElementById('ksNewSiswaUser').value.trim();
+  const p = document.getElementById('ksNewSiswaPass').value.trim();
+  const n = document.getElementById('ksNewSiswaName').value.trim();
+  const k = document.getElementById('ksNewSiswaKelas').value || '6';
+
+  if (!u || !p || !n) {
+    showToast('Lengkapi data siswa!', 'error');
+    return;
+  }
+  const data = getLocalData();
+  if (data.users.some(x => x.username.toLowerCase() === u.toLowerCase())) {
+    showToast('Username siswa sudah digunakan!', 'error');
+    return;
+  }
+  const newSiswa = { username: u, password: p, role: 'siswa', nama: n, kelas: k };
+  data.users.push(newSiswa);
+  saveLocalData(data);
+
+  if (supabaseClient) {
+    supabaseClient.from('users').insert([newSiswa]).then();
+  }
+
+  document.getElementById('ksNewSiswaUser').value = '';
+  document.getElementById('ksNewSiswaPass').value = '';
+  document.getElementById('ksNewSiswaName').value = '';
+  ksRenderSiswaTable();
+  showToast(`Siswa Kelas ${k} berhasil didaftarkan!`, 'success');
+}
+
+function ksRenderSiswaTable() {
+  const data = getLocalData();
+  const tb = document.getElementById('ksSiswaTableBody');
+  tb.innerHTML = '';
+  const filterKelas = document.getElementById('ksFilterSiswaKelas') ? document.getElementById('ksFilterSiswaKelas').value : '';
+  let siswas = data.users.filter(u => u.role === 'siswa');
+  if (filterKelas) {
+    siswas = siswas.filter(u => String(u.kelas || '6') === filterKelas);
+  }
+
+  if (siswas.length === 0) {
+    tb.innerHTML = '<tr><td colspan="4" style="color:#94a3b8;text-align:center">Tidak ada siswa yang terdaftar pada filter kelas ini.</td></tr>';
+    return;
+  }
+
+  siswas.forEach(s => {
+    tb.innerHTML += `
+      <tr>
+        <td><strong>${s.username}</strong></td>
+        <td>${s.nama}</td>
+        <td><span class="badge badge-blue">Kelas ${s.kelas || '6'}</span></td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="ksDeleteSiswa('${s.username}')">Hapus</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function ksDeleteSiswa(username) {
+  if (!confirm(`Hapus siswa ${username}?`)) return;
+  const data = getLocalData();
+  data.users = data.users.filter(u => u.username !== username);
+  saveLocalData(data);
+
+  if (supabaseClient) {
+    supabaseClient.from('users').delete().eq('username', username).then();
+  }
+  ksRenderSiswaTable();
+  showToast('Siswa dihapus', 'info');
+}
+
+function ksRenderAllQuestions() {
+  const data = getLocalData();
+  const filter = document.getElementById('ksFilterSoalMapel').value;
+  const container = document.getElementById('ksAllQuestionsContainer');
+
+  let qs = data.questions;
+  if (filter) qs = qs.filter(q => q.mapel_id === filter);
+
+  if (qs.length === 0) {
+    container.innerHTML = '<div class="glass-card"><p style="color:#94a3b8">Belum ada soal pada filter ini.</p></div>';
+    return;
+  }
+
+  const grouped = {};
+  qs.forEach(q => {
+    const mp = data.mapel.find(m => m.id === q.mapel_id);
+    const key = mp ? mp.nama : 'Lainnya';
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(q);
+  });
+
+  let html = '';
+  for (const mName in grouped) {
+    html += `<div class="glass-card">`;
+    html += `<h3 style="color:#00f0ff;font-size:16px">🪐 ${mName} (${grouped[mName].length} Soal)</h3>`;
+    grouped[mName].forEach((q, idx) => {
+      const typeBadge = q.type === 'mc' ? '<span class="badge badge-blue">Pilihan Ganda</span>' :
+                        q.type === 'fill' ? '<span class="badge badge-orange">Isian Rudal</span>' :
+                        '<span class="badge badge-green">Uraian Tebing</span>';
+      html += `
+        <div style="background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);padding:12px;border-radius:10px;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="font-weight:700;color:#fff">${idx + 1}.</span>
+            ${typeBadge}
+            <span style="font-size:12px;color:#94a3b8">Oleh: ${q.created_by || 'Guru'}</span>
+          </div>
+          <div style="font-size:14px;color:#e2e8f0;margin-bottom:6px">${q.text}</div>
+          ${q.image_url ? `<img src="${q.image_url}" class="preview-img" style="display:block;margin-bottom:6px">` : ''}
+          ${q.options ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong>${getQuestionOptionText(q.options[q.correct]) || '-'}</strong> (Opsi: ${q.options.map(getQuestionOptionText).join(', ')})</div>` : ''}
+          ${q.options ? getQuestionOptionImage(q.options[q.correct]) : ''}
+          ${q.answer ? `<div style="font-size:12px;color:#94a3b8">Kunci Uraian: <strong>${q.answer}</strong></div>` : ''}
+          ${q.answer_image_url ? `<img src="${q.answer_image_url}" class="preview-img" style="display:block;margin-top:6px" alt="Gambar kunci jawaban">` : ''}
+          ${q.cliff_hint ? `<div style="font-size:11px;color:#fbbf24">📜 Petunjuk Tebing: ${q.cliff_hint}</div>` : ''}
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+  container.innerHTML = html;
+}
+
+function ksRenderNilaiTable() {
+  const data = getLocalData();
+  const tb = document.getElementById('ksNilaiTableBody');
+  tb.innerHTML = '';
+
+  if (data.scores.length === 0) {
+    tb.innerHTML = '<tr><td colspan="8" style="color:#94a3b8;text-align:center">Belum ada siswa yang menyelesaikan ujian.</td></tr>';
+    return;
+  }
+
+  data.scores.forEach(sc => {
+    const siswa = data.users.find(u => u.username === sc.siswa_username);
+    const mapel = data.mapel.find(m => m.id === sc.mapel_id);
+    const weights = getScoreSettings(mapel);
+    const mcMax = Number.isFinite(Number(sc.mc_max_score)) ? Number(sc.mc_max_score) : weights.mc;
+    const fillMax = Number.isFinite(Number(sc.fill_max_score)) ? Number(sc.fill_max_score) : weights.fill;
+    const essayMax = Number.isFinite(Number(sc.essay_max_score)) ? Number(sc.essay_max_score) : weights.essay;
+    const isGreat = sc.score >= 80;
+    const msg = isGreat ? '🌟 Masya Allah kamu keren' : '💪 Ayo semangat belajar lagi ya';
+
+    tb.innerHTML += `
+      <tr>
+        <td><strong>${siswa ? siswa.nama : sc.siswa_username}</strong></td>
+        <td>${mapel ? mapel.nama : '-'}</td>
+        <td>${formatPoints(sc.mc_score)} / ${mcMax}</td>
+        <td>${formatPoints(sc.fill_score)} / ${fillMax}</td>
+        <td>${formatPoints(sc.essay_score)} / ${essayMax}</td>
+        <td><strong style="font-size:16px;color:${isGreat ? '#34d399' : '#fbbf24'}">${sc.score}</strong> / 100</td>
+        <td><span class="badge ${isGreat ? 'badge-green' : 'badge-orange'}">${msg}</span></td>
+        <td style="font-size:12px;color:#94a3b8">${new Date(sc.created_at || Date.now()).toLocaleString('id-ID')}</td>
+      </tr>
+    `;
+  });
+}
+
+/* ==============================================================================
+   E. GURU DASHBOARD LOGIC
+   ============================================================================== */
+let guruAssignedMapel = null;
+
+function initGuruDash() {
+  document.getElementById('dashGuruScreen').classList.add('active');
+  document.getElementById('guruProfileName').textContent = currentUser.nama;
+
+  const data = getLocalData();
+  const assignedMapelIds = data.guru_mapel
+    .filter(gm => gm.guru_username === currentUser.username)
+    .map(gm => gm.mapel_id);
+  const assignedMapels = data.mapel.filter(m => assignedMapelIds.includes(m.id));
+  if (assignedMapels.length > 0) {
+    guruAssignedMapel = assignedMapels[0];
+  } else {
+    guruAssignedMapel = currentUser.role === 'kepsek' ? data.mapel[0] || null : null;
+  }
+
+  const mapelPicker = document.getElementById('guruMapelPicker');
+  const selectableMapels = currentUser.role === 'kepsek' ? data.mapel : assignedMapels;
+  mapelPicker.innerHTML = '';
+  selectableMapels.forEach(mapel => {
+    const option = document.createElement('option');
+    option.value = mapel.id;
+    option.textContent = mapel.nama;
+    mapelPicker.appendChild(option);
+  });
+  document.getElementById('guruMapelPickerWrap').style.display = selectableMapels.length > 1 ? 'block' : 'none';
+  guruRenderSelectedMapel();
+
+  guruUpdateCounters();
+  guruRenderScoreSettings();
+  guruRenderMyQuestions();
+  guruRenderStudentAccess();
+}
+
+function guruSelectMapel(mapelId) {
+  const data = getLocalData();
+  const allowedIds = data.guru_mapel
+    .filter(gm => gm.guru_username === currentUser.username)
+    .map(gm => gm.mapel_id);
+  const isPrincipal = currentUser.role === 'kepsek';
+  const mapel = data.mapel.find(m => m.id === mapelId && (isPrincipal || allowedIds.includes(m.id)));
+  if (!mapel) {
+    showToast('Mata pelajaran tidak ditemukan atau tidak ditugaskan kepada Anda.', 'error');
+    return;
+  }
+  guruAssignedMapel = mapel;
+  guruRenderSelectedMapel();
+  guruUpdateCounters();
+  guruRenderScoreSettings();
+  guruRenderMyQuestions();
+  guruRenderStudentAccess();
+}
+
+function guruRenderSelectedMapel() {
+  const mapelTitle = guruAssignedMapel ? guruAssignedMapel.nama : 'Belum Ditugaskan';
+  document.getElementById('guruProfileMapel').textContent = `Mapel: ${mapelTitle}`;
+  document.getElementById('guruMapelHeaderTitle').textContent = mapelTitle;
+}
+
+function switchGuruTab(tab, btn) {
+  ['InputSoal','DaftarSoal','AksesSiswa'].forEach(t => {
+    const el = document.getElementById('guruTab' + t);
+    if (el) el.style.display = 'none';
+  });
+  const mapTab = { inputSoal: 'InputSoal', daftarSoal: 'DaftarSoal', aksesSiswa: 'AksesSiswa' };
+  document.getElementById('guruTab' + mapTab[tab]).style.display = 'block';
+
+  document.querySelectorAll('#dashGuruScreen .nav-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  if (tab === 'daftarSoal') guruRenderMyQuestions();
+  if (tab === 'aksesSiswa') guruRenderStudentAccess();
+}
+
+function guruSwitchQForm(type, btn) {
+  document.querySelectorAll('.q-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  document.getElementById('guruFormMc').style.display = type === 'mc' ? 'block' : 'none';
+  document.getElementById('guruFormFill').style.display = type === 'fill' ? 'block' : 'none';
+  document.getElementById('guruFormEssay').style.display = type === 'essay' ? 'block' : 'none';
+}
+
+function guruRenderScoreSettings() {
+  const settings = getScoreSettings(guruAssignedMapel);
+  document.getElementById('guruMcPoints').value = settings.mc;
+  document.getElementById('guruFillPoints').value = settings.fill;
+  document.getElementById('guruEssayPoints').value = settings.essay;
+  guruUpdateScoreTotal();
+}
+
+function guruUpdateScoreTotal() {
+  const values = ['guruMcPoints', 'guruFillPoints', 'guruEssayPoints']
+    .map(id => Number(document.getElementById(id).value));
+  const total = values.reduce((sum, value) => sum + (Number.isFinite(value) ? value : 0), 0);
+  const totalEl = document.getElementById('guruScoreWeightTotal');
+  totalEl.textContent = `Total bobot: ${total} / 100`;
+  totalEl.style.color = total === 100 ? '#34d399' : '#f87171';
+}
+
+async function guruSaveScoreSettings() {
+  if (!guruAssignedMapel) {
+    showToast('Anda belum ditugaskan ke mata pelajaran mana pun!', 'error');
+    return;
+  }
+  const settings = {
+    mc: Number(document.getElementById('guruMcPoints').value),
+    fill: Number(document.getElementById('guruFillPoints').value),
+    essay: Number(document.getElementById('guruEssayPoints').value)
+  };
+  const values = Object.values(settings);
+  if (!values.every(Number.isInteger) || values.some(value => value < 0 || value > 100) || values.reduce((sum, value) => sum + value, 0) !== 100) {
+    guruUpdateScoreTotal();
+    showToast('Bobot tiap jenis soal harus berupa bilangan bulat dan totalnya tepat 100.', 'error');
+    return;
+  }
+
+  const updates = {
+    mc_points: settings.mc,
+    fill_points: settings.fill,
+    essay_points: settings.essay
+  };
+  if (supabaseClient) {
+    const { error } = await supabaseClient.from('mapel').update(updates).eq('id', guruAssignedMapel.id);
+    if (error) {
+      showToast(`Pembagian nilai gagal disimpan ke Supabase: ${error.message}`, 'error');
+      return;
+    }
+  }
+  Object.assign(guruAssignedMapel, updates);
+  const data = getLocalData();
+  const localMapel = data.mapel.find(mapel => mapel.id === guruAssignedMapel.id);
+  if (localMapel) Object.assign(localMapel, updates);
+  saveLocalData(data);
+  guruRenderScoreSettings();
+  showToast('Pembagian nilai tersimpan. Total tetap 100 poin.', 'success');
+}
+
+function guruUpdateCounters() {
+  if (!guruAssignedMapel) return;
+  const data = getLocalData();
+  const qs = data.questions.filter(q => q.mapel_id === guruAssignedMapel.id);
+  const mcCount = qs.filter(q => q.type === 'mc').length;
+  const fillCount = qs.filter(q => q.type === 'fill').length;
+  const essayCount = qs.filter(q => q.type === 'essay').length;
+
+  document.getElementById('guruMcCounter').textContent = Math.min(mcCount + 1, 15);
+  document.getElementById('guruFillCounter').textContent = Math.min(fillCount + 1, 10);
+  document.getElementById('guruEssayCounter').textContent = Math.min(essayCount + 1, 5);
+
+  const badge = document.getElementById('guruQSummaryBadge');
+  const isComplete = (mcCount >= 15 && fillCount >= 10 && essayCount >= 5);
+  badge.innerHTML = isComplete
+    ? '<span class="badge badge-green">✅ Soal Lengkap: Siap Ujian (30 Soal)</span>'
+    : `<span class="badge badge-orange">⚠️ Belum Lengkap: ${mcCount}/15 PG • ${fillCount}/10 Isian • ${essayCount}/5 Uraian</span>`;
+}
+
+function handleImagePreview(input, imgId) {
+  const file = input.files[0];
+  const imgEl = document.getElementById(imgId);
+  if (!file) {
+    imgEl.style.display = 'none';
+    imgEl.src = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    imgEl.src = e.target.result;
+    imgEl.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleImagePaste(event, imgId) {
+  const items = event.clipboardData && event.clipboardData.items;
+  if (!items) return;
+  const imageItem = Array.from(items).find(item => item.type.startsWith('image/'));
+  if (!imageItem) return;
+  event.preventDefault();
+  const image = imageItem.getAsFile();
+  if (!image) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const imgEl = document.getElementById(imgId);
+    imgEl.src = reader.result;
+    imgEl.style.display = 'block';
+  };
+  reader.readAsDataURL(image);
+}
+
+function guruAddFillOption() {
+  const container = document.getElementById('fillOptionsList');
+  const optionRows = Array.from(container.querySelectorAll('.fill-option-row'));
+  const options = optionRows.map(row => ({
+    text: row.querySelector('.fill-option-text').value,
+    image_url: row.querySelector('.fill-option-preview').style.display !== 'none'
+      ? row.querySelector('.fill-option-preview').src
+      : null,
+    correct: row.querySelector('input[type="radio"]').checked
+  }));
+  options.push({ text: '', image_url: null, correct: false });
+  guruRenderFillOptions(options);
+}
+
+function guruRenderFillOptions(options) {
+  const container = document.getElementById('fillOptionsList');
+  container.innerHTML = '';
+  options.forEach((option, index) => {
+    const row = document.createElement('div');
+    row.className = 'fill-option-row';
+    row.style.cssText = 'background:rgba(255,255,255,0.03);padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.08)';
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px">
+        <input type="radio" name="fillCorrectRad" value="${index}" ${option.correct || index === 0 && !options.some(item => item.correct) ? 'checked' : ''}>
+        <input type="text" class="form-control fill-option-text" placeholder="Pilihan Amunisi ${index + 1}" onpaste="handleImagePaste(event, 'fillOptionImg${index}')">
+      </div>
+      <input type="file" accept="image/*" class="form-control" style="margin-top:8px" onchange="handleImagePreview(this, 'fillOptionImg${index}')">
+      <img id="fillOptionImg${index}" class="preview-img fill-option-preview" style="display:none">
+    `;
+    row.querySelector('.fill-option-text').value = option.text || '';
+    if (option.image_url) {
+      const preview = row.querySelector('.fill-option-preview');
+      preview.src = option.image_url;
+      preview.style.display = 'block';
+    }
+    container.appendChild(row);
+  });
+}
+
+function getQuestionOptionText(option) {
+  return typeof option === 'string' ? option : (option && option.text) || '';
+}
+
+function getQuestionOptionImage(option) {
+  const imageUrl = option && typeof option === 'object' ? option.image_url : null;
+  return imageUrl ? `<img src="${imageUrl}" class="preview-img" style="display:block;margin-top:6px" alt="Gambar opsi jawaban">` : '';
+}
+
+async function saveQuestionToSupabase(question) {
+  if (!supabaseClient) return true;
+  try {
+    const { error } = await supabaseClient.from('questions').insert([question]);
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    showToast(`Soal gagal disimpan ke Supabase: ${error.message || 'Periksa koneksi dan skema database.'}`, 'error');
+    return false;
+  }
+}
+
+async function guruSaveMcQuestion() {
+  if (!guruAssignedMapel) { showToast('Anda belum ditugaskan ke mapel manapun!', 'error'); return; }
+  const data = getLocalData();
+  const mcQs = data.questions.filter(q => q.mapel_id === guruAssignedMapel.id && q.type === 'mc');
+  if (mcQs.length >= 15) { showToast('Maksimal 15 soal pilihan ganda!', 'error'); return; }
+
+  const text = document.getElementById('mcInputText').value.trim();
+  if (!text) { showToast('Tuliskan pertanyaan!', 'error'); return; }
+
+  const opts = [0, 1, 2, 3].map(i => document.getElementById('mcOptText' + i).value.trim());
+  if (opts.some(o => !o)) { showToast('Lengkapi keempat pilihan jawaban!', 'error'); return; }
+
+  const correctRad = document.querySelector('input[name="mcCorrectRad"]:checked');
+  const correct = correctRad ? parseInt(correctRad.value) : 0;
+  const imgEl = document.getElementById('mcImgPrev');
+  const image_url = (imgEl && imgEl.style.display !== 'none') ? imgEl.src : null;
+
+  const newQ = {
+    id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('q_mc_' + Date.now()),
+    mapel_id: guruAssignedMapel.id,
+    type: 'mc',
+    text,
+    image_url,
+    options: opts,
+    correct,
+    created_by: currentUser.username,
+    created_at: new Date().toISOString()
+  };
+
+  if (!await saveQuestionToSupabase(newQ)) return;
+  data.questions.push(newQ);
+  saveLocalData(data);
+
+  // Reset Form
+  document.getElementById('mcInputText').value = '';
+  [0, 1, 2, 3].forEach(i => document.getElementById('mcOptText' + i).value = '');
+  document.getElementById('mcInputFile').value = '';
+  imgEl.style.display = 'none';
+
+  guruUpdateCounters();
+  showToast('Soal pilihan ganda tersimpan!', 'success');
+}
+
+async function guruSaveFillQuestion() {
+  if (!guruAssignedMapel) { showToast('Anda belum ditugaskan ke mapel manapun!', 'error'); return; }
+  const data = getLocalData();
+  const fillQs = data.questions.filter(q => q.mapel_id === guruAssignedMapel.id && q.type === 'fill');
+  if (fillQs.length >= 10) { showToast('Maksimal 10 soal isian rudal!', 'error'); return; }
+
+  const text = document.getElementById('fillInputText').value.trim();
+  if (!text) { showToast('Tuliskan pertanyaan isian!', 'error'); return; }
+
+  const optionRows = Array.from(document.querySelectorAll('#fillOptionsList .fill-option-row'));
+  const selectedRadio = document.querySelector('input[name="fillCorrectRad"]:checked');
+  const selectedOriginalIndex = selectedRadio ? Number(selectedRadio.value) : -1;
+  const opts = optionRows.map((row, originalIndex) => {
+    const image = row.querySelector('.fill-option-preview');
+    return {
+      text: row.querySelector('.fill-option-text').value.trim(),
+      image_url: image.style.display !== 'none' ? image.src : null,
+      originalIndex
+    };
+  }).filter(option => option.text || option.image_url);
+  if (opts.length < 2) { showToast('Minimal buat 2 pilihan amunisi!', 'error'); return; }
+  const correct = opts.findIndex(option => option.originalIndex === selectedOriginalIndex);
+  if (correct < 0) { showToast('Pilih opsi amunisi yang benar dan pastikan opsi itu berisi teks atau gambar.', 'error'); return; }
+  const imgEl = document.getElementById('fillImgPrev');
+  const image_url = (imgEl && imgEl.style.display !== 'none') ? imgEl.src : null;
+
+  const newQ = {
+    id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('q_fill_' + Date.now()),
+    mapel_id: guruAssignedMapel.id,
+    type: 'fill',
+    text,
+    image_url,
+    options: opts.map(({ text, image_url }) => ({ text, image_url })),
+    correct,
+    created_by: currentUser.username,
+    created_at: new Date().toISOString()
+  };
+
+  if (!await saveQuestionToSupabase(newQ)) return;
+  data.questions.push(newQ);
+  saveLocalData(data);
+
+  // Reset Form
+  document.getElementById('fillInputText').value = '';
+  document.getElementById('fillInputFile').value = '';
+  imgEl.style.display = 'none';
+  guruRenderFillOptions(Array.from({ length: 4 }, () => ({ text: '', image_url: null })));
+
+  guruUpdateCounters();
+  showToast('Soal isian rudal tersimpan!', 'success');
+}
+
+async function guruSaveEssayQuestion() {
+  if (!guruAssignedMapel) { showToast('Anda belum ditugaskan ke mapel manapun!', 'error'); return; }
+  const data = getLocalData();
+  const essayQs = data.questions.filter(q => q.mapel_id === guruAssignedMapel.id && q.type === 'essay');
+  if (essayQs.length >= 5) { showToast('Maksimal 5 soal uraian tebing jurang!', 'error'); return; }
+
+  const text = document.getElementById('essayInputText').value.trim();
+  const answer = document.getElementById('essayInputAnswer').value.trim();
+  const cliff_hint = document.getElementById('essayInputCliffHint').value.trim();
+
+  if (!text || !answer) { showToast('Lengkapi teks soal dan kunci jawaban uraian!', 'error'); return; }
+
+  const imgEl = document.getElementById('essayImgPrev');
+  const image_url = (imgEl && imgEl.style.display !== 'none') ? imgEl.src : null;
+  const answerImgEl = document.getElementById('essayAnswerImgPrev');
+  const answer_image_url = answerImgEl.style.display !== 'none' ? answerImgEl.src : null;
+
+  const newQ = {
+    id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('q_essay_' + Date.now()),
+    mapel_id: guruAssignedMapel.id,
+    type: 'essay',
+    text,
+    image_url,
+    answer,
+    answer_image_url,
+    cliff_hint: cliff_hint || answer,
+    created_by: currentUser.username,
+    created_at: new Date().toISOString()
+  };
+
+  if (!await saveQuestionToSupabase(newQ)) return;
+  data.questions.push(newQ);
+  saveLocalData(data);
+
+  // Reset Form
+  document.getElementById('essayInputText').value = '';
+  document.getElementById('essayInputAnswer').value = '';
+  document.getElementById('essayInputCliffHint').value = '';
+  document.getElementById('essayInputFile').value = '';
+  document.getElementById('essayAnswerFile').value = '';
+  imgEl.style.display = 'none';
+  answerImgEl.style.display = 'none';
+  answerImgEl.src = '';
+
+  guruUpdateCounters();
+  showToast('Soal uraian tebing jurang tersimpan!', 'success');
+}
+
+function guruRenderMyQuestions() {
+  if (!guruAssignedMapel) return;
+  const data = getLocalData();
+  const qs = data.questions.filter(q => q.mapel_id === guruAssignedMapel.id);
+  const container = document.getElementById('guruMyQuestionsContainer');
+
+  if (qs.length === 0) {
+    container.innerHTML = '<div class="glass-card"><p style="color:#94a3b8">Belum ada soal dibuat. Silakan tambahkan soal!</p></div>';
+    return;
+  }
+
+  let html = '';
+  ['mc', 'fill', 'essay'].forEach(type => {
+    const list = qs.filter(q => q.type === type);
+    if (list.length === 0) return;
+    const title = type === 'mc' ? 'Pilihan Ganda (15 Soal)' :
+                  type === 'fill' ? 'Isian Rudal (10 Soal)' : 'Uraian Tebing Jurang (5 Soal)';
+    html += `<div class="glass-card">`;
+    html += `<h3>${title} - Total: ${list.length}</h3>`;
+    list.forEach((q, idx) => {
+      html += `
+        <div style="background:rgba(0,0,0,0.3);padding:12px;border-radius:10px;margin-bottom:8px;position:relative">
+          <button class="btn btn-danger btn-sm" style="position:absolute;top:10px;right:10px" onclick="guruDeleteQuestion('${q.id}')">Hapus</button>
+          <div style="font-weight:700;color:#fff;margin-bottom:4px">${idx + 1}. ${q.text}</div>
+          ${q.image_url ? `<img src="${q.image_url}" class="preview-img" style="display:block;margin-bottom:6px">` : ''}
+          ${q.options ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong style="color:#34d399">${getQuestionOptionText(q.options[q.correct])}</strong></div>` : ''}
+          ${q.options ? getQuestionOptionImage(q.options[q.correct]) : ''}
+          ${q.answer ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong style="color:#34d399">${q.answer}</strong></div>` : ''}
+          ${q.answer_image_url ? `<img src="${q.answer_image_url}" class="preview-img" style="display:block;margin-top:6px" alt="Gambar kunci jawaban">` : ''}
+          ${q.cliff_hint ? `<div style="font-size:11px;color:#fbbf24">📜 Petunjuk Tebing: ${q.cliff_hint}</div>` : ''}
+        </div>
+      `;
+    });
+    html += `</div>`;
+  });
+  container.innerHTML = html;
+}
+
+function guruDeleteQuestion(qid) {
+  if (!confirm('Hapus soal ini?')) return;
+  const data = getLocalData();
+  data.questions = data.questions.filter(q => q.id !== qid);
+  saveLocalData(data);
+  if (supabaseClient) supabaseClient.from('questions').delete().eq('id', qid).then();
+  guruUpdateCounters();
+  guruRenderMyQuestions();
+  showToast('Soal dihapus', 'info');
+}
+
+function guruRenderStudentAccess() {
+  if (!guruAssignedMapel) return;
+  const data = getLocalData();
+  const list = document.getElementById('guruAksesStudentList');
+  const allowed = data.akses[guruAssignedMapel.id] || [];
+  let students = data.users.filter(u => u.role === 'siswa');
+  const filterKelas = document.getElementById('guruFilterAksesKelas') ? document.getElementById('guruFilterAksesKelas').value : '';
+
+  if (filterKelas) {
+    students = students.filter(s => String(s.kelas || '6') === filterKelas);
+  }
+
+  list.innerHTML = '';
+  if (students.length === 0) {
+    list.innerHTML = '<p style="color:#94a3b8">Tidak ada siswa yang terdaftar pada filter kelas ini.</p>';
+    return;
+  }
+  students.forEach(s => {
+    const isChecked = allowed.includes(s.username) ? 'checked' : '';
+    list.innerHTML += `
+      <label style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,0.03);border-radius:8px;cursor:pointer">
+        <input type="checkbox" value="${s.username}" class="guru-student-chk" ${isChecked} style="width:16px;height:16px">
+        <span style="font-weight:600;color:#fff">${s.nama}</span>
+        <span class="badge badge-blue" style="font-size:10px">Kelas ${s.kelas || '6'}</span>
+        <span style="color:#94a3b8;font-size:12px">(@${s.username})</span>
+      </label>
+    `;
+  });
+}
+
+function guruToggleAllStudents(check) {
+  document.querySelectorAll('.guru-student-chk').forEach(c => c.checked = check);
+}
+
+function guruSaveStudentAccess() {
+  if (!guruAssignedMapel) return;
+  const data = getLocalData();
+  const selected = [];
+  document.querySelectorAll('.guru-student-chk').forEach(c => {
+    if (c.checked) selected.push(c.value);
+  });
+  data.akses[guruAssignedMapel.id] = selected;
+  saveLocalData(data);
+
+  if (supabaseClient) {
+    // Delete and re-insert into akses_siswa
+    supabaseClient.from('akses_siswa').delete().eq('mapel_id', guruAssignedMapel.id).then(() => {
+      if (selected.length > 0) {
+        const rows = selected.map(sw => ({ mapel_id: guruAssignedMapel.id, siswa_username: sw }));
+        supabaseClient.from('akses_siswa').insert(rows).then();
+      }
+    });
+  }
+  showToast('Akses siswa berhasil disimpan!', 'success');
+}
+
+/* ==============================================================================
+   F. SISWA GALAXY: PLANET SELECTION & DISAPPEARING EFFECT
+   ============================================================================== */
+function initSiswaGalaxy() {
+  document.getElementById('planetScreen').classList.add('active');
+  renderGalaxyPlanets();
+}
+
+function renderGalaxyPlanets() {
+  const data = getLocalData();
+  const grid = document.getElementById('planetOrbitGrid');
+  grid.innerHTML = '';
+
+  const studentUser = currentUser.username;
+  const permittedPlanets = [];
+
+  data.mapel.forEach(m => {
+    const allowed = data.akses[m.id] || [];
+    if (allowed.includes(studentUser)) {
+      const qs = data.questions.filter(q => q.mapel_id === m.id);
+      const mcC = qs.filter(q => q.type === 'mc').length;
+      const fillC = qs.filter(q => q.type === 'fill').length;
+      const essayC = qs.filter(q => q.type === 'essay').length;
+      // Complete is 15 MC, 10 Fill, 5 Essay
+      const isReady = (mcC >= 15 && fillC >= 10 && essayC >= 5);
+      permittedPlanets.push({ ...m, isReady, mcC, fillC, essayC });
+    }
+  });
+
+  if (permittedPlanets.length === 0) {
+    grid.innerHTML = `
+      <div class="glass-card" style="max-width:500px">
+        <div style="font-size:42px;margin-bottom:10px">📡</div>
+        <h3 style="color:#fbbf24">Belum Ada Planet yang Diizinkan</h3>
+        <p style="color:#94a3b8;font-size:14px">
+          Akunmu belum didaftarkan untuk mengakses planet mata pelajaran apapun. Silakan hubungi Guru Pengampu untuk membuka akses planetmu!
+        </p>
+      </div>
+    `;
+    return;
+  }
+
+  permittedPlanets.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'planet-item';
+    card.id = `planetCard_${p.id}`;
+    card.innerHTML = `
+      <div class="planet-globe" style="background: radial-gradient(circle at 30% 30%, ${lightenHex(p.warna, 40)}, ${p.warna}, ${darkenHex(p.warna, 50)});
+           box-shadow: 0 0 35px ${p.warna}88, inset -15px -15px 25px rgba(0,0,0,0.6)">
+        <div class="planet-ring" style="border-color:${p.warna}88"></div>
+      </div>
+      <div class="planet-name">${p.nama}</div>
+      <div class="planet-meta ${p.isReady ? 'ready' : 'incomplete'}">
+        ${p.isReady ? '🚀 Siap Ujian' : `⚠️ Soal (${p.mcC}/15, ${p.fillC}/10, ${p.essayC}/5)`}
+      </div>
+    `;
+
+    card.onclick = () => onStudentSelectPlanet(p, card);
+    grid.appendChild(card);
+  });
+}
+
+function onStudentSelectPlanet(planet, cardEl) {
+  if (planet.isReady) {
+    // Sound & Enter
+    sound.playMissile();
+    launchFlightMission(planet);
+  } else {
+    // DISAPPEARING PLANET MECHANIC
+    sound.playPlanetVanish();
+    cardEl.classList.add('vanishing');
+
+    setTimeout(() => {
+      cardEl.style.display = 'none';
+      openDisappearingPlanetAlert(planet);
+    }, 1100);
+  }
+}
+
+function openDisappearingPlanetAlert(planet) {
+  const overlay = document.getElementById('flightDialog');
+  const modal = document.getElementById('flightModalContent');
+
+  modal.innerHTML = `
+    <div style="font-size:54px;margin-bottom:10px;animation:floatRocket 2s infinite alternate">🌀</div>
+    <h3 style="color:#f87171;font-size:20px;margin-bottom:8px">PLANET LENYAP DARI RADAR!</h3>
+    <p style="font-size:15px;color:#fff;line-height:1.6;margin-bottom:16px">
+      Materi ujian pada <strong>Planet ${planet.nama}</strong> belum lengkap disiapkan oleh guru pengampu (${planet.mcC}/15 PG, ${planet.fillC}/10 Isian, ${planet.essayC}/5 Uraian).
+      <br><br>
+      Planet telah tersedot ke lubang cacing kosmik! Silakan pilih planet lain yang sudah siap dijelajahi.
+    </p>
+    <button class="btn-fire-action" onclick="closeDisappearingAlert()">🪐 PILIH PLANET LAIN</button>
+  `;
+  overlay.classList.add('active');
+}
+
+function closeDisappearingAlert() {
+  document.getElementById('flightDialog').classList.remove('active');
+  renderGalaxyPlanets();
+}
+
+function lightenHex(hex, amt) {
+  let num = parseInt(hex.replace('#',''), 16);
+  let r = Math.min(255, (num >> 16) + amt);
+  let g = Math.min(255, ((num >> 8) & 0x00FF) + amt);
+  let b = Math.min(255, (num & 0x0000FF) + amt);
+  return `rgb(${r},${g},${b})`;
+}
+function darkenHex(hex, amt) {
+  let num = parseInt(hex.replace('#',''), 16);
+  let r = Math.max(0, (num >> 16) - amt);
+  let g = Math.max(0, ((num >> 8) & 0x00FF) - amt);
+  let b = Math.max(0, (num & 0x0000FF) - amt);
+  return `rgb(${r},${g},${b})`;
+}
+
+/* ==============================================================================
+   G. COCKPIT GAMEPLAY & FLIGHT ENGINE
+   ============================================================================== */
+let gameCanvas = null;
+let gameCtx = null;
+let gameAnimId = null;
+
+let gameState = {
+  planet: null,
+  allQuestions: [],
+  mcQuestions: [],
+  fillQuestions: [],
+  essayQuestions: [],
+  qIndex: 0,
+  score: 0,
+  mcScore: 0,
+  fillScore: 0,
+  essayScore: 0,
+  scoring: { mc: 30, fill: 30, essay: 40 },
+  phase: 'mc', // mc, fill, essay
+  cockpitRoll: 0,
+  cockpitTargetRoll: 0,
+  warpSpeed: 1,
+  lasers: [],
+  explosions: [],
+  missiles: [],
+  canyonBossHp: 100
+};
+
+let starsField = [];
+
+function initFlightStars() {
+  starsField = [];
+  for (let i = 0; i < 220; i++) {
+    starsField.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      z: Math.random() * 1000 + 1,
+      size: Math.random() * 2 + 0.8,
+      speed: Math.random() * 2 + 1
+    });
+  }
+}
+
+function launchFlightMission(planet) {
+  document.getElementById('planetScreen').classList.remove('active');
+  document.getElementById('gameScreen').style.display = 'block';
+  document.getElementById('gameScreen').classList.add('active');
+
+  gameCanvas = document.getElementById('gameCanvas');
+  gameCtx = gameCanvas.getContext('2d');
+  resizeGameCanvas();
+  window.addEventListener('resize', resizeGameCanvas);
+
+  initFlightStars();
+
+  const data = getLocalData();
+  const qs = data.questions.filter(q => q.mapel_id === planet.id);
+  const mcQs = qs.filter(q => q.type === 'mc').slice(0, 15);
+  const fillQs = qs.filter(q => q.type === 'fill').slice(0, 10);
+  const essayQs = qs.filter(q => q.type === 'essay').slice(0, 5);
+
+  gameState = {
+    planet,
+    allQuestions: [...mcQs, ...fillQs, ...essayQs],
+    mcQuestions: mcQs,
+    fillQuestions: fillQs,
+    essayQuestions: essayQs,
+    qIndex: 0,
+    score: 0,
+    mcScore: 0,
+    fillScore: 0,
+    essayScore: 0,
+    scoring: getScoreSettings(planet),
+    phase: 'mc',
+    cockpitRoll: 0,
+    cockpitTargetRoll: 0,
+    warpSpeed: 1.5,
+    lasers: [],
+    explosions: [],
+    missiles: [],
+    shakeAmount: 0
+  };
+
+  document.getElementById('hudPlanetBadge').textContent = 'PLANET: ' + planet.nama.toUpperCase();
+  updateGameHUD();
+
+  startGameLoop();
+
+  setTimeout(() => {
+    presentQuestion();
+  }, 1200);
+}
+
+function resizeGameCanvas() {
+  if (!gameCanvas) return;
+  gameCanvas.width = window.innerWidth;
+  gameCanvas.height = window.innerHeight;
+}
+
+function updateGameHUD() {
+  document.getElementById('hudScoreVal').textContent = formatPoints(gameState.score);
+  document.getElementById('hudCurrentQ').textContent = Math.min(gameState.qIndex + 1, 30);
+  document.getElementById('hudTotalQ').textContent = '30';
+  const pct = (gameState.qIndex / 30) * 100;
+  document.getElementById('hudProgressFill').style.width = pct + '%';
+}
+
+function getQuestionPoints(type) {
+  const maxScore = gameState.scoring[type];
+  const questionCount = type === 'mc' ? 15 : type === 'fill' ? 10 : 5;
+  return maxScore / questionCount;
+}
+
+function formatPoints(value) {
+  const rounded = Number(Number(value || 0).toFixed(2));
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2);
+}
+
+function startGameLoop() {
+  if (gameAnimId) cancelAnimationFrame(gameAnimId);
+
+  function loop() {
+    renderFlightScene();
+    gameAnimId = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+function renderFlightScene() {
+  if (!gameCtx || !gameCanvas) return;
+  const cw = gameCanvas.width;
+  const ch = gameCanvas.height;
+  const ctx = gameCtx;
+
+  // Cockpit Roll & Evasion interpolation
+  gameState.cockpitRoll += (gameState.cockpitTargetRoll - gameState.cockpitRoll) * 0.12;
+  if (Math.abs(gameState.cockpitRoll) < 0.001) gameState.cockpitRoll = 0;
+
+  // Shake
+  let shakeX = 0, shakeY = 0;
+  if (gameState.shakeAmount > 0) {
+    shakeX = (Math.random() - 0.5) * gameState.shakeAmount;
+    shakeY = (Math.random() - 0.5) * gameState.shakeAmount;
+    gameState.shakeAmount *= 0.88;
+    if (gameState.shakeAmount < 0.4) gameState.shakeAmount = 0;
+  }
+
+  ctx.save();
+  ctx.translate(cw / 2 + shakeX, ch / 2 + shakeY);
+  ctx.rotate(gameState.cockpitRoll);
+  ctx.translate(-cw / 2, -ch / 2);
+
+  // Background deep space
+  let grad = ctx.createLinearGradient(0, 0, 0, ch);
+  if (gameState.phase === 'mc') {
+    grad.addColorStop(0, '#040714'); grad.addColorStop(1, '#0e0e28');
+  } else if (gameState.phase === 'fill') {
+    grad.addColorStop(0, '#020b14'); grad.addColorStop(1, '#081726');
+  } else {
+    grad.addColorStop(0, '#130409'); grad.addColorStop(1, '#240b12');
+  }
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, cw, ch);
+
+  // Starfield with warp motion
+  starsField.forEach(s => {
+    s.x -= s.speed * gameState.warpSpeed;
+    if (s.x < 0) { s.x = cw + 10; s.y = Math.random() * ch; }
+
+    const trail = gameState.warpSpeed > 3 ? (gameState.warpSpeed * 4) : 0;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = s.size;
+    ctx.beginPath();
+    ctx.moveTo(s.x, s.y);
+    ctx.lineTo(s.x + trail, s.y);
+    ctx.stroke();
+  });
+
+  // Scene rendering by phase
+  if (gameState.phase === 'mc') {
+    renderMcScene(ctx, cw, ch);
+  } else if (gameState.phase === 'fill') {
+    renderFillScene(ctx, cw, ch);
+  } else if (gameState.phase === 'essay') {
+    renderEssayScene(ctx, cw, ch);
+  }
+
+  // Lasers
+  gameState.lasers = gameState.lasers.filter(l => {
+    l.x += l.vx;
+    l.y += l.vy;
+    ctx.save();
+    ctx.strokeStyle = '#00f0ff';
+    ctx.shadowColor = '#00f0ff';
+    ctx.shadowBlur = 15;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(l.x, l.y);
+    ctx.lineTo(l.x - 40, l.y);
+    ctx.stroke();
+    ctx.restore();
+    return l.x < cw + 80;
+  });
+
+  // Missiles
+  gameState.missiles = gameState.missiles.filter(m => {
+    m.x += m.vx;
+    m.y += m.vy;
+    ctx.save();
+    ctx.fillStyle = '#f59e0b';
+    ctx.shadowColor = '#f59e0b';
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    // Flame trail
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(m.x - 12, m.y, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    return m.x < cw + 80;
+  });
+
+  // Explosions
+  gameState.explosions = gameState.explosions.filter(e => {
+    e.frame++;
+    const progress = e.frame / e.maxFrame;
+    const radius = e.maxRadius * progress;
+    const alpha = 1 - progress;
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2 + e.frame * 0.15;
+      const d = radius * (0.6 + Math.random() * 0.4);
+      const px = e.x + Math.cos(angle) * d;
+      const py = e.y + Math.sin(angle) * d;
+      ctx.fillStyle = i % 2 === 0 ? '#ffea00' : '#ff4400';
+      ctx.beginPath();
+      ctx.arc(px, py, 6 * (1 - progress), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+    return e.frame < e.maxFrame;
+  });
+
+  // Cockpit Frame & HUD Yoke overlay
+  drawCockpitFrame(ctx, cw, ch);
+
+  ctx.restore();
+}
+
+function renderMcScene(ctx, cw, ch) {
+  // Obstacle Drone / Asteroid Barrier
+  const cx = cw * 0.68;
+  const cy = ch * 0.38 + Math.sin(Date.now() / 450) * 14;
+
+  // Space Drone
+  ctx.save();
+  ctx.fillStyle = '#1e1b4b';
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 2;
+  ctx.shadowColor = '#ef4444';
+  ctx.shadowBlur = 18;
+
+  ctx.beginPath();
+  ctx.moveTo(cx - 50, cy);
+  ctx.lineTo(cx, cy - 30);
+  ctx.lineTo(cx + 50, cy);
+  ctx.lineTo(cx + 25, cy + 25);
+  ctx.lineTo(cx - 25, cy + 25);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Core sensor
+  ctx.fillStyle = '#ef4444';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 10 + Math.sin(Date.now() / 200) * 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Floating Asteroids around
+  for (let i = 0; i < 3; i++) {
+    const ax = cw * 0.42 + i * 110 + Math.sin(Date.now() / 900 + i) * 15;
+    const ay = ch * 0.52 + Math.cos(Date.now() / 700 + i) * 20;
+    drawMiniAsteroid(ctx, ax, ay, 18 + i * 4);
+  }
+  ctx.restore();
+}
+
+function renderFillScene(ctx, cw, ch) {
+  // Heavy Battle Cruiser Target
+  const cx = cw * 0.72;
+  const cy = ch * 0.36 + Math.sin(Date.now() / 600) * 18;
+
+  ctx.save();
+  ctx.fillStyle = '#1e293b';
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth = 2;
+  ctx.shadowColor = '#f59e0b';
+  ctx.shadowBlur = 20;
+
+  // Cruiser Hull
+  ctx.beginPath();
+  ctx.moveTo(cx - 80, cy);
+  ctx.lineTo(cx + 70, cy - 40);
+  ctx.lineTo(cx + 100, cy);
+  ctx.lineTo(cx + 70, cy + 40);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Shield Matrix
+  ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
+  ctx.strokeRect(cx - 90, cy - 50, 200, 100);
+
+  ctx.restore();
+}
+
+function renderEssayScene(ctx, cw, ch) {
+  // Canyon Cliff Walls
+  const canyonH = ch * 0.55;
+
+  ctx.save();
+  // Left Cliff Wall
+  ctx.fillStyle = '#2b110a';
+  ctx.beginPath();
+  ctx.moveTo(0, canyonH - 80);
+  for (let x = 0; x <= cw * 0.32; x += 30) {
+    ctx.lineTo(x, canyonH - 80 + Math.sin(x / 40) * 25);
+  }
+  ctx.lineTo(cw * 0.32, ch);
+  ctx.lineTo(0, ch);
+  ctx.closePath();
+  ctx.fill();
+
+  // Right Cliff Wall
+  ctx.fillStyle = '#2b110a';
+  ctx.beginPath();
+  ctx.moveTo(cw, canyonH - 80);
+  for (let x = cw; x >= cw * 0.68; x -= 30) {
+    ctx.lineTo(x, canyonH - 80 + Math.cos(x / 40) * 25);
+  }
+  ctx.lineTo(cw * 0.68, ch);
+  ctx.lineTo(cw, ch);
+  ctx.closePath();
+  ctx.fill();
+
+  // Canyon Abyss
+  ctx.fillStyle = '#050204';
+  ctx.fillRect(cw * 0.32, canyonH - 30, cw * 0.36, ch - canyonH + 30);
+
+  // Canyon Dreadnought Boss
+  const bx = cw * 0.5;
+  const by = canyonH - 60 + Math.sin(Date.now() / 500) * 12;
+
+  ctx.fillStyle = '#4c0519';
+  ctx.strokeStyle = '#f43f5e';
+  ctx.lineWidth = 3;
+  ctx.shadowColor = '#f43f5e';
+  ctx.shadowBlur = 25;
+
+  ctx.beginPath();
+  ctx.moveTo(bx - 60, by);
+  ctx.lineTo(bx, by - 60);
+  ctx.lineTo(bx + 60, by);
+  ctx.lineTo(bx + 30, by + 40);
+  ctx.lineTo(bx - 30, by + 40);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Boss Eye
+  ctx.fillStyle = '#ff0055';
+  ctx.beginPath();
+  ctx.arc(bx, by - 15, 12, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ancient Cliff Runes Marker
+  ctx.font = '700 13px Orbitron';
+  ctx.fillStyle = '#fbbf24';
+  ctx.fillText('📜 TEBING JURANG: KUNCI ARTEFAK', cw * 0.16, canyonH - 40);
+  ctx.fillText('📜 TEBING JURANG: KUNCI ARTEFAK', cw * 0.84, canyonH - 40);
+
+  ctx.restore();
+}
+
+function drawMiniAsteroid(ctx, x, y, r) {
+  ctx.save();
+  ctx.fillStyle = '#475569';
+  ctx.strokeStyle = '#64748b';
+  ctx.beginPath();
+  for (let i = 0; i < 7; i++) {
+    const ang = (i / 7) * Math.PI * 2;
+    const rad = r * (0.8 + Math.sin(i * 2) * 0.25);
+    const px = x + Math.cos(ang) * rad;
+    const py = y + Math.sin(ang) * rad;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawCockpitFrame(ctx, cw, ch) {
+  ctx.save();
+
+  // Bottom Dashboard Panel
+  const panelH = ch * 0.26;
+  const panelY = ch - panelH;
+
+  const grad = ctx.createLinearGradient(0, panelY, 0, ch);
+  grad.addColorStop(0, '#151928');
+  grad.addColorStop(0.4, '#0d111e');
+  grad.addColorStop(1, '#070911');
+  ctx.fillStyle = grad;
+
+  ctx.beginPath();
+  ctx.moveTo(0, panelY + 30);
+  ctx.quadraticCurveTo(cw * 0.5, panelY - 15, cw, panelY + 30);
+  ctx.lineTo(cw, ch);
+  ctx.lineTo(0, ch);
+  ctx.closePath();
+  ctx.fill();
+
+  // Edge Neon Glow
+  ctx.strokeStyle = '#00f0ff';
+  ctx.lineWidth = 2;
+  ctx.shadowColor = '#00f0ff';
+  ctx.shadowBlur = 15;
+  ctx.beginPath();
+  ctx.moveTo(0, panelY + 30);
+  ctx.quadraticCurveTo(cw * 0.5, panelY - 15, cw, panelY + 30);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Cockpit Side Pillars
+  ctx.fillStyle = '#0f1422';
+  // Left
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(cw * 0.06, 0);
+  ctx.lineTo(cw * 0.1, ch * 0.75);
+  ctx.lineTo(0, ch * 0.78);
+  ctx.closePath();
+  ctx.fill();
+  // Right
+  ctx.beginPath();
+  ctx.moveTo(cw, 0);
+  ctx.lineTo(cw * 0.94, 0);
+  ctx.lineTo(cw * 0.9, ch * 0.75);
+  ctx.lineTo(cw, ch * 0.78);
+  ctx.closePath();
+  ctx.fill();
+
+  // Center Radar Screen
+  const rx = cw * 0.5;
+  const ry = panelY + 50;
+  ctx.fillStyle = '#04130d';
+  ctx.fillRect(rx - 65, ry - 35, 130, 70);
+  ctx.strokeStyle = '#10b981';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(rx - 65, ry - 35, 130, 70);
+
+  // Radar sweep
+  const sweepAngle = (Date.now() / 900) % (Math.PI * 2);
+  ctx.strokeStyle = '#34d399';
+  ctx.beginPath();
+  ctx.moveTo(rx, ry);
+  ctx.lineTo(rx + Math.cos(sweepAngle) * 60, ry + Math.sin(sweepAngle) * 32);
+  ctx.stroke();
+
+  // Target Lock Bracket in center of screen
+  const reticleX = cw * 0.5;
+  const reticleY = ch * 0.38;
+  ctx.strokeStyle = 'rgba(0, 240, 255, 0.6)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(reticleX - 25, reticleY - 25, 50, 50);
+  ctx.beginPath();
+  ctx.arc(reticleX, reticleY, 6, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Control Yoke / Steering Handle
+  ctx.strokeStyle = '#334155';
+  ctx.lineWidth = 10;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(cw * 0.38, ch - 15);
+  ctx.quadraticCurveTo(cw * 0.5, ch - 55, cw * 0.62, ch - 15);
+  ctx.stroke();
+
+  // Tactical Mode Display
+  ctx.font = '700 13px Orbitron';
+  ctx.fillStyle = '#00f0ff';
+  ctx.textAlign = 'center';
+  const modeTxt = gameState.phase === 'mc' ? '⚡ MODE RINTANGAN LASER (PG)' :
+                  gameState.phase === 'fill' ? '🚀 MODE PELUNCUR RUDAL (ISIAN)' :
+                  '⚔️ MODE JURANG KOSMIK (BOSS URAIAN)';
+  ctx.fillText(modeTxt, cw * 0.5, panelY + 10);
+
+  ctx.restore();
+}
+
+/* ==============================================================================
+   H. QUESTION LOGIC & INTERACTION
+   ============================================================================== */
+function presentQuestion() {
+  if (gameState.qIndex >= 30) {
+    completeFlightMission();
+    return;
+  }
+
+  // Phase categorization
+  // 0..14 => MC (15 Qs)
+  // 15..24 => Fill (10 Qs)
+  // 25..29 => Essay (5 Qs)
+  if (gameState.qIndex < 15) {
+    gameState.phase = 'mc';
+    renderMcQuestionCard(gameState.mcQuestions[gameState.qIndex]);
+  } else if (gameState.qIndex < 25) {
+    gameState.phase = 'fill';
+    renderFillQuestionCard(gameState.fillQuestions[gameState.qIndex - 15]);
+  } else {
+    gameState.phase = 'essay';
+    renderEssayQuestionCard(gameState.essayQuestions[gameState.qIndex - 25]);
+  }
+  updateGameHUD();
+}
+
+function renderMcQuestionCard(q) {
+  const overlay = document.getElementById('flightDialog');
+  const modal = document.getElementById('flightModalContent');
+  const num = gameState.qIndex + 1;
+
+  let html = `
+    <div class="modal-phase-tag phase-mc">RINTANGAN #${num} • PILIHAN GANDA (${formatPoints(getQuestionPoints('mc'))} POIN)</div>
+    <div class="q-body-text">${q.text}</div>
+    ${q.image_url ? `<img src="${q.image_url}" class="q-body-img">` : ''}
+    <div class="mc-grid">
+  `;
+  const labels = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, idx) => {
+    html += `
+      <div class="mc-choice-btn" data-idx="${idx}" onclick="selectMcOption(this, ${idx})">
+        <span class="mc-badge">${labels[idx]}</span>
+        <span>${opt}</span>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  html += `<button class="btn-fire-action" onclick="submitMcAnswer(${q.correct})">⚡ TEMBAK LASER KE RINTANGAN!</button>`;
+
+  modal.innerHTML = html;
+  overlay.classList.add('active');
+}
+
+let selectedMcIdx = null;
+function selectMcOption(btnEl, idx) {
+  document.querySelectorAll('.mc-choice-btn').forEach(b => b.classList.remove('selected'));
+  btnEl.classList.add('selected');
+  selectedMcIdx = idx;
+}
+
+function submitMcAnswer(correctIdx) {
+  if (selectedMcIdx === null) {
+    showToast('Pilih salah satu jawaban terlebih dahulu!', 'error');
+    return;
+  }
+  const isCorrect = (selectedMcIdx === correctIdx);
+  const btns = document.querySelectorAll('.mc-choice-btn');
+  btns.forEach((b, idx) => {
+    if (idx === correctIdx) b.classList.add('correct');
+    if (idx === selectedMcIdx && !isCorrect) b.classList.add('wrong');
+    b.style.pointerEvents = 'none';
+  });
+
+  if (isCorrect) {
+    sound.playLaser();
+    triggerLaserBlast();
+    setTimeout(() => {
+      sound.playExplosion();
+      triggerExplosion(gameCanvas.width * 0.68, gameCanvas.height * 0.38);
+      gameState.score += getQuestionPoints('mc');
+      gameState.mcScore += getQuestionPoints('mc');
+      gameState.warpSpeed = 7; // Warp speed rush forward
+      showToast(`Bagus! Rintangan hancur (+${formatPoints(getQuestionPoints('mc'))} Poin) 💥`, 'success');
+      updateGameHUD();
+    }, 250);
+  } else {
+    // Evasive Maneuver
+    sound.playEvasion();
+    gameState.cockpitTargetRoll = -0.18; // Roll left
+    gameState.shakeAmount = 25;
+    showToast('Jawaban salah! Pesawat bermanuver menghindar (+0 Poin)', 'error');
+    setTimeout(() => { gameState.cockpitTargetRoll = 0; }, 700);
+  }
+
+  setTimeout(() => {
+    document.getElementById('flightDialog').classList.remove('active');
+    gameState.warpSpeed = 1.5;
+    selectedMcIdx = null;
+    gameState.qIndex++;
+    setTimeout(() => presentQuestion(), 700);
+  }, 1600);
+}
+
+function renderFillQuestionCard(q) {
+  const overlay = document.getElementById('flightDialog');
+  const modal = document.getElementById('flightModalContent');
+  const num = gameState.qIndex - 15 + 1;
+
+  let html = `
+    <div class="modal-phase-tag phase-fill">KAPAL MUSUH #${num} • ISIAN RUDAL (${formatPoints(getQuestionPoints('fill'))} POIN)</div>
+    <div class="q-body-text">${q.text}</div>
+    ${q.image_url ? `<img src="${q.image_url}" class="q-body-img">` : ''}
+
+    <div class="missile-ammo-dock">
+      <div class="ammo-title">🚀 PILIH AMUNISI RUDAL TAKTIS:</div>
+      <select id="missileDropdownAnswer" class="missile-select">
+        <option value="">-- Buka Wadah Amunisi --</option>
+  `;
+  q.options.forEach((opt, idx) => {
+    html += `    <option value="${idx}">🚀 Rudal Bay #${idx + 1}: ${getQuestionOptionText(opt) || (opt && opt.image_url ? 'Gambar jawaban' : '')}</option>`;
+  });
+  html += `
+      </select>
+      <img id="fillSelectedAnswerImg" class="q-body-img" style="display:none;margin-top:10px" alt="Gambar pilihan jawaban">
+    </div>
+    <button class="btn-fire-action" onclick="submitFillAnswer(${q.correct})">🚀 TEMBAKKAN RUDAL KE TARGET!</button>
+  `;
+
+  modal.innerHTML = html;
+  document.getElementById('missileDropdownAnswer').onchange = event => showFillAnswerImage(event.target.value);
+  overlay.classList.add('active');
+}
+
+function showFillAnswerImage(optionIndex) {
+  const image = document.getElementById('fillSelectedAnswerImg');
+  const question = gameState.fillQuestions[gameState.qIndex - 15];
+  const option = question && optionIndex !== '' ? question.options[Number(optionIndex)] : null;
+  const imageUrl = option && typeof option === 'object' ? option.image_url : null;
+  image.src = imageUrl || '';
+  image.style.display = imageUrl ? 'block' : 'none';
+}
+
+function submitFillAnswer(correctIdx) {
+  const sel = document.getElementById('missileDropdownAnswer');
+  const val = sel.value;
+  if (val === '') {
+    showToast('Pilih amunisi rudal terlebih dahulu!', 'error');
+    return;
+  }
+  const isCorrect = (parseInt(val, 10) === correctIdx);
+
+  if (isCorrect) {
+    sound.playMissile();
+    triggerMissileLaunch();
+    setTimeout(() => {
+      sound.playExplosion();
+      triggerExplosion(gameCanvas.width * 0.72, gameCanvas.height * 0.36);
+      gameState.score += getQuestionPoints('fill');
+      gameState.fillScore += getQuestionPoints('fill');
+      gameState.warpSpeed = 7;
+      showToast(`Tepat Sasaran! Rudal menghancurkan target (+${formatPoints(getQuestionPoints('fill'))} Poin) 🚀💥`, 'success');
+      updateGameHUD();
+    }, 400);
+  } else {
+    // Evasive Maneuver
+    sound.playEvasion();
+    gameState.cockpitTargetRoll = 0.18; // Roll right
+    gameState.shakeAmount = 25;
+    showToast('Rudal meleset! Pesawat bermanuver darurat (+0 Poin)', 'error');
+    setTimeout(() => { gameState.cockpitTargetRoll = 0; }, 700);
+  }
+
+  setTimeout(() => {
+    document.getElementById('flightDialog').classList.remove('active');
+    gameState.warpSpeed = 1.5;
+    gameState.qIndex++;
+    setTimeout(() => presentQuestion(), 700);
+  }, 1600);
+}
+
+function renderEssayQuestionCard(q) {
+  const overlay = document.getElementById('flightDialog');
+  const modal = document.getElementById('flightModalContent');
+  const num = gameState.qIndex - 25 + 1;
+
+  let html = `
+    <div class="modal-phase-tag phase-essay">CANYON BOSS #${num} • URAIAN TEBING JURANG (${formatPoints(getQuestionPoints('essay'))} POIN)</div>
+    <div class="q-body-text">${q.text}</div>
+    ${q.image_url ? `<img src="${q.image_url}" class="q-body-img">` : ''}
+
+    <div class="canyon-cliff-box">
+      <div style="font-size:12px;font-weight:700;color:#fbbf24">📜 ARTEFAK TEBING JURANG:</div>
+      <p style="font-size:12px;color:#cbd5e1;margin-top:4px">Klik petunjuk tebing di bawah untuk membantu merumuskan jawabanmu:</p>
+      <div class="cliff-scroll-list">
+        <div class="cliff-rune-pill" onclick="insertCliffHint('${escapeHtml(q.cliff_hint || q.answer)}')">
+          <span>💎 ${q.cliff_hint || q.answer}</span>
+          <span style="font-size:10px;color:#fbbf24">Ambil ke Jawaban ➜</span>
+        </div>
+      </div>
+    </div>
+
+    <textarea id="essayStudentInput" class="essay-textarea" placeholder="Tuliskan rumusan jawabanmu di sini..."></textarea>
+    <button class="btn-fire-action" onclick="submitEssayAnswer('${escapeHtml(q.answer)}')">⚔️ SERANG BOSS JURANG KOSMIK!</button>
+  `;
+
+  modal.innerHTML = html;
+  overlay.classList.add('active');
+}
+
+function insertCliffHint(hint) {
+  const el = document.getElementById('essayStudentInput');
+  if (el) {
+    if (el.value.trim().length > 0) el.value += ' ' + hint;
+    else el.value = hint;
+  }
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+function submitEssayAnswer(keyAnswer) {
+  const inputEl = document.getElementById('essayStudentInput');
+  const studentAns = inputEl.value.trim().toLowerCase();
+
+  if (!studentAns) {
+    showToast('Tuliskan jawaban uraian terlebih dahulu!', 'error');
+    return;
+  }
+
+  // Evaluation: keyword matching ratio
+  const keys = keyAnswer.toLowerCase().split(/[,;.\s]+/).filter(w => w.length > 2);
+  let matches = 0;
+  keys.forEach(k => {
+    if (studentAns.includes(k)) matches++;
+  });
+  const ratio = keys.length > 0 ? (matches / keys.length) : 0;
+  const isCorrect = (ratio >= 0.35 || studentAns.length > 20);
+
+  if (isCorrect) {
+    sound.playVictory();
+    triggerExplosion(gameCanvas.width * 0.5, gameCanvas.height * 0.45);
+    gameState.score += getQuestionPoints('essay');
+    gameState.essayScore += getQuestionPoints('essay');
+    gameState.warpSpeed = 7;
+    showToast(`Hebat! Boss jurang berhasil dikalahkan (+${formatPoints(getQuestionPoints('essay'))} Poin) ⚔️✨`, 'success');
+    updateGameHUD();
+  } else {
+    sound.playEvasion();
+    gameState.cockpitTargetRoll = -0.22;
+    gameState.shakeAmount = 30;
+    showToast('Jawaban kurang tepat! Pesawat bermanuver ke dinding tebing (+0 Poin)', 'error');
+    setTimeout(() => { gameState.cockpitTargetRoll = 0; }, 700);
+  }
+
+  setTimeout(() => {
+    document.getElementById('flightDialog').classList.remove('active');
+    gameState.warpSpeed = 1.5;
+    gameState.qIndex++;
+    setTimeout(() => presentQuestion(), 700);
+  }, 1700);
+}
+
+function triggerLaserBlast() {
+  const cw = gameCanvas.width;
+  const ch = gameCanvas.height;
+  gameState.lasers.push({ x: cw * 0.25, y: ch * 0.7, vx: 26, vy: -5 });
+  gameState.lasers.push({ x: cw * 0.75, y: ch * 0.7, vx: -5, vy: -5 });
+}
+
+function triggerMissileLaunch() {
+  const cw = gameCanvas.width;
+  const ch = gameCanvas.height;
+  gameState.missiles.push({ x: cw * 0.5, y: ch * 0.75, vx: 18, vy: -8 });
+}
+
+function triggerExplosion(x, y) {
+  gameState.explosions.push({
+    x, y,
+    frame: 0,
+    maxFrame: 28,
+    maxRadius: 70
+  });
+}
+
+/* ==============================================================================
+   I. MISSION COMPLETION & SCORING
+   ============================================================================== */
+function completeFlightMission() {
+  sound.playVictory();
+  document.getElementById('gameScreen').classList.remove('active');
+  document.getElementById('gameScreen').style.display = 'none';
+  if (gameAnimId) cancelAnimationFrame(gameAnimId);
+
+  // Save score to local & Supabase
+  const finalScore = Number(gameState.score.toFixed(2));
+  const scoring = gameState.scoring;
+  const scoreRecord = {
+    siswa_username: currentUser.username,
+    mapel_id: gameState.planet.id,
+    score: finalScore,
+    mc_score: Number(gameState.mcScore.toFixed(2)),
+    fill_score: Number(gameState.fillScore.toFixed(2)),
+    essay_score: Number(gameState.essayScore.toFixed(2)),
+    mc_max_score: scoring.mc,
+    fill_max_score: scoring.fill,
+    essay_max_score: scoring.essay,
+    created_at: new Date().toISOString()
+  };
+
+  const data = getLocalData();
+  data.scores.push(scoreRecord);
+  saveLocalData(data);
+
+  if (supabaseClient) {
+    supabaseClient.from('scores').insert([scoreRecord]).then(({ error }) => {
+      if (error) showToast(`Nilai tersimpan lokal, tetapi gagal disimpan ke Supabase: ${error.message}`, 'error');
+    });
+  }
+
+  // Display Score Screen
+  const scoreScreen = document.getElementById('scoreScreen');
+  document.getElementById('finalScoreDisplay').textContent = formatPoints(finalScore);
+  document.getElementById('statScoreMc').textContent = `${formatPoints(gameState.mcScore)} / ${scoring.mc}`;
+  document.getElementById('statScoreFill').textContent = `${formatPoints(gameState.fillScore)} / ${scoring.fill}`;
+  document.getElementById('statScoreEssay').textContent = `${formatPoints(gameState.essayScore)} / ${scoring.essay}`;
+
+  const msgEl = document.getElementById('scoreEvalMsg');
+  if (finalScore >= 80) {
+    msgEl.textContent = '🌟 Masya Allah kamu keren! 🌟';
+    msgEl.className = 'score-eval-message success';
+  } else {
+    msgEl.textContent = '💪 ayo semangat belajar lagi ya! 💪';
+    msgEl.className = 'score-eval-message encourage';
+  }
+
+  // Check remaining allowed planets
+  const remaining = data.mapel.filter(m => {
+    const allowed = data.akses[m.id] || [];
+    return allowed.includes(currentUser.username) && m.id !== gameState.planet.id;
+  });
+
+  const actionsEl = document.getElementById('scoreActionsContainer');
+  actionsEl.innerHTML = '';
+
+  if (remaining.length > 0) {
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'btn btn-primary';
+    nextBtn.innerHTML = '🪐 Masuk ke Planet Berikutnya';
+    nextBtn.onclick = () => {
+      scoreScreen.classList.remove('active');
+      initSiswaGalaxy();
+    };
+    actionsEl.appendChild(nextBtn);
+  }
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'btn btn-secondary';
+  closeBtn.innerHTML = '🚪 Tutup Aplikasi';
+  closeBtn.onclick = () => {
+    scoreScreen.classList.remove('active');
+    doLogout();
+  };
+  actionsEl.appendChild(closeBtn);
+
+  scoreScreen.classList.add('active');
+}
+
+/* ==============================================================================
+   J. DEMO SEED DATA (15 PG + 10 ISIAN + 5 URAIAN)
+   ============================================================================== */
+function seedFullDemoQuestions() {
+  const data = getLocalData();
+  const targetMapelId = 'mapel_ipa';
+
+  // Check if mapel_ipa exists
+  if (!data.mapel.some(m => m.id === targetMapelId)) {
+    data.mapel.push({ id: targetMapelId, nama: 'Ilmu Pengetahuan Alam (IPA)', warna: '#2ecc71', kelas: '6', deskripsi: 'Planet Biosfer' });
+  }
+
+  // Remove old questions for this mapel to seed fresh
+  data.questions = data.questions.filter(q => q.mapel_id !== targetMapelId);
+
+  // 15 Pilihan Ganda (PG)
+  const mcSample = [
+    { text: 'Planet yang dijuluki sebagai Planet Merah dalam sistem tata surya kita adalah...', opts: ['Venus', 'Mars', 'Merkurius', 'Jupiter'], correct: 1 },
+    { text: 'Bintang terdekat dengan planet Bumi yang menjadi pusat tata surya adalah...', opts: ['Matahari', 'Sirius', 'Proxima Centauri', 'Polaris'], correct: 0 },
+    { text: 'Lapisan udara yang menyelimuti dan melindungi bumi dari radiasi kosmik disebut...', opts: ['Litosfer', 'Hidrosfer', 'Atmosfer', 'Biosfer'], correct: 2 },
+    { text: 'Peristiwa berputarnya bumi pada porosnya sendiri dinamakan...', opts: ['Revolusi Bumi', 'Rotasi Bumi', 'Presesi', 'Evolusi'], correct: 1 },
+    { text: 'Satelit alami yang selalu mengorbit mengelilingi planet Bumi adalah...', opts: ['Titan', 'Bulan', 'Phobos', 'Europa'], correct: 1 },
+    { text: 'Peredaran planet-planet mengelilingi matahari pada orbitnya disebut...', opts: ['Revolusi Planet', 'Rotasi Planet', 'Gerhana', 'Gravitasi'], correct: 0 },
+    { text: 'Gaya tarik yang menyebabkan benda selalu jatuh ke bawah menuju pusat bumi adalah...', opts: ['Gaya Magnet', 'Gaya Gesek', 'Gaya Gravitasi', 'Gaya Pegas'], correct: 2 },
+    { text: 'Benda langit yang memiliki ekor bercahaya saat mendekati matahari dinamakan...', opts: ['Komet', 'Asteroid', 'Meteor', 'Satelit'], correct: 0 },
+    { text: 'Planet terbesar dalam tata surya kita adalah...', opts: ['Saturnus', 'Yupiter', 'Uranus', 'Neptunus'], correct: 1 },
+    { text: 'Garis khayal yang membagi bumi menjadi belahan utara dan selatan adalah...', opts: ['Garis Bujur', 'Garis Khatulistiwa', 'Garis Merdian', 'Garis Orbit'], correct: 1 },
+    { text: 'Kumpulan jutaan bintang, gas, dan debu luar angkasa yang terikat oleh gravitasi adalah...', opts: ['Galaksi', 'Tata Surya', 'Nebula', 'Konstelasi'], correct: 0 },
+    { text: 'Bagian tumbuhan yang berfungsi menyerap air dan zat hara dari dalam tanah adalah...', opts: ['Daun', 'Batang', 'Akar', 'Bunga'], correct: 2 },
+    { text: 'Proses pembuatan makanan pada tumbuhan hijau dengan bantuan cahaya matahari dinamakan...', opts: ['Respirasi', 'Fotosintesis', 'Transpirasi', 'Adaptasi'], correct: 1 },
+    { text: 'Sumber energi panas dan cahaya terbesar bagi kehidupan makhluk hidup di bumi adalah...', opts: ['Lampu', 'Batu Bara', 'Matahari', 'Minyak Bumi'], correct: 2 },
+    { text: 'Hewan yang memakan tumbuhan sebagai sumber makanan utamanya digolongkan sebagai...', opts: ['Karnivora', 'Herbivora', 'Omnivora', 'Insektivora'], correct: 1 }
+  ];
+
+  mcSample.forEach((m, idx) => {
+    data.questions.push({
+      id: `q_seed_mc_${idx + 1}`,
+      mapel_id: targetMapelId,
+      type: 'mc',
+      text: m.text,
+      image_url: null,
+      options: m.opts,
+      correct: m.correct,
+      created_by: 'admin',
+      created_at: new Date().toISOString()
+    });
+  });
+
+  // 10 Isian (Fill Rudal)
+  const fillSample = [
+    { text: 'Alat optik pembesar yang digunakan para astronom untuk mengamati benda langit yang jauh adalah...', opts: ['Teleskop', 'Mikroskop', 'Periskop', 'Lup'], correct: 0 },
+    { text: 'Lapisan gas Ozon pada atmosfer bumi berfungsi menyerap radiasi sinar berbahaya yaitu sinar...', opts: ['Inframerah', 'Ultraviolet', 'Sinar Gamma', 'Gelombang Radio'], correct: 1 },
+    { text: 'Hewan yang dapat hidup di dua alam (air dan darat) seperti katak dinamakan kelompok...', opts: ['Reptil', 'Mamalia', 'Amfibi', 'Aves'], correct: 2 },
+    { text: 'Planet kedua terdekat dari matahari yang tampak paling terang di langit malam adalah...', opts: ['Merkurius', 'Venus', 'Mars', 'Saturnus'], correct: 1 },
+    { text: 'Tempat tinggal dan berkembang biak alami bagi suatu makhluk hidup dinamakan...', opts: ['Habitat', 'Ekosistem', 'Komunitas', 'Populasi'], correct: 0 },
+    { text: 'Bagian sel darah manusia yang bertugas mengangkut oksigen ke seluruh tubuh adalah sel darah...', opts: ['Putih', 'Keping Darah', 'Merah', 'Plasma Darah'], correct: 2 },
+    { text: 'Perubahan wujud benda dari zat cair menjadi gas atau uap disebut proses...', opts: ['Mencair', 'Membeku', 'Penguapan', 'Pengembunan'], correct: 2 },
+    { text: 'Bunyi pantul yang terdengar jelas setelah bunyi asli selesai diucapkan dinamakan...', opts: ['Gaung', 'Gema', 'Desah', 'Nada'], correct: 1 },
+    { text: 'Bahan bakar yang digunakan untuk menggerakkan mesin roket peluncur satelit umumnya adalah...', opts: ['Kerosin & Oksigen Cair', 'Minyak Tanah', 'Batu Bara', 'Solar'], correct: 0 },
+    { text: 'Organ pernapasan utama pada manusia yang berfungsi menukar oksigen dan karbondioksida adalah...', opts: ['Jantung', 'Paru-paru', 'Lambung', 'Ginjal'], correct: 1 }
+  ];
+
+  fillSample.forEach((f, idx) => {
+    data.questions.push({
+      id: `q_seed_fill_${idx + 1}`,
+      mapel_id: targetMapelId,
+      type: 'fill',
+      text: f.text,
+      image_url: null,
+      options: f.opts,
+      correct: f.correct,
+      created_by: 'admin',
+      created_at: new Date().toISOString()
+    });
+  });
+
+  // 5 Uraian (Essay Boss Jurang)
+  const essaySample = [
+    {
+      text: 'Jelaskan mengapa planet Bumi merupakan satu-satunya planet di tata surya kita yang dapat dihuni oleh kehidupan makhluk hidup!',
+      answer: 'Memiliki air dalam bentuk cair, lapisan atmosfer kaya oksigen, dan jarak ideal dari matahari sehingga suhu stabil.',
+      hint: 'Air cair, oksigen atmosfer, dan suhu yang sesuai bagi kehidupan.'
+    },
+    {
+      text: 'Sebutkan 3 perbedaan mendasar antara bintang dan planet di luar angkasa!',
+      answer: 'Bintang memancarkan cahaya sendiri sedangkan planet memantulkan cahaya; bintang bersuhu sangat tinggi; planet mengorbit bintang.',
+      hint: 'Bintang memancarkan cahaya sendiri dan bersuhu sangat tinggi, planet mengorbit bintang.'
+    },
+    {
+      text: 'Jelaskan akibat yang ditimbulkan oleh peristiwa rotasi Bumi bagi kehidupan sehari-hari di permukaan bumi!',
+      answer: 'Terjadinya siang dan malam, gerak semu harian matahari, dan terjadinya perbedaan pembagian waktu di berbagai belahan bumi.',
+      hint: 'Terjadinya siang dan malam serta perbedaan waktu antarwilayah.'
+    },
+    {
+      text: 'Mengapa gaya gravitasi sangat penting bagi kelangsungan tata surya dan kehidupan makhluk hidup di Bumi?',
+      answer: 'Gaya gravitasi menahan atmosfer agar tidak lepas ke luar angkasa, menjaga planet tetap pada garis orbitnya, dan membuat benda tidak melayang.',
+      hint: 'Menahan atmosfer bumi dan menjaga planet tetap mengorbit matahari.'
+    },
+    {
+      text: 'Sebutkan tindakan nyata yang dapat dilakukan oleh siswa SD untuk menjaga kelestarian bumi dan lingkungan!',
+      answer: 'Menghemat air dan listrik, menanam pohon atau reboisasi, membuang sampah pada tempatnya, dan mendaur ulang barang bekas.',
+      hint: 'Menghemat energi, menanam pohon, dan membuang sampah pada tempatnya.'
+    }
+  ];
+
+  essaySample.forEach((e, idx) => {
+    data.questions.push({
+      id: `q_seed_essay_${idx + 1}`,
+      mapel_id: targetMapelId,
+      type: 'essay',
+      text: e.text,
+      image_url: null,
+      answer: e.answer,
+      cliff_hint: e.hint,
+      created_by: 'admin',
+      created_at: new Date().toISOString()
+    });
+  });
+
+  saveLocalData(data);
+  if (supabaseClient) {
+    supabaseClient.from('questions').upsert(data.questions.filter(q => q.mapel_id === targetMapelId)).then();
+  }
+
+  showToast('30 Soal Demo (15 PG, 10 Isian, 5 Uraian) berhasil dimuat!', 'success');
+  if (document.getElementById('dashKepsekScreen').classList.contains('active')) {
+    ksRenderAllQuestions();
+    ksRenderMapelTable();
+  }
+}
+
+// Background idle star animation
+(function initBgCanvas() {
+  const c = document.getElementById('bgCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  function resize() {
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const bgStars = [];
+  for (let i = 0; i < 140; i++) {
+    bgStars.push({
+      x: Math.random() * c.width,
+      y: Math.random() * c.height,
+      sz: Math.random() * 2 + 0.5,
+      spd: Math.random() * 0.4 + 0.1,
+      alpha: Math.random()
+    });
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, c.width, c.height);
+    bgStars.forEach(s => {
+      s.y -= s.spd;
+      if (s.y < 0) s.y = c.height;
+      const a = 0.2 + 0.8 * (0.5 + 0.5 * Math.sin(Date.now() / 1000 + s.x));
+      ctx.fillStyle = `rgba(255,255,255,${a})`;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.sz, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    requestAnimationFrame(render);
+  }
+  render();
+})();
+
+// Window onload initialization
+window.addEventListener('DOMContentLoaded', () => {
+  getLocalData();
+  guruRenderFillOptions(Array.from({ length: 4 }, () => ({ text: '', image_url: null })));
+  initSupabase();
+});
+</script>
+</body>
+</html>
