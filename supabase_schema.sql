@@ -19,31 +19,8 @@ CREATE TABLE IF NOT EXISTS public.mapel (
     warna TEXT NOT NULL DEFAULT '#3498db',
     kelas TEXT NOT NULL DEFAULT '6',
     deskripsi TEXT DEFAULT '',
-    mc_points INTEGER NOT NULL DEFAULT 30,
-    fill_points INTEGER NOT NULL DEFAULT 30,
-    essay_points INTEGER NOT NULL DEFAULT 40,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
-ALTER TABLE public.mapel
-    ADD COLUMN IF NOT EXISTS mc_points INTEGER NOT NULL DEFAULT 30,
-    ADD COLUMN IF NOT EXISTS fill_points INTEGER NOT NULL DEFAULT 30,
-    ADD COLUMN IF NOT EXISTS essay_points INTEGER NOT NULL DEFAULT 40;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_constraint
-        WHERE conname = 'mapel_score_weights_sum_100'
-          AND conrelid = 'public.mapel'::regclass
-    ) THEN
-        ALTER TABLE public.mapel
-            ADD CONSTRAINT mapel_score_weights_sum_100
-            CHECK (mc_points + fill_points + essay_points = 100) NOT VALID;
-    END IF;
-END $$;
-
-ALTER TABLE public.mapel VALIDATE CONSTRAINT mapel_score_weights_sum_100;
 
 -- 3. Buat tabel guru_mapel (Menghubungkan Guru dengan Mapel yang diampu)
 CREATE TABLE IF NOT EXISTS public.guru_mapel (
@@ -62,16 +39,17 @@ CREATE TABLE IF NOT EXISTS public.questions (
     text TEXT NOT NULL,
     image_url TEXT,
     options JSONB, -- Array pilihan: ["A","B","C","D"] atau pilihan amunisi rudal
+    option_images JSONB DEFAULT '[]'::jsonb, -- Array URL/base64 gambar pada masing-masing opsi jawaban
     correct INTEGER, -- Index pilihan benar (0, 1, 2, ...)
     answer TEXT, -- Kunci jawaban uraian
-    answer_image_url TEXT, -- Gambar pada kunci jawaban uraian
     cliff_hint TEXT, -- Petunjuk tebing jurang untuk soal uraian
     created_by TEXT REFERENCES public.users(username) ON DELETE SET NULL,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Migrasi aman jika tabel questions sudah ada sebelumnya
 ALTER TABLE public.questions
-    ADD COLUMN IF NOT EXISTS answer_image_url TEXT;
+ADD COLUMN IF NOT EXISTS option_images JSONB DEFAULT '[]'::jsonb;
 
 -- 5. Buat tabel akses_siswa (Daftar siswa yang diizinkan mengakses planet mapel)
 CREATE TABLE IF NOT EXISTS public.akses_siswa (
@@ -87,24 +65,12 @@ CREATE TABLE IF NOT EXISTS public.scores (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     siswa_username TEXT NOT NULL REFERENCES public.users(username) ON DELETE CASCADE,
     mapel_id TEXT NOT NULL REFERENCES public.mapel(id) ON DELETE CASCADE,
-    score NUMERIC(6,2) NOT NULL,
-    mc_score NUMERIC(6,2) DEFAULT 0,
-    fill_score NUMERIC(6,2) DEFAULT 0,
-    essay_score NUMERIC(6,2) DEFAULT 0,
-    mc_max_score INTEGER NOT NULL DEFAULT 30,
-    fill_max_score INTEGER NOT NULL DEFAULT 30,
-    essay_max_score INTEGER NOT NULL DEFAULT 40,
+    score INTEGER NOT NULL,
+    mc_score INTEGER DEFAULT 0,
+    fill_score INTEGER DEFAULT 0,
+    essay_score INTEGER DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
-ALTER TABLE public.scores
-    ALTER COLUMN score TYPE NUMERIC(6,2) USING score::NUMERIC(6,2),
-    ALTER COLUMN mc_score TYPE NUMERIC(6,2) USING mc_score::NUMERIC(6,2),
-    ALTER COLUMN fill_score TYPE NUMERIC(6,2) USING fill_score::NUMERIC(6,2),
-    ALTER COLUMN essay_score TYPE NUMERIC(6,2) USING essay_score::NUMERIC(6,2),
-    ADD COLUMN IF NOT EXISTS mc_max_score INTEGER NOT NULL DEFAULT 30,
-    ADD COLUMN IF NOT EXISTS fill_max_score INTEGER NOT NULL DEFAULT 30,
-    ADD COLUMN IF NOT EXISTS essay_max_score INTEGER NOT NULL DEFAULT 40;
 
 -- Index untuk performa query
 CREATE INDEX IF NOT EXISTS idx_questions_mapel ON public.questions(mapel_id);
