@@ -384,11 +384,11 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
 
 /* Question Modal Overlay in Cockpit */
 .flight-dialog-overlay {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(4, 7, 20, 0.75);
-  backdrop-filter: blur(4px);
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(4, 7, 20, 0.85);
+  backdrop-filter: blur(6px);
   display: none; align-items: center; justify-content: center;
-  z-index: 50; padding: 20px;
+  z-index: 350; padding: 20px;
 }
 .flight-dialog-overlay.active { display: flex; }
 .flight-modal-card {
@@ -1252,10 +1252,7 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
     </div>
   </div>
 
-  <!-- Flight Dialog Modal -->
-  <div class="flight-dialog-overlay" id="flightDialog">
-    <div class="flight-modal-card" id="flightModalContent"></div>
-  </div>
+
 </div>
 
 <!-- ==============================================================================
@@ -1476,6 +1473,11 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
       <button type="button" class="btn btn-secondary" onclick="closeEditQuestionModal()">Batal</button>
     </div>
   </div>
+</div>
+
+<!-- GLOBAL FLIGHT / PREVIEW DIALOG MODAL -->
+<div class="flight-dialog-overlay" id="flightDialog">
+  <div class="flight-modal-card" id="flightModalContent"></div>
 </div>
 
 <!-- TOAST CONTAINER -->
@@ -2312,7 +2314,8 @@ function ksRenderAllQuestions() {
       html += `
         <div style="background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);padding:12px;border-radius:10px;margin-bottom:8px;position:relative">
           <div style="position:absolute;top:10px;right:10px;display:flex;gap:6px">
-            <button class="btn btn-secondary btn-sm" style="padding:3px 8px;font-size:11px" onclick="openEditQuestionModal('${q.id}')">✏️ Edit</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="padding:3px 8px;font-size:11px" onclick="previewSavedQuestion('${q.id}')">👁️ Preview</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="padding:3px 8px;font-size:11px" onclick="openEditQuestionModal('${q.id}')">✏️ Edit</button>
             <button class="btn btn-danger btn-sm" style="padding:3px 8px;font-size:11px" onclick="ksDeleteQuestion('${q.id}')">🗑️ Hapus</button>
           </div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;padding-right:130px">
@@ -2758,6 +2761,16 @@ function onPreviewFillSelectChange(sel) {
   }
 }
 
+function previewSavedQuestion(qid) {
+  const data = getLocalData();
+  const q = data.questions.find(item => String(item.id) === String(qid));
+  if (!q) {
+    showToast('Soal tidak ditemukan!', 'error');
+    return;
+  }
+  openStudentPreviewModal(q);
+}
+
 function openStudentPreviewModal(q) {
   const overlay = document.getElementById('flightDialog');
   const modal = document.getElementById('flightModalContent');
@@ -3180,6 +3193,7 @@ function guruRenderMyQuestions() {
       html += `
         <div style="background:rgba(0,0,0,0.3);padding:12px;border-radius:10px;margin-bottom:8px;position:relative">
           <div style="position:absolute;top:10px;right:10px;display:flex;gap:6px">
+            <button type="button" class="btn btn-secondary btn-sm" style="padding:4px 10px;font-size:12px" onclick="previewSavedQuestion('${q.id}')">👁️ Preview</button>
             <button type="button" class="btn btn-secondary btn-sm" style="padding:4px 10px;font-size:12px" onclick="openEditQuestionModal('${q.id}')">✏️ Edit</button>
             <button type="button" class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:12px" onclick="guruDeleteQuestion('${q.id}')">🗑️ Hapus</button>
           </div>
@@ -3199,7 +3213,7 @@ function guruRenderMyQuestions() {
 function guruDeleteQuestion(qid) {
   if (!confirm('Hapus soal ini?')) return;
   const data = getLocalData();
-  data.questions = data.questions.filter(q => q.id !== qid);
+  data.questions = data.questions.filter(q => String(q.id) !== String(qid));
   saveLocalData(data);
   if (supabaseClient) supabaseClient.from('questions').delete().eq('id', qid).then();
   guruUpdateCounters();
@@ -3210,7 +3224,7 @@ function guruDeleteQuestion(qid) {
 function ksDeleteQuestion(qid) {
   if (!confirm('Hapus soal ini dari bank soal?')) return;
   const data = getLocalData();
-  data.questions = data.questions.filter(q => q.id !== qid);
+  data.questions = data.questions.filter(q => String(q.id) !== String(qid));
   saveLocalData(data);
   if (supabaseClient) supabaseClient.from('questions').delete().eq('id', qid).then();
   ksRenderAllQuestions();
@@ -3225,7 +3239,7 @@ let editEssayOptCounter = 0;
 
 function openEditQuestionModal(qid) {
   const data = getLocalData();
-  const q = data.questions.find(item => item.id === qid);
+  const q = data.questions.find(item => String(item.id) === String(qid));
   if (!q) {
     showToast('Soal tidak ditemukan!', 'error');
     return;
@@ -3439,7 +3453,7 @@ async function saveEditedQuestion() {
   }
 
   const data = getLocalData();
-  const qIndex = data.questions.findIndex(item => item.id === qid);
+  const qIndex = data.questions.findIndex(item => String(item.id) === String(qid));
   if (qIndex === -1) {
     showToast('Soal tidak ditemukan di data lokal!', 'error');
     return;
