@@ -1,119 +1,98 @@
-# 🚀 Petualangan Luar Angkasa - SD Bina Ilmu
-### Game Edukasi Persiapan Ujian Akhir Semester (UAS) Berbasis Web • Supabase & Vercel Ready
+Aplikasi Manajemen Bank Soal Ujian
 
-Aplikasi web game petualangan luar angkasa interaktif yang dirancang khusus untuk melatih siswa **SD Bina Ilmu** dalam persiapan Ujian Akhir Semester (UAS). Aplikasi ini dapat diakses secara online dari mana saja oleh Kepala Sekolah, Guru, dan Siswa menggunakan **Vercel** sebagai media hosting web dan **Supabase** sebagai database cloud.
+Aplikasi web berbasis modular JavaScript untuk mengelola bank soal ujian (Pilihan Ganda, Isian Singkat, dan Uraian) yang terhubung langsung ke Supabase sebagai database cloud dan siap di-deploy melalui GitHub + Vercel untuk menangani akses ratusan pengguna secara bersamaan.
 
----
+Fitur Utama
 
-## 🌟 Fitur Utama & Alur Pengguna
+Dukungan 3 Tipe Soal: Pilihan Ganda (PG), Isian Singkat, dan Uraian.
 
-### 1. Struktur Pengguna & Peran (Role-Based Access)
-* **🏫 Kepala Sekolah (Principal & Administrator)**:
-  * **Edit Profil & Ganti Password**: Dapat memperbarui nama lengkap, gelar, dan kata sandi akun administrator secara langsung dengan sinkronisasi otomatis ke cloud.
-  * Dapat bertindak sebagai guru (membuat soal dan materi ujian).
-  * Mendaftarkan Mata Pelajaran baru (Planet tujuan) dari **Kelas 1 hingga Kelas 6**.
-  * Mendaftarkan akun Guru dan menugaskannya ke Mata Pelajaran yang diampu.
-  * Mendaftarkan akun Siswa lengkap dengan pilihan **Tingkat Kelas (Kelas 1 - Kelas 6)** serta fitur filter siswa per kelas.
-  * Dapat melihat **seluruh bank soal** yang dibuat oleh semua guru.
-  * Melihat rekap nilai seluruh siswa secara lengkap (bisa dicetak / diunduh PDF).
-* **👨‍🏫 Guru Pengampu**:
-  * **Hanya bisa** membuat dan mengelola soal pada mata pelajaran yang diampunya.
-  * Satu akun guru dapat ditugaskan ke beberapa mata pelajaran sekaligus; guru memilih mapel aktif dari dashboard.
-  * Mengatur pembagian nilai Pilihan Ganda, Isian, dan Uraian per mapel, dengan total bobot wajib 100.
-  * Mengatur **Hak Akses Siswa**: memilih siswa mana saja yang diizinkan mendarat di planet pelajarannya, lengkap dengan badge kelas dan filter per kelas (Kelas 1 - Kelas 6).
-  * Menambahkan gambar pada opsi jawaban Isian dan kunci jawaban Uraian dengan mengunggah atau menempel gambar.
-  * Menambahkan pilihan amunisi Isian sebanyak yang diperlukan.
-  * Membuat 3 jenis soal lengkap dengan fitur upload gambar ilustrasi:
-    1. **15 Soal Pilihan Ganda (PG)**: Bobot 2 poin/soal (Total 30 poin).
-    2. **10 Soal Isian**: Bobot 3 poin/soal (Total 30 poin).
-    3. **5 Soal Uraian**: Bobot 8 poin/soal (Total 40 poin).
-* **👦 Siswa (Peserta Ujian)**:
-  * Login dengan akun siswa sesuai kelasnya (Kelas 1 sampai Kelas 6).
-  * Memilih **Planet Mata Pelajaran** tujuan di peta galaksi.
+Arsitektur Modular: Pemisahan kode antara struktur HTML, tampilan CSS, koneksi database, operasi CRUD, dan logika antarmuka agar mudah dirawat dan dikembangkan.
 
----
+Form Dinamis & Anti-Error: Kolom opsi jawaban (A–D) otomatis menyesuaikan saat mode tambah maupun edit soal isian/uraian.
 
-## 🎮 Mekanika Permainan & Pengalaman Kokpit Luar Angkasa
+Skalabilitas Tinggi: Menggunakan Supabase (PostgreSQL) sehingga aman diakses oleh 100+ pengguna secara bersamaan tanpa risiko antrean timeout.
 
-1. **Efek Planet Menghilang (Black Hole Vortex)**:
-   * Jika siswa mencoba memasuki planet yang soalnya belum lengkap (belum ada 15 PG, 10 Isian, atau 5 Uraian), planet akan **menghilang tersedot ke lubang cacing kosmik** dengan animasi grafis dan efek suara khusus.
-   * Siswa akan menerima peringatan bahwa materi belum siap dan diberikan opsi untuk memilih planet lain yang tersedia.
-2. **Suasana Kokpit Pesawat Luar Angkasa**:
-   * Sudut pandang orang pertama (First-Person Cockpit View) dengan instrumen radar aktif, indikator neon, power meter, shield generator, dan kemudi (*yoke*).
-   * Efek audio *synthesizer* mandiri (Web Audio API) tanpa perlu file MP3 eksternal: suara tembakan laser blaster, desingan roket/rudal, ledakan musuh, alarm kokpit, dan musik kemenangan.
-3. **Tantangan 1 — 15 Soal Pilihan Ganda (Rintangan Drone & Asteroid)**:
-   * Soal ditampilkan sebagai rintangan luar angkasa.
-   * Siswa memilih opsi A, B, C, atau D.
-   * **Jika Benar**: Meriam laser kokpit menembakkan blaster ganda menghancurkan rintangan, dan pesawat melaju maju (*warp speed*). (+2 Poin dengan bobot awal).
-   * **Jika Salah**: Pesawat bermanuver miring darurat ke sisi lain, alarm berbunyi, rintangan terlewatkan tanpa nilai (+0 Poin).
-4. **Tantangan 2 — 10 Soal Isian (Peluncur Amunisi Rudal Taktis)**:
-   * Soal disajikan dengan target kapal penjelajah musuh.
-   * Disediakan dropdown jawaban berupa **Slot Amunisi Rudal Taktis**.
-   * Siswa memilih amunisi yang tepat dan meluncurkannya ke kapal musuh. (+3 Poin dengan bobot awal jika tepat sasaran).
-5. **Tantangan 3 — 5 Soal Uraian (5 Boss Jurang & Kristal Tebing Jurang)**:
-   * 5 musuh Boss menghadang di jurang kosmik yang dalam (*Cosmic Canyon*).
-   * Di dinding tebing jurang terdapat **Artefak / Petunjuk Tebing**. Siswa dapat mengklik tombol *"Ambil ke Jawaban"* untuk mengambil kata kunci dari tebing ke dalam lembar jawaban dan merumuskan jawaban uraiannya.
-   * Mengalahkan boss memberikan +8 Poin per soal dengan bobot awal.
-6. **Penilaian Akhir (Skor Maksimal 100)**:
-   * Bobot awal: 30 (PG) + 30 (Isian) + 40 (Uraian) = **100 Poin**. Guru dapat mengubah pembagian bobot per mapel; aplikasi membagi bobot tiap kategori rata ke jumlah soal dan memastikan totalnya tetap 100.
-   * Evaluasi Nilai:
-     * Nilai **≥ 80**: Tampil pesan kebanggaan: **`"Masya Allah kamu keren"`** disertai medali kosmik.
-     * Nilai **< 80**: Tampil pesan motivasi: **`"ayo semangat belajar lagi ya"`**.
-   * Pilihan Lanjutan:
-     * 🪐 **Masuk ke Planet Berikutnya**: Melanjutkan ujian ke planet mata pelajaran lain yang diizinkan.
-     * 🚪 **Tutup Aplikasi**: Menyelesaikan sesi dan keluar dengan aman.
+Struktur Folder Proyek
 
----
+📁 proyek-bank-soal/
+├── 📄 index.html          # Kerangka utama tampilan aplikasi
+├── 📄 README.md           # Dokumentasi proyek
+├── 📁 css/
+│   └── 📄 style.css       # Styling tampilan responsif & modal form
+└── 📁 js/
+    ├── 📄 supabase.js     # Konfigurasi koneksi ke Supabase
+    ├── 📄 api.js          # Operasi database (Ambil, Tambah, Edit, Hapus soal)
+    ├── 📄 ui.js           # Pengaturan elemen UI, render daftar soal, & form dinamis
+    └── 📄 app.js          # Pengendali utama alur aplikasi & event listener
 
-## ⚡ Panduan Menghubungkan ke Supabase (Database Cloud)
 
-Aplikasi ini memiliki fitur *Dual Mode*:
-- **Mode Offline (LocalStorage)**: Langsung bisa dimainkan dan diuji coba seketika tanpa perlu setup apapun.
-- **Mode Cloud (Supabase)**: Data guru, siswa, mapel, soal, gambar, dan nilai tersimpan online dan terhubung secara realtime.
+Panduan Instalasi & Konfigurasi
 
-### Langkah-langkah Setup Supabase (Gratis):
-1. Buka [https://supabase.com](https://supabase.com) dan buat proyek baru (misalnya bernama `bina-ilmu-uas`).
-2. Masuk ke menu **SQL Editor** pada dashboard Supabase.
-3. Buka file `supabase_schema.sql` pada proyek ini, salin seluruh kodenya, tempel di SQL Editor Supabase, lalu klik **Run**. Jika proyek Supabase sudah memakai skema versi sebelumnya, jalankan kembali file terbaru ini untuk menambahkan kolom bobot nilai, gambar kunci jawaban, dan rincian nilai maksimum.
-4. Masuk ke menu **Project Settings -> API** di Supabase. Salin:
-   - **Project URL**
-   - **anon public key**
-5. Buka game di browser, klik tombol ikon **⚙️ (Pengaturan)** di pojok kanan atas, lalu masukkan Project URL dan Anon Key Anda, kemudian klik **Simpan & Hubungkan**.
-6. Status di pojok kiri atas akan berubah menjadi **`Supabase: Cloud Aktif 🟢`**.
+1. Persiapan Database di Supabase
 
----
+Buat proyek baru di Supabase (disarankan memilih region Singapore).
 
-## 🌐 Panduan Deploy ke Vercel (Gratis & Cepat)
+Buka menu SQL Editor → New Query, lalu jalankan perintah SQL berikut untuk membuat tabel soal:
 
-Karena aplikasi ini dibangun menggunakan standar web modern yang *zero-dependency* dan ramah browser, aplikasi siap dideploy ke Vercel dalam hitungan detik.
+CREATE TABLE soal (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  tipe TEXT NOT NULL,          -- 'pg', 'isian', atau 'uraian'
+  pertanyaan TEXT NOT NULL,
+  opsi_a TEXT,                 -- NULL untuk tipe isian/uraian
+  opsi_b TEXT,
+  opsi_c TEXT,
+  opsi_d TEXT,
+  kunci TEXT
+);
 
-### Cara 1: Menggunakan Vercel CLI
-```bash
-# 1. Buka folder proyek
-cd space-adventure-bina-ilmu
+-- Mengaktifkan Row Level Security (RLS)
+ALTER TABLE soal ENABLE ROW LEVEL SECURITY;
 
-# 2. Jalankan perintah deploy
-vercel deploy --prod
-```
+-- Kebijakan akses publik sementara (sesuaikan kembali jika sudah menerapkan autentikasi login)
+CREATE POLICY "Izinkan akses publik sementara" 
+ON soal FOR ALL 
+USING (true) 
+WITH CHECK (true);
 
-### Cara 2: Melalui GitHub & Vercel Dashboard
-1. Unggah folder proyek ini ke repository GitHub Anda (misal `space-adventure-bina-ilmu`).
-2. Masuk ke [https://vercel.com](https://vercel.com) dan klik **Add New Project**.
-3. Pilih repository GitHub Anda, lalu klik **Deploy**.
-4. Website game langsung online dan memiliki alamat URL publik (contoh: `https://space-adventure-bina-ilmu.vercel.app`) yang dapat dibagikan kepada seluruh guru dan siswa!
 
----
+Buka menu Project Settings → API, lalu salin Project URL dan anon public key.
 
-## 🔑 Kredensial Pengujian Cepat (Bawaan)
+2. Menghubungkan Aplikasi ke Supabase
 
-| Peran | Username | Password | Keterangan |
-| :--- | :--- | :--- | :--- |
-| **Kepala Sekolah** | `admin` | `admin123` | Akses penuh seluruh sistem, edit profil, & penugasan |
-| **Guru IPA** | `guru_ipa` | `guru123` | Guru mata pelajaran IPA (Planet Hijau) |
-| **Guru Matematika** | `guru_mat` | `guru123` | Guru mata pelajaran Matematika (Planet Biru) |
-| **Siswa Kelas 6** | `siswa_budi` | `siswa123` | Peserta ujian Kelas 6 |
-| **Siswa Kelas 5** | `siswa_andi` | `siswa123` | Peserta ujian Kelas 5 |
-| **Siswa Kelas 1** | `siswa_rara` | `siswa123` | Peserta ujian Kelas 1 |
+Buka file js/supabase.js dan masukkan kredensial proyek Supabase Anda:
 
-> 💡 **Tips Cepat untuk Pengujian**:
-> Masuk sebagai `admin`, lalu di sidebar dashboard klik tombol **`🌱 Muat 30 Soal Demo`**. Sistem akan otomatis mengisi 15 Soal Pilihan Ganda, 10 Soal Isian, dan 5 Soal Uraian lengkap untuk mata pelajaran IPA sehingga siswa dapat langsung memainkan seluruh alur permainan hingga skor akhir!
+const SUPABASE_URL = 'https://PROJECT-ID-ANDA.supabase.co';
+const SUPABASE_ANON_KEY = 'ANON-KEY-ANDA';
+
+
+3. Menjalankan Secara Lokal (Local Development)
+
+Karena proyek ini menggunakan standar ES Modules (<script type="module">), file index.html harus dijalankan melalui web server lokal (bukan dibuka langsung lewat klik ganda file:///):
+
+Menggunakan VS Code: Instal ekstensi Live Server, klik kanan pada index.html, lalu pilih Open with Live Server.
+
+Menggunakan Node.js / Python:
+
+# Menggunakan npx serve
+npx serve .
+
+# Atau menggunakan Python
+python -m http.server 8000
+
+
+4. Deployment ke Vercel (Otomatis via GitHub)
+
+Unggah (push) seluruh struktur folder proyek ini ke repositori GitHub Anda.
+
+Masuk ke dashboard Vercel dan klik Add New Project.
+
+Pilih repositori GitHub proyek ini, biarkan pengaturan build default (Framework Preset: Other), lalu klik Deploy.
+
+Setiap kali ada perubahan kode yang di-push ke GitHub, Vercel akan memperbarui aplikasi secara otomatis.
+
+Catatan Pengembangan Selanjutnya
+
+Keamanan (Authentication): Aktifkan fitur Supabase Auth agar hanya akun guru/admin yang dapat menambah, mengubah, atau menghapus soal, sementara siswa hanya memiliki hak akses baca (SELECT).
+
+Halaman Ujian Siswa: Pisahkan halaman pengerjaan ujian siswa (ujian.html) dan simpan progres jawaban sementara di localStorage browser sebelum dikirim ke tabel hasil_ujian di Supabase.
