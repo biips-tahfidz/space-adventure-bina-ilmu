@@ -3,71 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Space Adventure - Ujian & Bank Soal</title>
+  <title>Space Adventure Mission - Bina Ilmu</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="stars-bg"></div>
+  <!-- Kanvas Partikel Bintang Ringan 60FPS -->
+  <canvas id="space-canvas"></canvas>
 
-  <main class="container">
+  <!-- Overlay Ledakan 3 Detik (Terpusat, Tidak Tertutup Soal) -->
+  <div id="explosion-stage" class="explosion-stage hidden">
+    <div class="explosion-core">
+      <div class="shockwave"></div>
+      <div class="fireball"></div>
+      <div id="explosion-text" class="explosion-caption">💥 TARGET HANCUR!</div>
+    </div>
+  </div>
+
+  <main class="container" id="main-container">
     <header class="app-header">
       <div class="title-group">
         <span class="badge-tema">🚀 Space Adventure Mission</span>
-        <h1>Ujian & Bank Soal</h1>
+        <h1>Arena Ujian & Bank Soal</h1>
       </div>
       <nav class="mode-switch">
-        <button id="tab-siswa" class="btn-tab active" type="button">🧑‍🚀 Mode Ujian Siswa</button>
-        <button id="tab-guru" class="btn-tab" type="button">🛠️ Panel Bank Soal Guru</button>
+        <button id="tab-siswa" class="btn-tab active" type="button">🧑‍🚀 Misi Siswa</button>
+        <button id="tab-guru" class="btn-tab" type="button">🛠️ Panel Ustadz / Guru</button>
       </nav>
     </header>
 
-    <!-- ==================== TAMPILAN SISWA ==================== -->
+    <!-- ==================== MODE SISWA ==================== -->
     <section id="view-siswa">
-      <!-- Langkah 1: Identitas Siswa -->
+      <!-- Langkah 1: Identitas & Peta Planet (Sesuai Mapel yang Diaktifkan Ustadz) -->
       <div id="siswa-mulai-card" class="card-panel">
-        <h2>Siap Meluncur ke Misi Ujian?</h2>
-        <p class="subtitle">Masukkan identitas Anda untuk memulai. Jawaban tersimpan otomatis di perangkat sehingga aman terhadap gangguan jaringan.</p>
+        <h2>Pilih Planet Misi & Identitas Astronaut</h2>
+        <p class="subtitle">Planet yang tampil di bawah adalah mata pelajaran yang telah disiapkan oleh Ustadz/Guru.</p>
+        
         <form id="form-identitas-siswa">
-          <label for="siswa-nama">Nama Lengkap Siswa</label>
-          <input type="text" id="siswa-nama" placeholder="Contoh: Ahmad Fauzan" required>
+          <div class="grid-2">
+            <div>
+              <label for="siswa-nama">Nama Lengkap Astronaut</label>
+              <input type="text" id="siswa-nama" placeholder="Ketik nama lengkap..." required>
+            </div>
+            <div>
+              <label for="siswa-kelas">Kelas / Rombel</label>
+              <input type="text" id="siswa-kelas" placeholder="Contoh: Kelas 5" required>
+            </div>
+          </div>
 
-          <label for="siswa-kelas">Kelas / Rombel</label>
-          <input type="text" id="siswa-kelas" placeholder="Contoh: Kelas 5A" required>
+          <label>Pilih Planet Mata Pelajaran yang Akan Ditempur:</label>
+          <div id="planet-selector-grid" class="planet-grid">
+            <p class="subtitle">Memuat orbit planet...</p>
+          </div>
+          <input type="hidden" id="siswa-mapel-terpilih" required>
 
-          <button type="submit" class="btn-primary-rocket">🚀 Mulai Misi Ujian</button>
+          <button type="submit" id="btn-mulai-misi" class="btn-primary-rocket">🚀 Meluncur ke Planet Misi</button>
         </form>
       </div>
 
-      <!-- Langkah 2: Lembar Pengerjaan Ujian -->
+      <!-- Langkah 2: Arena Tempur / Pengerjaan Soal -->
       <div id="siswa-ujian-area" class="hidden">
         <div class="ujian-topbar">
           <div>
             <strong id="info-peserta">Peserta: -</strong>
+            <span id="badge-planet-aktif" class="badge-planet">🪐 Planet: -</span>
             <span id="status-autosave" class="badge-save">✓ Tersimpan lokal</span>
           </div>
-          <button type="button" id="btn-kumpulkan-ujian" class="btn-success">Kumpulkan Jawaban</button>
+          <div class="topbar-actions">
+            <span id="progress-soal" class="badge-progress">Soal 1 / 1</span>
+            <button type="button" id="btn-kumpulkan-ujian" class="btn-success">🏁 Selesaikan Misi</button>
+          </div>
         </div>
-        <div id="kontainer-soal-siswa"></div>
+
+        <!-- Kontainer Soal Aktif -->
+        <div id="arena-soal-aktif"></div>
+
+        <div class="nav-soal-bawah">
+          <button type="button" id="btn-prev-soal" class="btn-secondary">⬅️ Sebelumnya</button>
+          <div id="indikator-nomor-soal" class="nomor-dots"></div>
+          <button type="button" id="btn-next-soal" class="btn-primary-rocket">Selanjutnya ➡️</button>
+        </div>
       </div>
 
       <!-- Langkah 3: Hasil Ujian Siswa -->
       <div id="siswa-selesai-card" class="card-panel hidden">
-        <h2>🎉 Misi Ujian Selesai!</h2>
+        <h2>🎉 Misi Planet Selesai!</h2>
         <p id="pesan-hasil-siswa" class="subtitle"></p>
         <div id="skor-akhir-box" class="skor-box"></div>
-        <button type="button" id="btn-ujian-ulang" class="btn-secondary">Kembali ke Halaman Awal</button>
+        <button type="button" id="btn-ujian-ulang" class="btn-secondary">🪐 Kembali ke Peta Planet</button>
       </div>
     </section>
 
-    <!-- ==================== TAMPILAN GURU ==================== -->
+    <!-- ==================== PANEL USTADZ / GURU ==================== -->
     <section id="view-guru" class="hidden">
+      <!-- Pengaturan Mapel yang Diajar Ustadz (Checkbox Multi-Mapel) -->
+      <div class="card-panel mapel-config-box">
+        <div class="config-header">
+          <div>
+            <h3>🪐 Pengaturan Mata Pelajaran & Orbit Planet Ustadz</h3>
+            <p class="subtitle-sm">Centang satu atau lebih mata pelajaran yang Anda ampu. Planet di layar siswa akan otomatis menyesuaikan centangan ini.</p>
+          </div>
+          <button type="button" id="btn-simpan-mapel-guru" class="btn-success">💾 Terapkan Planet</button>
+        </div>
+        <div id="checkbox-mapel-container" class="checkbox-mapel-grid"></div>
+      </div>
+
       <div class="guru-toolbar">
         <div class="sub-tabs">
-          <button type="button" id="subtab-soal" class="btn-subtab active">📚 Daftar Soal</button>
-          <button type="button" id="subtab-nilai" class="btn-subtab">📊 Hasil Jawaban Siswa</button>
+          <button type="button" id="subtab-soal" class="btn-subtab active">📚 Bank Soal (<span id="count-soal">0</span>)</button>
+          <button type="button" id="subtab-nilai" class="btn-subtab">📊 Hasil Misi Siswa</button>
         </div>
-        <button id="btn-tambah-baru" class="btn-primary-rocket" type="button">+ Tambah Soal Baru</button>
+        <div class="toolbar-right">
+          <select id="filter-mapel-guru" class="select-compact">
+            <option value="ALL">Semua Mapel Dicentang</option>
+          </select>
+          <button id="btn-tambah-baru" class="btn-primary-rocket" type="button">+ Buat Soal Baru</button>
+        </div>
       </div>
 
       <!-- Daftar Soal Guru -->
@@ -86,38 +137,147 @@
     </section>
   </main>
 
-  <!-- Modal Form Tambah / Edit Soal (PG, Isian, Uraian) -->
+  <!-- ==================== MODAL FORM TAMBAH / EDIT SOAL ==================== -->
   <div id="modal-soal" class="modal hidden">
-    <div class="modal-content">
-      <h2 id="judul-modal">Tambah Soal</h2>
+    <div class="modal-content modal-lg">
+      <div class="modal-header-bar">
+        <h2 id="judul-modal">Buat Soal Baru</h2>
+        <button type="button" id="btn-close-x" class="btn-close-icon">✕</button>
+      </div>
+
       <form id="form-soal">
         <input type="hidden" id="soal-id">
 
-        <label for="tipe-soal">Tipe Soal:</label>
-        <select id="tipe-soal">
-          <option value="pg">Pilihan Ganda</option>
-          <option value="isian">Isian Singkat</option>
-          <option value="uraian">Uraian</option>
-        </select>
-
-        <label for="pertanyaan">Pertanyaan:</label>
-        <textarea id="pertanyaan" rows="3" placeholder="Tuliskan pertanyaan di sini..." required></textarea>
-
-        <div id="area-opsi-pg">
-          <input type="text" id="opsi-a" placeholder="Opsi A" required>
-          <input type="text" id="opsi-b" placeholder="Opsi B" required>
-          <input type="text" id="opsi-c" placeholder="Opsi C" required>
-          <input type="text" id="opsi-d" placeholder="Opsi D" required>
+        <div class="grid-2">
+          <div>
+            <label for="soal-mapel">Mata Pelajaran (Sesuai Centangan):</label>
+            <select id="soal-mapel" required></select>
+          </div>
+          <div>
+            <label for="tipe-soal">Tipe Soal:</label>
+            <select id="tipe-soal">
+              <option value="pg">Pilihan Ganda (4 Opsi + Gambar)</option>
+              <option value="isian">Isian Singkat (Amunisi Dropdown Dinamis)</option>
+              <option value="uraian">Uraian (Amunisi Tombol Kata/Poin)</option>
+            </select>
+          </div>
         </div>
 
-        <label for="kunci-jawaban" id="label-kunci">Kunci Jawaban (Ketik A, B, C, atau D):</label>
-        <textarea id="kunci-jawaban" rows="2" placeholder="Contoh: A (untuk PG) atau jawaban singkat/pedoman uraian..." required></textarea>
+        <!-- Pertanyaan + Upload / Paste Gambar Soal -->
+        <label for="pertanyaan">Pertanyaan Soal:</label>
+        <textarea id="pertanyaan" rows="3" placeholder="Tuliskan pertanyaan atau tempel (Ctrl+V) gambar langsung di kotak ini..." required></textarea>
+        
+        <div class="image-upload-bar">
+          <label class="btn-upload-mini">
+            🖼️ Upload Gambar Soal
+            <input type="file" id="file-gambar-soal" accept="image/*" hidden>
+          </label>
+          <span class="hint-paste">atau klik di kotak pertanyaan lalu tekan <b>Ctrl+V</b> untuk paste gambar</span>
+          <button type="button" id="btn-hapus-gambar-soal" class="btn-danger-xs hidden">Hapus Gambar</button>
+        </div>
+        <div id="preview-gambar-soal" class="img-preview-box hidden"></div>
+        <input type="hidden" id="data-gambar-soal">
 
-        <div class="aksi-form">
-          <button type="button" id="btn-batal" class="btn-secondary">Batal</button>
-          <button type="submit" class="btn-success">Simpan Soal</button>
+        <!-- AREA 1: PILIHAN GANDA (Dengan Upload/Paste Gambar per Opsi) -->
+        <div id="area-opsi-pg" class="section-box">
+          <label>Opsi Pilihan Ganda (Bisa Teks dan/atau Gambar):</label>
+          <div class="opsi-pg-editor" data-opsi="a">
+            <div class="opsi-row">
+              <span class="opsi-badge">A</span>
+              <input type="text" id="opsi-a" placeholder="Teks Opsi A">
+              <label class="btn-upload-mini" title="Upload Gambar Opsi A">🖼️ <input type="file" class="file-opsi-img" data-target="a" accept="image/*" hidden></label>
+            </div>
+            <div id="prev-img-a" class="img-preview-mini hidden"></div>
+            <input type="hidden" id="data-gambar-a">
+          </div>
+
+          <div class="opsi-pg-editor" data-opsi="b">
+            <div class="opsi-row">
+              <span class="opsi-badge">B</span>
+              <input type="text" id="opsi-b" placeholder="Teks Opsi B">
+              <label class="btn-upload-mini" title="Upload Gambar Opsi B">🖼️ <input type="file" class="file-opsi-img" data-target="b" accept="image/*" hidden></label>
+            </div>
+            <div id="prev-img-b" class="img-preview-mini hidden"></div>
+            <input type="hidden" id="data-gambar-b">
+          </div>
+
+          <div class="opsi-pg-editor" data-opsi="c">
+            <div class="opsi-row">
+              <span class="opsi-badge">C</span>
+              <input type="text" id="opsi-c" placeholder="Teks Opsi C">
+              <label class="btn-upload-mini" title="Upload Gambar Opsi C">🖼️ <input type="file" class="file-opsi-img" data-target="c" accept="image/*" hidden></label>
+            </div>
+            <div id="prev-img-c" class="img-preview-mini hidden"></div>
+            <input type="hidden" id="data-gambar-c">
+          </div>
+
+          <div class="opsi-pg-editor" data-opsi="d">
+            <div class="opsi-row">
+              <span class="opsi-badge">D</span>
+              <input type="text" id="opsi-d" placeholder="Teks Opsi D">
+              <label class="btn-upload-mini" title="Upload Gambar Opsi D">🖼️ <input type="file" class="file-opsi-img" data-target="d" accept="image/*" hidden></label>
+            </div>
+            <div id="prev-img-d" class="img-preview-mini hidden"></div>
+            <input type="hidden" id="data-gambar-d">
+          </div>
+
+          <label for="kunci-pg">Pilih Kunci Jawaban Benar:</label>
+          <select id="kunci-pg">
+            <option value="A">Opsi A</option>
+            <option value="B">Opsi B</option>
+            <option value="C">Opsi C</option>
+            <option value="D">Opsi D</option>
+          </select>
+        </div>
+
+        <!-- AREA 2: ISIAN SINGKAT (Pilihan Amunisi Dropdown Dinamis Tanpa Batas) -->
+        <div id="area-opsi-isian" class="section-box hidden">
+          <div class="flex-between">
+            <label style="margin:0;">Daftar Pilihan Amunisi Dropdown (Bisa Tambah Tanpa Batas):</label>
+            <button type="button" id="btn-tambah-amunisi-isian" class="btn-primary-xs">+ Tambah Pilihan Amunisi</button>
+          </div>
+          <p class="subtitle-sm">Tambahkan opsi pilihan yang akan muncul di dropdown siswa (bisa teks atau gambar), lalu pilih mana yang menjadi jawaban benar.</p>
+          <div id="list-amunisi-isian" class="dynamic-list"></div>
+        </div>
+
+        <!-- AREA 3: URAIAN (Daftar Tombol Amunisi Jawaban dengan Jumlah Kustom) -->
+        <div id="area-opsi-uraian" class="section-box hidden">
+          <div class="flex-between">
+            <label style="margin:0;">Daftar Tombol Amunisi Jawaban Uraian:</label>
+            <div class="inline-generator">
+              <input type="number" id="jumlah-slot-uraian" min="1" max="20" value="4" class="input-num-sm" title="Jumlah tombol amunisi">
+              <button type="button" id="btn-set-jumlah-uraian" class="btn-secondary-xs">Atur Jumlah</button>
+              <button type="button" id="btn-tambah-amunisi-uraian" class="btn-primary-xs">+ Tambah 1</button>
+            </div>
+          </div>
+          <p class="subtitle-sm">Siswa akan menembakkan tombol-tombol amunisi yang sesuai untuk menyusun jawaban uraian. Centang item yang merupakan kunci jawaban benar.</p>
+          <div id="list-amunisi-uraian" class="dynamic-list"></div>
+        </div>
+
+        <!-- Bar Aksi: Preview Siswa + Simpan -->
+        <div class="aksi-form-between">
+          <button type="button" id="btn-preview-soal" class="btn-warning">👁️ Preview Tampilan Siswa</button>
+          <div class="aksi-form-right">
+            <button type="button" id="btn-batal" class="btn-secondary">Batal</button>
+            <button type="submit" id="btn-simpan-soal" class="btn-success">💾 Simpan Soal ke Database</button>
+          </div>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL PREVIEW TAMPILAN SISWA ==================== -->
+  <div id="modal-preview" class="modal hidden">
+    <div class="modal-content modal-lg">
+      <div class="modal-header-bar">
+        <h2>👁️ Simulasi Tampilan di Layar Siswa</h2>
+        <button type="button" id="btn-tutup-preview" class="btn-close-icon">✕</button>
+      </div>
+      <p class="subtitle-sm">Uji coba klik/tembak jawaban di bawah ini untuk memastikan soal, gambar, dan efek ledakan sudah sesuai sebelum disimpan.</p>
+      <div id="kontainer-preview-siswa"></div>
+      <div class="aksi-form">
+        <button type="button" id="btn-tutup-preview-bawah" class="btn-primary-rocket">✓ Selesai Preview & Kembali ke Editor</button>
+      </div>
     </div>
   </div>
 
