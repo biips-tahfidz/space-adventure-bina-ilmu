@@ -33,7 +33,64 @@ let indexSoalAktif = 0;
 let jawabanSiswa = {};
 let pesertaAktif = null;
 
-// ==================== PENGATURAN MAPEL USTADZ ====================
+// ==================== 1. NAVIGASI UTAMA (DIDAFTARKAN PALING AWAL) ====================
+const tabSiswa = document.getElementById('tab-siswa');
+const tabGuru = document.getElementById('tab-guru');
+const viewSiswa = document.getElementById('view-siswa');
+const viewGuru = document.getElementById('view-guru');
+
+if (tabSiswa && tabGuru) {
+  tabSiswa.addEventListener('click', async () => {
+    tabSiswa.classList.add('active');
+    tabGuru.classList.remove('active');
+    viewSiswa.classList.remove('hidden');
+    viewGuru.classList.add('hidden');
+    try {
+      semuaSoalDB = await ambilSemuaSoal(false);
+    } catch (_) {}
+    renderPlanetSiswa(mapelUstadzAktif, semuaSoalDB);
+  });
+
+  tabGuru.addEventListener('click', async () => {
+    tabGuru.classList.add('active');
+    tabSiswa.classList.remove('active');
+    viewGuru.classList.remove('hidden');
+    viewSiswa.classList.add('hidden');
+    await muatSoalDariDatabase(true);
+  });
+}
+
+document.getElementById('subtab-soal')?.addEventListener('click', () => {
+  document.getElementById('subtab-soal').classList.add('active');
+  document.getElementById('subtab-nilai').classList.remove('active');
+  document.getElementById('panel-daftar-soal').classList.remove('hidden');
+  document.getElementById('panel-rekap-nilai').classList.add('hidden');
+});
+
+document.getElementById('subtab-nilai')?.addEventListener('click', async () => {
+  document.getElementById('subtab-nilai').classList.add('active');
+  document.getElementById('subtab-soal').classList.remove('active');
+  document.getElementById('panel-rekap-nilai').classList.remove('hidden');
+  document.getElementById('panel-daftar-soal').classList.add('hidden');
+  try {
+    const hasil = await ambilSemuaHasilUjian();
+    renderRekapHasil(hasil);
+  } catch (err) {
+    document.getElementById('daftar-hasil-siswa').innerHTML =
+      `<p style="color:#f87171;">Gagal memuat hasil: ${err.message}</p>`;
+  }
+});
+
+document.getElementById('btn-refresh-nilai')?.addEventListener('click', async () => {
+  try {
+    const hasil = await ambilSemuaHasilUjian();
+    renderRekapHasil(hasil);
+  } catch (err) {
+    alert('Gagal menyegarkan data: ' + err.message);
+  }
+});
+
+// ==================== 2. PENGATURAN MAPEL USTADZ ====================
 function muatMapelUstadz() {
   try {
     const saved = localStorage.getItem(KEY_MAPEL_USTADZ);
@@ -48,7 +105,7 @@ function muatMapelUstadz() {
   perbaruiDropdownMapel(mapelUstadzAktif);
 }
 
-document.getElementById('btn-simpan-mapel-guru').addEventListener('click', () => {
+document.getElementById('btn-simpan-mapel-guru')?.addEventListener('click', () => {
   const checked = Array.from(document.querySelectorAll('input[name="mapel_guru"]:checked')).map(
     (el) => el.value
   );
@@ -64,62 +121,7 @@ document.getElementById('btn-simpan-mapel-guru').addEventListener('click', () =>
   alert('Daftar mata pelajaran berhasil diterapkan! Planet di layar siswa telah diperbarui.');
 });
 
-// ==================== NAVIGASI UTAMA ====================
-const tabSiswa = document.getElementById('tab-siswa');
-const tabGuru = document.getElementById('tab-guru');
-const viewSiswa = document.getElementById('view-siswa');
-const viewGuru = document.getElementById('view-guru');
-
-tabSiswa.addEventListener('click', async () => {
-  tabSiswa.classList.add('active');
-  tabGuru.classList.remove('active');
-  viewSiswa.classList.remove('hidden');
-  viewGuru.classList.add('hidden');
-  try {
-    semuaSoalDB = await ambilSemuaSoal(false);
-  } catch (_) {}
-  renderPlanetSiswa(mapelUstadzAktif, semuaSoalDB);
-});
-
-tabGuru.addEventListener('click', async () => {
-  tabGuru.classList.add('active');
-  tabSiswa.classList.remove('active');
-  viewGuru.classList.remove('hidden');
-  viewSiswa.classList.add('hidden');
-  await muatSoalDariDatabase(true);
-});
-
-document.getElementById('subtab-soal').addEventListener('click', () => {
-  document.getElementById('subtab-soal').classList.add('active');
-  document.getElementById('subtab-nilai').classList.remove('active');
-  document.getElementById('panel-daftar-soal').classList.remove('hidden');
-  document.getElementById('panel-rekap-nilai').classList.add('hidden');
-});
-
-document.getElementById('subtab-nilai').addEventListener('click', async () => {
-  document.getElementById('subtab-nilai').classList.add('active');
-  document.getElementById('subtab-soal').classList.remove('active');
-  document.getElementById('panel-rekap-nilai').classList.remove('hidden');
-  document.getElementById('panel-daftar-soal').classList.add('hidden');
-  try {
-    const hasil = await ambilSemuaHasilUjian();
-    renderRekapHasil(hasil);
-  } catch (err) {
-    document.getElementById('daftar-hasil-siswa').innerHTML =
-      `<p style="color:#f87171;">Gagal memuat hasil: ${err.message}</p>`;
-  }
-});
-
-document.getElementById('btn-refresh-nilai').addEventListener('click', async () => {
-  try {
-    const hasil = await ambilSemuaHasilUjian();
-    renderRekapHasil(hasil);
-  } catch (err) {
-    alert('Gagal menyegarkan data: ' + err.message);
-  }
-});
-
-// ==================== PANEL BANK SOAL GURU ====================
+// ==================== 3. PANEL BANK SOAL GURU ====================
 function tampilkanDaftarSoalTerfilter() {
   const filterVal = document.getElementById('filter-mapel-guru').value;
   const hasilFilter = semuaSoalDB.filter((s) => {
@@ -136,7 +138,7 @@ function tampilkanDaftarSoalTerfilter() {
   });
 }
 
-document.getElementById('filter-mapel-guru').addEventListener('change', tampilkanDaftarSoalTerfilter);
+document.getElementById('filter-mapel-guru')?.addEventListener('change', tampilkanDaftarSoalTerfilter);
 
 async function muatSoalDariDatabase(paksa = false) {
   try {
@@ -144,18 +146,20 @@ async function muatSoalDariDatabase(paksa = false) {
     tampilkanDaftarSoalTerfilter();
     renderPlanetSiswa(mapelUstadzAktif, semuaSoalDB);
   } catch (err) {
-    document.getElementById('daftar-soal').innerHTML =
-      `<p style="color:#f87171;">Gagal memuat soal dari Supabase: ${err.message}</p>`;
+    const elDaftar = document.getElementById('daftar-soal');
+    if (elDaftar) {
+      elDaftar.innerHTML = `<p style="color:#f87171;">Gagal memuat soal dari Supabase: ${err.message}</p>`;
+    }
     renderPlanetSiswa(mapelUstadzAktif, []);
   }
 }
 
-// ==================== EDITOR SOAL ====================
+// ==================== 4. EDITOR SOAL ====================
 const modalSoal = document.getElementById('modal-soal');
 const formSoal = document.getElementById('form-soal');
 const selectTipe = document.getElementById('tipe-soal');
 
-document.getElementById('btn-tambah-baru').addEventListener('click', () => {
+document.getElementById('btn-tambah-baru')?.addEventListener('click', () => {
   formSoal.reset();
   document.getElementById('soal-id').value = '';
   document.getElementById('judul-modal').textContent = 'Buat Soal Baru';
@@ -169,12 +173,12 @@ document.getElementById('btn-tambah-baru').addEventListener('click', () => {
   modalSoal.classList.remove('hidden');
 });
 
-document.getElementById('btn-batal').addEventListener('click', () => modalSoal.classList.add('hidden'));
-document.getElementById('btn-close-x').addEventListener('click', () => modalSoal.classList.add('hidden'));
-selectTipe.addEventListener('change', (e) => sesuaikanFormTipe(e.target.value));
+document.getElementById('btn-batal')?.addEventListener('click', () => modalSoal.classList.add('hidden'));
+document.getElementById('btn-close-x')?.addEventListener('click', () => modalSoal.classList.add('hidden'));
+selectTipe?.addEventListener('change', (e) => sesuaikanFormTipe(e.target.value));
 
 // Upload & Paste Gambar Pertanyaan Soal
-document.getElementById('file-gambar-soal').addEventListener('change', async (e) => {
+document.getElementById('file-gambar-soal')?.addEventListener('change', async (e) => {
   if (e.target.files[0]) {
     const b64 = await prosesFileGambarKeBase64(e.target.files[0]);
     setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', b64);
@@ -182,7 +186,7 @@ document.getElementById('file-gambar-soal').addEventListener('change', async (e)
   }
 });
 
-document.getElementById('pertanyaan').addEventListener('paste', async (e) => {
+document.getElementById('pertanyaan')?.addEventListener('paste', async (e) => {
   const b64 = await ambilGambarDariPaste(e);
   if (b64) {
     e.preventDefault();
@@ -191,7 +195,7 @@ document.getElementById('pertanyaan').addEventListener('paste', async (e) => {
   }
 });
 
-document.getElementById('btn-hapus-gambar-soal').addEventListener('click', () => {
+document.getElementById('btn-hapus-gambar-soal')?.addEventListener('click', () => {
   setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', '');
   document.getElementById('btn-hapus-gambar-soal').classList.add('hidden');
 });
@@ -208,7 +212,7 @@ document.querySelectorAll('.file-opsi-img').forEach((inp) => {
 });
 
 ['a', 'b', 'c', 'd'].forEach((huruf) => {
-  document.getElementById(`opsi-${huruf}`).addEventListener('paste', async (e) => {
+  document.getElementById(`opsi-${huruf}`)?.addEventListener('paste', async (e) => {
     const b64 = await ambilGambarDariPaste(e);
     if (b64) {
       e.preventDefault();
@@ -218,15 +222,15 @@ document.querySelectorAll('.file-opsi-img').forEach((inp) => {
 });
 
 // Tombol Tambah Amunisi Isian & Uraian
-document.getElementById('btn-tambah-amunisi-isian').addEventListener('click', () => {
+document.getElementById('btn-tambah-amunisi-isian')?.addEventListener('click', () => {
   tambahBarisAmunisiIsian({ teks: '', gambar: '', benar: false });
 });
 
-document.getElementById('btn-tambah-amunisi-uraian').addEventListener('click', () => {
+document.getElementById('btn-tambah-amunisi-uraian')?.addEventListener('click', () => {
   tambahBarisAmunisiUraian({ teks: '', gambar: '', benar: false });
 });
 
-document.getElementById('btn-set-jumlah-uraian').addEventListener('click', () => {
+document.getElementById('btn-set-jumlah-uraian')?.addEventListener('click', () => {
   const targetJml = parseInt(document.getElementById('jumlah-slot-uraian').value || '4', 10);
   const list = document.getElementById('list-amunisi-uraian');
   while (list.children.length < targetJml) {
@@ -304,7 +308,7 @@ function rakitPayloadDariForm() {
 
 // Fitur Preview Tampilan Siswa sebelum Simpan Soal
 const modalPreview = document.getElementById('modal-preview');
-document.getElementById('btn-preview-soal').addEventListener('click', () => {
+document.getElementById('btn-preview-soal')?.addEventListener('click', () => {
   const draftSoal = rakitPayloadDariForm();
   if (!draftSoal.pertanyaan) {
     alert('Tuliskan pertanyaan terlebih dahulu untuk melihat preview.');
@@ -316,11 +320,11 @@ document.getElementById('btn-preview-soal').addEventListener('click', () => {
   modalPreview.classList.remove('hidden');
 });
 
-document.getElementById('btn-tutup-preview').addEventListener('click', () => modalPreview.classList.add('hidden'));
-document.getElementById('btn-tutup-preview-bawah').addEventListener('click', () => modalPreview.classList.add('hidden'));
+document.getElementById('btn-tutup-preview')?.addEventListener('click', () => modalPreview.classList.add('hidden'));
+document.getElementById('btn-tutup-preview-bawah')?.addEventListener('click', () => modalPreview.classList.add('hidden'));
 
 // Simpan Soal ke Supabase
-formSoal.addEventListener('submit', async (e) => {
+formSoal?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const btnSimpan = document.getElementById('btn-simpan-soal');
   btnSimpan.disabled = true;
@@ -353,7 +357,7 @@ formSoal.addEventListener('submit', async (e) => {
   }
 });
 
-// ==================== ARENA MISI UJIAN SISWA ====================
+// ==================== 5. ARENA MISI UJIAN SISWA ====================
 function renderSoalAktifSiswa() {
   const arena = document.getElementById('arena-soal-aktif');
   arena.innerHTML = '';
@@ -397,21 +401,21 @@ function renderIndikatorNomor() {
   });
 }
 
-document.getElementById('btn-prev-soal').addEventListener('click', () => {
+document.getElementById('btn-prev-soal')?.addEventListener('click', () => {
   if (indexSoalAktif > 0) {
     indexSoalAktif--;
     renderSoalAktifSiswa();
   }
 });
 
-document.getElementById('btn-next-soal').addEventListener('click', () => {
+document.getElementById('btn-next-soal')?.addEventListener('click', () => {
   if (indexSoalAktif < soalMisiSiswa.length - 1) {
     indexSoalAktif++;
     renderSoalAktifSiswa();
   }
 });
 
-document.getElementById('form-identitas-siswa').addEventListener('submit', async (e) => {
+document.getElementById('form-identitas-siswa')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const mapelDipilih = document.getElementById('siswa-mapel-terpilih').value;
   if (!mapelDipilih) {
@@ -440,7 +444,7 @@ document.getElementById('form-identitas-siswa').addEventListener('submit', async
   renderSoalAktifSiswa();
 });
 
-document.getElementById('btn-kumpulkan-ujian').addEventListener('click', async () => {
+document.getElementById('btn-kumpulkan-ujian')?.addEventListener('click', async () => {
   if (!confirm('Selesaikan misi dan kirim semua jawaban ke Ustadz?')) return;
   const btn = document.getElementById('btn-kumpulkan-ujian');
   btn.disabled = true;
@@ -504,15 +508,21 @@ document.getElementById('btn-kumpulkan-ujian').addEventListener('click', async (
   }
 });
 
-document.getElementById('btn-ujian-ulang').addEventListener('click', () => {
+document.getElementById('btn-ujian-ulang')?.addEventListener('click', () => {
   document.getElementById('siswa-selesai-card').classList.add('hidden');
   document.getElementById('siswa-mulai-card').classList.remove('hidden');
 });
 
-// ==================== INISIALISASI ====================
-document.addEventListener('DOMContentLoaded', async () => {
+// ==================== 6. INISIALISASI ====================
+function mulaiAplikasi() {
   initSpaceCanvas();
   muatMapelUstadz();
   renderPlanetSiswa(mapelUstadzAktif, []);
-  await muatSoalDariDatabase(false);
-});
+  muatSoalDariDatabase(false);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', mulaiAplikasi);
+} else {
+  mulaiAplikasi();
+}
