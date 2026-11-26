@@ -1256,6 +1256,91 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
   </div>
 </div>
 
+<!-- ==============================================================================
+     MODAL: EDIT SOAL UJIAN (PG, ISIAN, URAIAN)
+     ============================================================================== -->
+<div class="app-modal-overlay" id="editQuestionModal">
+  <div class="app-modal-box" style="max-width:650px;max-height:85vh;overflow-y:auto">
+    <div class="app-modal-header">
+      <h3 id="editQModalTitle">✏️ Edit Soal Ujian</h3>
+      <button class="btn-close-modal" onclick="closeEditQuestionModal()">✕</button>
+    </div>
+    <input type="hidden" id="editQId">
+    <input type="hidden" id="editQType">
+
+    <div class="form-field" style="margin-top:10px">
+      <label>Teks Pertanyaan Soal</label>
+      <textarea id="editQText" class="form-control" style="min-height:75px" placeholder="Teks pertanyaan..."></textarea>
+    </div>
+
+    <div class="form-field">
+      <label>Gambar / Ilustrasi Soal (Opsional)</label>
+      <input type="file" id="editQFileInput" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'editQImgPrev')">
+      <img id="editQImgPrev" class="preview-img" style="display:none;margin-top:6px;max-height:120px">
+      <button type="button" id="editQRemoveImgBtn" class="btn btn-danger btn-sm" style="display:none;margin-top:4px" onclick="removeEditQImage()">Hapus Gambar</button>
+    </div>
+
+    <!-- AREA EDIT KHUSUS PG -->
+    <div id="editQSectionMc" style="display:none">
+      <label style="font-size:12px;color:#94a3b8;font-weight:600;margin-bottom:6px;display:block">
+        Pilihan Jawaban (Tandai radio button pada opsi yang BENAR):
+      </label>
+      <div style="display:flex;flex-direction:column;gap:8px" id="editMcOptionsWrap">
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="radio" name="editMcCorrectRad" value="0" style="width:16px;height:16px;accent-color:var(--accent)">
+          <input type="text" id="editMcOptText0" class="form-control" placeholder="Pilihan A">
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="radio" name="editMcCorrectRad" value="1" style="width:16px;height:16px;accent-color:var(--accent)">
+          <input type="text" id="editMcOptText1" class="form-control" placeholder="Pilihan B">
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="radio" name="editMcCorrectRad" value="2" style="width:16px;height:16px;accent-color:var(--accent)">
+          <input type="text" id="editMcOptText2" class="form-control" placeholder="Pilihan C">
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="radio" name="editMcCorrectRad" value="3" style="width:16px;height:16px;accent-color:var(--accent)">
+          <input type="text" id="editMcOptText3" class="form-control" placeholder="Pilihan D">
+        </div>
+      </div>
+    </div>
+
+    <!-- AREA EDIT KHUSUS ISIAN -->
+    <div id="editQSectionFill" style="display:none">
+      <label style="font-size:12px;color:#94a3b8;font-weight:600;margin-bottom:6px;display:block">
+        Pilihan Amunisi Rudal Dropdown (Tandai opsi yang BENAR):
+      </label>
+      <div id="editFillOptionsContainer" style="display:flex;flex-direction:column;gap:8px"></div>
+      <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="addEditFillOptionRow()">+ Tambah Pilihan Amunisi</button>
+    </div>
+
+    <!-- AREA EDIT KHUSUS URAIAN -->
+    <div id="editQSectionEssay" style="display:none">
+      <div class="form-field">
+        <label>Kunci Jawaban Uraian (Rangkuman)</label>
+        <textarea id="editQEssayAnswer" class="form-control" style="min-height:50px" placeholder="Kunci jawaban..."></textarea>
+      </div>
+      <div class="form-field" style="background:rgba(251,191,36,0.08);border:1px dashed rgba(251,191,36,0.3);padding:12px;border-radius:10px">
+        <label style="color:#fbbf24;font-weight:700">💎 Daftar Tombol Amunisi Tebing Jurang:</label>
+        <p style="font-size:11px;color:#cbd5e1;margin-bottom:8px">
+          Centang kotak (☑️) pada amunisi yang merupakan jawaban BENAR.
+        </p>
+        <div id="editEssayOptionsContainer" style="display:flex;flex-direction:column;gap:8px"></div>
+        <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="addEditEssayOptionRow()">+ Tambah Tombol Amunisi</button>
+      </div>
+      <div class="form-field" style="margin-top:10px">
+        <label>Petunjuk Tebing Jurang (Opsional)</label>
+        <input type="text" id="editQCliffHint" class="form-control" placeholder="Petunjuk tebing...">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn btn-primary" onclick="saveEditedQuestion()">💾 Simpan Perubahan Soal</button>
+      <button class="btn btn-secondary" onclick="closeEditQuestionModal()">Batal</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastBox"></div>
 
@@ -2088,8 +2173,12 @@ function ksRenderAllQuestions() {
                         q.type === 'fill' ? '<span class="badge badge-orange">Isian Rudal</span>' :
                         '<span class="badge badge-green">Uraian Tebing</span>';
       html += `
-        <div style="background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);padding:12px;border-radius:10px;margin-bottom:8px">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div style="background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);padding:12px;border-radius:10px;margin-bottom:8px;position:relative">
+          <div style="position:absolute;top:10px;right:10px;display:flex;gap:6px">
+            <button class="btn btn-secondary btn-sm" style="padding:3px 8px;font-size:11px" onclick="openEditQuestionModal('${q.id}')">✏️ Edit</button>
+            <button class="btn btn-danger btn-sm" style="padding:3px 8px;font-size:11px" onclick="ksDeleteQuestion('${q.id}')">🗑️ Hapus</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;padding-right:130px">
             <span style="font-weight:700;color:#fff">${idx + 1}.</span>
             ${typeBadge}
             <span style="font-size:12px;color:#94a3b8">Oleh: ${q.created_by || 'Guru'}</span>
@@ -2632,11 +2721,14 @@ function guruRenderMyQuestions() {
     list.forEach((q, idx) => {
       html += `
         <div style="background:rgba(0,0,0,0.3);padding:12px;border-radius:10px;margin-bottom:8px;position:relative">
-          <button class="btn btn-danger btn-sm" style="position:absolute;top:10px;right:10px" onclick="guruDeleteQuestion('${q.id}')">Hapus</button>
-          <div style="font-weight:700;color:#fff;margin-bottom:4px">${idx + 1}. ${q.text}</div>
+          <div style="position:absolute;top:10px;right:10px;display:flex;gap:6px">
+            <button class="btn btn-secondary btn-sm" style="padding:4px 10px;font-size:12px" onclick="openEditQuestionModal('${q.id}')">✏️ Edit</button>
+            <button class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:12px" onclick="guruDeleteQuestion('${q.id}')">🗑️ Hapus</button>
+          </div>
+          <div style="font-weight:700;color:#fff;margin-bottom:4px;padding-right:140px">${idx + 1}. ${q.text}</div>
           ${q.image_url ? `<img src="${q.image_url}" class="preview-img" style="display:block;margin-bottom:6px">` : ''}
-          ${q.options ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong style="color:#34d399">${q.options[q.correct]}</strong></div>` : ''}
-          ${q.answer ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong style="color:#34d399">${q.answer}</strong></div>` : ''}
+          ${q.options ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong style="color:#34d399">${q.options[q.correct] || '-'}</strong> (Opsi: ${q.options.join(', ')})</div>` : ''}
+          ${q.answer ? `<div style="font-size:12px;color:#94a3b8">Kunci Uraian: <strong style="color:#34d399">${q.answer}</strong></div>` : ''}
           ${q.cliff_hint ? `<div style="font-size:11px;color:#fbbf24">📜 Petunjuk Tebing: ${q.cliff_hint}</div>` : ''}
         </div>
       `;
@@ -2655,6 +2747,289 @@ function guruDeleteQuestion(qid) {
   guruUpdateCounters();
   guruRenderMyQuestions();
   showToast('Soal dihapus', 'info');
+}
+
+function ksDeleteQuestion(qid) {
+  if (!confirm('Hapus soal ini dari bank soal?')) return;
+  const data = getLocalData();
+  data.questions = data.questions.filter(q => q.id !== qid);
+  saveLocalData(data);
+  if (supabaseClient) supabaseClient.from('questions').delete().eq('id', qid).then();
+  ksRenderAllQuestions();
+  showToast('Soal berhasil dihapus', 'info');
+}
+
+/* ==============================================================================
+   FITUR EDIT SOAL (PG, ISIAN RUDAL, URAIAN TEBING JURANG)
+   ============================================================================== */
+let editFillOptCounter = 0;
+let editEssayOptCounter = 0;
+
+function openEditQuestionModal(qid) {
+  const data = getLocalData();
+  const q = data.questions.find(item => item.id === qid);
+  if (!q) {
+    showToast('Soal tidak ditemukan!', 'error');
+    return;
+  }
+
+  document.getElementById('editQId').value = q.id;
+  document.getElementById('editQType').value = q.type;
+  document.getElementById('editQText').value = q.text || '';
+
+  // Gambar
+  const imgPrev = document.getElementById('editQImgPrev');
+  const rmImgBtn = document.getElementById('editQRemoveImgBtn');
+  document.getElementById('editQFileInput').value = '';
+  if (q.image_url) {
+    imgPrev.src = q.image_url;
+    imgPrev.style.display = 'block';
+    rmImgBtn.style.display = 'inline-block';
+  } else {
+    imgPrev.src = '';
+    imgPrev.style.display = 'none';
+    rmImgBtn.style.display = 'none';
+  }
+
+  // Tampilkan form sesuai tipe soal
+  const secMc = document.getElementById('editQSectionMc');
+  const secFill = document.getElementById('editQSectionFill');
+  const secEssay = document.getElementById('editQSectionEssay');
+  secMc.style.display = 'none';
+  secFill.style.display = 'none';
+  secEssay.style.display = 'none';
+
+  const modalTitle = document.getElementById('editQModalTitle');
+
+  if (q.type === 'mc') {
+    modalTitle.textContent = '✏️ Edit Soal: Pilihan Ganda';
+    secMc.style.display = 'block';
+    const opts = q.options || ['', '', '', ''];
+    for (let i = 0; i < 4; i++) {
+      const el = document.getElementById('editMcOptText' + i);
+      if (el) el.value = opts[i] || '';
+    }
+    const rad = document.querySelector(`input[name="editMcCorrectRad"][value="${q.correct || 0}"]`);
+    if (rad) rad.checked = true;
+
+  } else if (q.type === 'fill') {
+    modalTitle.textContent = '✏️ Edit Soal: Isian Rudal Taktis';
+    secFill.style.display = 'block';
+    const container = document.getElementById('editFillOptionsContainer');
+    container.innerHTML = '';
+    const opts = (q.options && q.options.length > 0) ? q.options : ['Amunisi 1', 'Amunisi 2'];
+    editFillOptCounter = opts.length;
+
+    opts.forEach((opt, idx) => {
+      const row = document.createElement('div');
+      row.className = 'edit-fill-option-row';
+      row.style.cssText = 'display:flex;align-items:center;gap:10px';
+      row.innerHTML = `
+        <input type="radio" name="editFillCorrectRad" value="${idx}" ${idx === (q.correct || 0) ? 'checked' : ''} style="width:16px;height:16px;accent-color:var(--accent)">
+        <input type="text" class="form-control edit-fill-opt-text" value="${escapeHtml(opt)}" placeholder="Pilihan Amunisi ${idx + 1}">
+        <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditFillRow(this)">×</button>
+      `;
+      container.appendChild(row);
+    });
+
+  } else if (q.type === 'essay') {
+    modalTitle.textContent = '✏️ Edit Soal: Uraian Boss Jurang';
+    secEssay.style.display = 'block';
+    document.getElementById('editQEssayAnswer').value = q.answer || '';
+    document.getElementById('editQCliffHint').value = q.cliff_hint || '';
+
+    const container = document.getElementById('editEssayOptionsContainer');
+    container.innerHTML = '';
+    let opts = q.options || [];
+    if (opts.length === 0 && q.cliff_hint) {
+      opts = q.cliff_hint.split(/[,;]+/).map(s => s.trim()).filter(s => s.length > 0);
+    }
+    if (opts.length === 0) opts = ['Amunisi 1', 'Amunisi 2'];
+    editEssayOptCounter = opts.length;
+
+    const correctOpts = q.correct_options || [];
+
+    opts.forEach((opt, idx) => {
+      const isChecked = correctOpts.includes(opt) || idx === 0;
+      const row = document.createElement('div');
+      row.className = 'edit-essay-option-row';
+      row.style.cssText = 'display:flex;align-items:center;gap:10px';
+      row.innerHTML = `
+        <input type="checkbox" class="edit-essay-opt-correct" ${isChecked ? 'checked' : ''} style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika jawaban BENAR">
+        <input type="text" class="form-control edit-essay-opt-text" value="${escapeHtml(opt)}" placeholder="Amunisi Jawaban ${idx + 1}">
+        <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditEssayRow(this)">×</button>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  document.getElementById('editQuestionModal').classList.add('active');
+}
+
+function closeEditQuestionModal() {
+  document.getElementById('editQuestionModal').classList.remove('active');
+}
+
+function removeEditQImage() {
+  const imgPrev = document.getElementById('editQImgPrev');
+  imgPrev.src = '';
+  imgPrev.style.display = 'none';
+  document.getElementById('editQRemoveImgBtn').style.display = 'none';
+  document.getElementById('editQFileInput').value = '';
+}
+
+function addEditFillOptionRow() {
+  const container = document.getElementById('editFillOptionsContainer');
+  const idx = editFillOptCounter++;
+  const row = document.createElement('div');
+  row.className = 'edit-fill-option-row';
+  row.style.cssText = 'display:flex;align-items:center;gap:10px';
+  row.innerHTML = `
+    <input type="radio" name="editFillCorrectRad" value="${idx}" style="width:16px;height:16px;accent-color:var(--accent)">
+    <input type="text" class="form-control edit-fill-opt-text" placeholder="Pilihan Amunisi ${idx + 1}">
+    <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditFillRow(this)">×</button>
+  `;
+  container.appendChild(row);
+}
+
+function removeEditFillRow(btn) {
+  const row = btn.closest('.edit-fill-option-row');
+  if (row) row.remove();
+  const rows = document.querySelectorAll('#editFillOptionsContainer .edit-fill-option-row');
+  rows.forEach((r, i) => {
+    const rad = r.querySelector('input[type="radio"]');
+    if (rad) rad.value = i;
+  });
+}
+
+function addEditEssayOptionRow() {
+  const container = document.getElementById('editEssayOptionsContainer');
+  const idx = editEssayOptCounter++;
+  const row = document.createElement('div');
+  row.className = 'edit-essay-option-row';
+  row.style.cssText = 'display:flex;align-items:center;gap:10px';
+  row.innerHTML = `
+    <input type="checkbox" class="edit-essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika jawaban BENAR">
+    <input type="text" class="form-control edit-essay-opt-text" placeholder="Amunisi Pilihan ${idx + 1}">
+    <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditEssayRow(this)">×</button>
+  `;
+  container.appendChild(row);
+}
+
+function removeEditEssayRow(btn) {
+  const row = btn.closest('.edit-essay-option-row');
+  if (row) row.remove();
+}
+
+async function saveEditedQuestion() {
+  const qid = document.getElementById('editQId').value;
+  const qtype = document.getElementById('editQType').value;
+  const text = document.getElementById('editQText').value.trim();
+
+  if (!text) {
+    showToast('Teks pertanyaan tidak boleh kosong!', 'error');
+    return;
+  }
+
+  const data = getLocalData();
+  const qIndex = data.questions.findIndex(item => item.id === qid);
+  if (qIndex === -1) {
+    showToast('Soal tidak ditemukan di data lokal!', 'error');
+    return;
+  }
+
+  const qObj = data.questions[qIndex];
+  qObj.text = text;
+
+  // Gambar
+  const imgPrev = document.getElementById('editQImgPrev');
+  if (imgPrev && imgPrev.style.display !== 'none' && imgPrev.src) {
+    qObj.image_url = imgPrev.src;
+  } else {
+    qObj.image_url = null;
+  }
+
+  if (qtype === 'mc') {
+    const opts = [0, 1, 2, 3].map(i => {
+      const el = document.getElementById('editMcOptText' + i);
+      return el ? el.value.trim() : '';
+    });
+    if (opts.some(o => !o)) {
+      showToast('Lengkapi keempat pilihan jawaban A, B, C, D!', 'error');
+      return;
+    }
+    const rad = document.querySelector('input[name="editMcCorrectRad"]:checked');
+    qObj.options = opts;
+    qObj.correct = rad ? parseInt(rad.value) : 0;
+
+  } else if (qtype === 'fill') {
+    const optInps = document.querySelectorAll('#editFillOptionsContainer .edit-fill-opt-text');
+    const opts = Array.from(optInps).map(inp => inp.value.trim()).filter(Boolean);
+    if (opts.length < 2) {
+      showToast('Minimal buat 2 pilihan amunisi rudal!', 'error');
+      return;
+    }
+    const rad = document.querySelector('input[name="editFillCorrectRad"]:checked');
+    qObj.options = opts;
+    qObj.correct = rad ? parseInt(rad.value) : 0;
+
+  } else if (qtype === 'essay') {
+    const answer = document.getElementById('editQEssayAnswer').value.trim();
+    const cliffHint = document.getElementById('editQCliffHint').value.trim();
+    const optRows = document.querySelectorAll('#editEssayOptionsContainer .edit-essay-option-row');
+    const essayOpts = [];
+    const correctOpts = [];
+
+    optRows.forEach(row => {
+      const txt = row.querySelector('.edit-essay-opt-text');
+      const chk = row.querySelector('.edit-essay-opt-correct');
+      const val = txt ? txt.value.trim() : '';
+      if (val) {
+        essayOpts.push(val);
+        if (chk && chk.checked) correctOpts.push(val);
+      }
+    });
+
+    if (essayOpts.length < 2) {
+      showToast('Minimal buat 2 amunisi tebing jurang!', 'error');
+      return;
+    }
+    if (correctOpts.length === 0) {
+      showToast('Centang minimal 1 amunisi yang benar!', 'error');
+      return;
+    }
+
+    qObj.answer = answer || correctOpts.join(', ');
+    qObj.cliff_hint = cliffHint || 'Ambil amunisi yang tepat dari tebing jurang!';
+    qObj.options = essayOpts;
+    qObj.correct_options = correctOpts;
+  }
+
+  // Simpan ke local data
+  data.questions[qIndex] = qObj;
+  saveLocalData(data);
+
+  // Update ke Supabase Cloud
+  if (supabaseClient) {
+    try {
+      const { error } = await supabaseClient.from('questions').upsert([qObj]);
+      if (error) console.warn('Gagal update soal ke Supabase:', error);
+    } catch(err) {
+      console.warn('Error update soal:', err);
+    }
+  }
+
+  closeEditQuestionModal();
+  showToast('Perubahan soal berhasil disimpan! 🎉', 'success');
+
+  // Refresh tampilan
+  if (document.getElementById('dashGuruScreen').classList.contains('active')) {
+    guruUpdateCounters();
+    guruRenderMyQuestions();
+  }
+  if (document.getElementById('dashKepsekScreen').classList.contains('active')) {
+    ksRenderAllQuestions();
+  }
 }
 
 function guruRenderStudentAccess() {
