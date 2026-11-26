@@ -461,7 +461,11 @@
           <h3 id="admin-nama-display" style="margin-top:4px;">Kepala Sekolah SD Bina Ilmu Blora</h3>
           <p id="admin-sekolah-display" class="subtitle-sm">NPSN / Alamat: Blora, Jawa Tengah</p>
         </div>
-        <button id="btn-edit-profil-admin" type="button" class="btn-warning">✏️ Edit Profil Kepala Sekolah</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button id="btn-export-data" type="button" class="btn-success">⬇️ Backup Data (JSON)</button>
+          <label class="btn-secondary" style="margin:0;cursor:pointer;display:inline-flex;align-items:center;">⬆️ Restore Data<input type="file" id="inp-import-data" accept=".json" hidden /></label>
+          <button id="btn-edit-profil-admin" type="button" class="btn-warning">✏️ Edit Profil Kepala Sekolah</button>
+        </div>
       </div>
 
       <div class="sub-tabs">
@@ -519,7 +523,7 @@
   </div>
 
   <!-- ==================== MODAL TAMBAH / EDIT MATA PELAJARAN PER KELAS ==================== -->
-  <div id="modal-mapel-kelas" class="modal hidden">
+  <div id="modal-mapel-kelas" class="modal hidden" style="z-index: 1250;">
     <div class="modal-content" style="max-width:480px;">
       <div class="modal-header-bar">
         <h3 id="judul-modal-mapel">🪐 Tambah / Edit Mata Pelajaran</h3>
@@ -855,9 +859,10 @@
         return obj;
       }
 
-      const STORAGE_KEY = 'space_cbt_school_state_v4';
+      const STORAGE_KEY = 'space_cbt_master_data_permanen';
+      const LEGACY_KEYS = ['space_cbt_school_state_v4', 'space_cbt_school_state_v3', 'space_cbt_school_state_v2', 'space_cbt_school_state_v1'];
 
-      // State Default Sekolah
+      // State Default Sekolah (hanya dipakai jika belum ada data tersimpan sama sekali)
       let state = {
         adminProfile: {
           nama: 'Kepala Sekolah SD Bina Ilmu Blora',
@@ -889,27 +894,59 @@
         hasilList: [],
       };
 
-      function loadState() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            state = { ...state, ...parsed };
-          }
-          if (!state.mapelPerKelas || typeof state.mapelPerKelas !== 'object') {
-            state.mapelPerKelas = buatDefaultMapelPerKelas();
-          }
+      function gabungkanDataAman(saved) {
+        if (!saved || typeof saved !== 'object') return;
+        if (saved.adminProfile && typeof saved.adminProfile === 'object') {
+          state.adminProfile = { ...state.adminProfile, ...saved.adminProfile };
+        }
+        if (saved.mapelPerKelas && typeof saved.mapelPerKelas === 'object') {
           DAFTAR_KELAS.forEach((k) => {
-            if (!Array.isArray(state.mapelPerKelas[k])) {
-              state.mapelPerKelas[k] = [];
+            if (Array.isArray(saved.mapelPerKelas[k])) {
+              state.mapelPerKelas[k] = saved.mapelPerKelas[k];
             }
           });
+        }
+        if (Array.isArray(saved.teachers) && saved.teachers.length > 0) {
+          state.teachers = saved.teachers;
+        }
+        if (saved.activeGuruId) {
+          state.activeGuruId = saved.activeGuruId;
+        }
+        if (Array.isArray(saved.students)) {
+          state.students = saved.students;
+        }
+        if (Array.isArray(saved.soalList)) {
+          state.soalList = saved.soalList;
+        }
+        if (Array.isArray(saved.hasilList)) {
+          state.hasilList = saved.hasilList;
+        }
+      }
+
+      function loadState() {
+        try {
+          let raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            for (const oldKey of LEGACY_KEYS) {
+              const legacyRaw = localStorage.getItem(oldKey);
+              if (legacyRaw) {
+                raw = legacyRaw;
+                break;
+              }
+            }
+          }
+          if (raw) {
+            gabungkanDataAman(JSON.parse(raw));
+            saveState(); // Langsung amankan ke key permanen
+          }
         } catch (_) {}
       }
 
       function saveState() {
         try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          const serialized = JSON.stringify(state);
+          localStorage.setItem(STORAGE_KEY, serialized);
+          localStorage.setItem('space_cbt_backup_cadangan', serialized);
         } catch (_) {}
       }
 
@@ -1165,6 +1202,8 @@
 
       // ==================== CRUD MATA PELAJARAN PER KELAS (TAMBAH / EDIT / HAPUS) ====================
       function bukaModalMapelKelas(kelas, indexEdit = -1) {
+        const modalEl = document.getElementById('modal-mapel-kelas');
+        if (!modalEl) return;
         document.getElementById('mapel-kelas-target').value = kelas;
         document.getElementById('mapel-edit-index').value = String(indexEdit);
         document.getElementById('inp-mapel-kelas-display').value = kelas;
@@ -2486,6 +2525,37 @@
       }
 
       document.getElementById('btn-refresh-nilai').addEventListener('click', renderRekapNilaiGuru);
+
+      document.getElementById('btn-export-data').addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup_cbt_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      document.getElementById('inp-import-data').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const imported = JSON.parse(ev.target.result);
+            gabungkanDataAman(imported);
+            saveState();
+            renderPanelAdmin();
+            renderPanelGuru();
+            renderBriefingSiswa();
+            alert('✅ Data sekolah berhasil dipulihkan dari file backup!');
+          } catch (_) {
+            alert('❌ File JSON backup tidak valid.');
+          }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+      });
 
       // ==================== STARTUP ====================
       loadState();
