@@ -295,7 +295,7 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
    ============================================================================== */
 #planetScreen {
   flex-direction: column; align-items: center; justify-content: center;
-  padding: 30px 20px; text-align: center; overflow-y: auto;
+  padding: 30px 20px; text-align: center;
 }
 .galaxy-header h2 { font-size: 26px; color: var(--accent); margin-bottom: 8px; }
 .galaxy-header p { font-size: 14px; color: var(--text-muted); margin-bottom: 30px; }
@@ -434,36 +434,25 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
 .mc-choice-btn.correct { background: rgba(16, 185, 129, 0.3) !important; border-color: #10b981 !important; color: #fff; }
 .mc-choice-btn.wrong { background: rgba(239, 68, 68, 0.3) !important; border-color: #ef4444 !important; color: #fff; }
 .mc-badge {
-  width: 28px; height: 28px; min-width: 28px; border-radius: 50%;
+  width: 28px; height: 28px; border-radius: 50%;
   background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2);
   display: flex; align-items: center; justify-content: center;
   font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700;
 }
 
-/* Fill-in Missile Dock (Supports Text & Image Ammo) */
+/* Fill-in Missile Dropdown */
 .missile-ammo-dock {
   background: rgba(0,0,0,0.4); border: 1px solid rgba(245, 158, 11, 0.4);
   border-radius: 14px; padding: 18px; margin-bottom: 20px; text-align: left;
 }
 .ammo-title { font-size: 12px; font-weight: 700; color: #fbbf24; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-.missile-ammo-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+.missile-select {
+  width: 100%; padding: 14px 16px;
+  background: rgba(20, 25, 45, 0.95);
+  border: 2px solid #f59e0b; border-radius: 10px;
+  color: #fff; font-size: 15px; font-weight: 600; outline: none; cursor: pointer;
 }
-.missile-ammo-btn {
-  background: rgba(20, 25, 45, 0.9);
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  border-radius: 10px; padding: 12px;
-  color: #fff; font-size: 13px; font-weight: 600;
-  cursor: pointer; transition: all 0.2s;
-  display: flex; align-items: center; gap: 10px; text-align: left;
-}
-.missile-ammo-btn:hover {
-  border-color: #f59e0b; background: rgba(245, 158, 11, 0.15);
-}
-.missile-ammo-btn.selected {
-  border-color: #fbbf24; background: rgba(245, 158, 11, 0.28);
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.35);
-}
+.missile-select:focus { box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
 
 /* Canyon Boss & Cliff Answers */
 .canyon-cliff-box {
@@ -605,7 +594,7 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
   .dash-sidebar .nav-text, .dash-user-profile { display: none; }
   .nav-item { justify-content: center; padding: 14px; }
   .dash-main { padding: 16px; }
-  .form-grid-2, .form-grid-3, .form-grid-4, .mc-grid, .missile-ammo-grid { grid-template-columns: 1fr; }
+  .form-grid-2, .form-grid-3, .form-grid-4, .mc-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -922,95 +911,114 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
       <div class="dash-user-profile">
         <div class="dash-user-name" id="guruProfileName">Guru</div>
         <div class="dash-user-role" id="guruProfileMapel">Mapel: -</div>
-        <div id="guruMapelSelectorWrap" style="margin-top:8px;display:none">
-          <select id="guruSwitchMapelSelect" class="form-control" style="padding:5px 8px;font-size:11px" onchange="onGuruSwitchMapel(this.value)"></select>
-        </div>
       </div>
       <div class="dash-nav">
-        <button class="nav-item active" id="navGuruInput" onclick="switchGuruTab('inputSoal', this)">
-          <span>✍️</span> <span class="nav-text">Buat / Edit Soal</span>
+        <button class="nav-item active" onclick="switchGuruTab('inputSoal', this)">
+          <span>✍️</span> <span class="nav-text">Buat Soal Ujian</span>
         </button>
-        <button class="nav-item" id="navGuruDaftar" onclick="switchGuruTab('daftarSoal', this)">
+        <button class="nav-item" onclick="switchGuruTab('daftarSoal', this)">
           <span>📋</span> <span class="nav-text">Daftar Soal Saya</span>
         </button>
-        <button class="nav-item" id="navGuruAkses" onclick="switchGuruTab('aksesSiswa', this)">
+        <button class="nav-item" onclick="switchGuruTab('aksesSiswa', this)">
           <span>🔑</span> <span class="nav-text">Akses Siswa Planet</span>
         </button>
       </div>
     </div>
     <div class="dash-main">
-      <!-- TAB BUAT / EDIT SOAL -->
+      <!-- TAB BUAT SOAL -->
       <div id="guruTabInputSoal">
         <div class="dash-header-title">
-          <h2>✍️ <span id="guruFormModeTitle">Buat Soal Ujian</span>: <span id="guruMapelHeaderTitle" style="color:var(--accent)"></span></h2>
+          <h2>✍️ Input Soal Ujian: <span id="guruMapelHeaderTitle" style="color:var(--accent)"></span></h2>
           <div id="guruQSummaryBadge"></div>
         </div>
 
         <div class="q-type-tabs">
-          <button class="q-tab-btn active" id="tabBtnMc" onclick="guruSwitchQForm('mc', this)">1. Pilihan Ganda (15 Soal • 2 Poin)</button>
-          <button class="q-tab-btn" id="tabBtnFill" onclick="guruSwitchQForm('fill', this)">2. Isian Rudal (10 Soal • 3 Poin)</button>
-          <button class="q-tab-btn" id="tabBtnEssay" onclick="guruSwitchQForm('essay', this)">3. Uraian Tebing Jurang (5 Soal • 8 Poin)</button>
+          <button class="q-tab-btn active" onclick="guruSwitchQForm('mc', this)">1. Pilihan Ganda (15 Soal • 2 Poin)</button>
+          <button class="q-tab-btn" onclick="guruSwitchQForm('fill', this)">2. Isian Rudal (10 Soal • 3 Poin)</button>
+          <button class="q-tab-btn" onclick="guruSwitchQForm('essay', this)">3. Uraian Tebing Jurang (5 Soal • 8 Poin)</button>
         </div>
 
-        <!-- FORM 1: PILIHAN GANDA -->
+        <!-- FORM 1: PILIHAN GANDA (15 SOAL) -->
         <div id="guruFormMc" class="glass-card">
           <h3>Rintangan Luar Angkasa: Pilihan Ganda (<span id="guruMcCounter">1</span> / 15)</h3>
-          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">Anda dapat menambah atau mengurangi jumlah pilihan jawaban serta menyisipkan gambar pada soal maupun setiap opsi jawaban.</p>
+          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">Soal ini akan muncul sebagai rintangan pesawat luar angkasa yang harus ditembak hancur dengan laser.</p>
           <div class="form-field">
             <label>Teks Soal</label>
             <textarea id="mcInputText" class="form-control" style="min-height:70px" placeholder="Tuliskan teks pertanyaan..."></textarea>
           </div>
           <div class="form-field">
             <label>Gambar Soal / Bahan Ilustrasi (Opsional)</label>
-            <div style="display:flex;align-items:center;gap:10px">
-              <input type="file" id="mcInputFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'mcImgPrev', 'mcClearImgBtn')">
-              <button type="button" id="mcClearImgBtn" class="btn btn-secondary btn-sm" style="display:none" onclick="clearQuestionImg('mc')">Hapus</button>
-            </div>
+            <input type="file" id="mcInputFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'mcImgPrev')">
             <img id="mcImgPrev" class="preview-img" style="display:none">
           </div>
           <div class="form-field">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-              <label style="margin:0">Pilihan Jawaban (Tandai radio button pada opsi yang BENAR)</label>
-              <button type="button" class="btn btn-secondary btn-sm" onclick="addDynamicOptionRow('mc')">+ Tambah Pilihan</button>
+            <label>Pilihan Jawaban (Tandai radio button pada opsi yang BENAR)</label>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="mcCorrectRad" value="0" checked>
+                <input type="text" id="mcOptText0" class="form-control" placeholder="Pilihan A">
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="mcCorrectRad" value="1">
+                <input type="text" id="mcOptText1" class="form-control" placeholder="Pilihan B">
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="mcCorrectRad" value="2">
+                <input type="text" id="mcOptText2" class="form-control" placeholder="Pilihan C">
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="mcCorrectRad" value="3">
+                <input type="text" id="mcOptText3" class="form-control" placeholder="Pilihan D">
+              </div>
             </div>
-            <div id="mcOptionsContainer" style="display:flex;flex-direction:column;gap:10px"></div>
           </div>
-          <div style="display:flex;gap:10px">
-            <button class="btn btn-primary" id="btnSaveMc" onclick="guruSaveMcQuestion()">💾 Simpan Soal Pilihan Ganda</button>
-            <button class="btn btn-secondary" id="btnCancelEditMc" style="display:none" onclick="cancelEditQuestion()">Batal Edit</button>
-          </div>
+          <button class="btn btn-primary" onclick="guruSaveMcQuestion()">💾 Simpan Soal Pilihan Ganda</button>
         </div>
 
-        <!-- FORM 2: ISIAN RUDAL -->
+        <!-- FORM 2: ISIAN (10 SOAL) -->
         <div id="guruFormFill" class="glass-card" style="display:none">
           <h3>Amunisi Rudal Taktis: Soal Isian (<span id="guruFillCounter">1</span> / 10)</h3>
-          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">Anda dapat menyesuaikan jumlah pilihan amunisi rudal dan menyisipkan gambar pada setiap pilihan jawaban.</p>
+          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">Soal isian akan dilengkapi dropdown amunisi rudal tempat siswa memilih amunisi yang tepat untuk menghantam kapal musuh.</p>
           <div class="form-field">
             <label>Teks Soal Isian</label>
             <textarea id="fillInputText" class="form-control" style="min-height:70px" placeholder="Tuliskan kalimat atau pertanyaan isian..."></textarea>
           </div>
           <div class="form-field">
             <label>Gambar Soal (Opsional)</label>
-            <div style="display:flex;align-items:center;gap:10px">
-              <input type="file" id="fillInputFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'fillImgPrev', 'fillClearImgBtn')">
-              <button type="button" id="fillClearImgBtn" class="btn btn-secondary btn-sm" style="display:none" onclick="clearQuestionImg('fill')">Hapus</button>
-            </div>
+            <input type="file" id="fillInputFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'fillImgPrev')">
             <img id="fillImgPrev" class="preview-img" style="display:none">
           </div>
           <div class="form-field">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-              <label style="margin:0">Pilihan Amunisi Rudal (Tandai opsi yang BENAR)</label>
-              <button type="button" class="btn btn-secondary btn-sm" onclick="addDynamicOptionRow('fill')">+ Tambah Amunisi</button>
+            <label>Gambar Jawaban (Opsional - untuk jawaban berupa gambar)</label>
+            <input type="file" id="fillAnswerFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'fillAnswerImgPrev')">
+            <img id="fillAnswerImgPrev" class="preview-img" style="display:none">
+          </div>
+          <div class="form-field">
+            <label>Pilihan Amunisi Dropdown (Tandai opsi yang BENAR)</label>
+            <div id="fillOptionsContainer" style="display:flex;flex-direction:column;gap:8px">
+              <div class="fill-option-row" style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="fillCorrectRad" value="0" checked style="width:16px;height:16px;accent-color:var(--accent)">
+                <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 1">
+              </div>
+              <div class="fill-option-row" style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="fillCorrectRad" value="1" style="width:16px;height:16px;accent-color:var(--accent)">
+                <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 2">
+              </div>
+              <div class="fill-option-row" style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="fillCorrectRad" value="2" style="width:16px;height:16px;accent-color:var(--accent)">
+                <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 3">
+              </div>
+              <div class="fill-option-row" style="display:flex;align-items:center;gap:10px">
+                <input type="radio" name="fillCorrectRad" value="3" style="width:16px;height:16px;accent-color:var(--accent)">
+                <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 4">
+              </div>
             </div>
-            <div id="fillOptionsContainer" style="display:flex;flex-direction:column;gap:10px"></div>
+            <button type="button" class="btn btn-secondary btn-sm" style="margin-top:10px" onclick="addFillOption()">+ Tambah Pilihan Amunisi</button>
           </div>
-          <div style="display:flex;gap:10px">
-            <button class="btn btn-primary" id="btnSaveFill" onclick="guruSaveFillQuestion()">💾 Simpan Soal Isian</button>
-            <button class="btn btn-secondary" id="btnCancelEditFill" style="display:none" onclick="cancelEditQuestion()">Batal Edit</button>
-          </div>
+          <button class="btn btn-primary" onclick="guruSaveFillQuestion()">💾 Simpan Soal Isian</button>
         </div>
 
-        <!-- FORM 3: URAIAN -->
+        <!-- FORM 3: URAIAN (5 SOAL) -->
         <div id="guruFormEssay" class="glass-card" style="display:none">
           <h3>Boss Jurang Kosmik: Soal Uraian (<span id="guruEssayCounter">1</span> / 5)</h3>
           <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">5 musuh boss menghadang di jurang. Siswa dapat mengambil petunjuk/kunci jawaban di dinding tebing jurang untuk merumuskan jawaban.</p>
@@ -1020,10 +1028,7 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
           </div>
           <div class="form-field">
             <label>Gambar Ilustrasi Soal (Opsional)</label>
-            <div style="display:flex;align-items:center;gap:10px">
-              <input type="file" id="essayInputFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'essayImgPrev', 'essayClearImgBtn')">
-              <button type="button" id="essayClearImgBtn" class="btn btn-secondary btn-sm" style="display:none" onclick="clearQuestionImg('essay')">Hapus</button>
-            </div>
+            <input type="file" id="essayInputFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'essayImgPrev')">
             <img id="essayImgPrev" class="preview-img" style="display:none">
           </div>
           <div class="form-field">
@@ -1031,13 +1036,15 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
             <textarea id="essayInputAnswer" class="form-control" style="min-height:50px" placeholder="Tuliskan kata kunci atau rumusan jawaban yang benar..."></textarea>
           </div>
           <div class="form-field">
+            <label>Gambar Jawaban (Opsional - untuk kunci jawaban berupa gambar)</label>
+            <input type="file" id="essayAnswerFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'essayAnswerImgPrev')">
+            <img id="essayAnswerImgPrev" class="preview-img" style="display:none">
+          </div>
+          <div class="form-field">
             <label>Petunjuk / Kristal Jawaban di Tebing Jurang (Siswa dapat mengambil ini)</label>
             <input type="text" id="essayInputCliffHint" class="form-control" placeholder="Contoh petunjuk tebing: 'Perhatikan zat cair, oksigen dan atmosfer bumi'">
           </div>
-          <div style="display:flex;gap:10px">
-            <button class="btn btn-primary" id="btnSaveEssay" onclick="guruSaveEssayQuestion()">💾 Simpan Soal Uraian</button>
-            <button class="btn btn-secondary" id="btnCancelEditEssay" style="display:none" onclick="cancelEditQuestion()">Batal Edit</button>
-          </div>
+          <button class="btn btn-primary" onclick="guruSaveEssayQuestion()">💾 Simpan Soal Uraian</button>
         </div>
       </div>
 
@@ -1056,7 +1063,7 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
         </div>
         <div class="glass-card">
           <h3>Pilih Siswa yang Diizinkan Mendarat di Planet Ini</h3>
-          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">Siswa yang dicentang (atau siswa dengan tingkat kelas yang sesuai apabila daftar akses khusus belum diatur) dapat melihat dan mengerjakan ujian pada planet mata pelajaran Anda.</p>
+          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">Hanya siswa yang dicentang yang dapat melihat dan mengerjakan ujian pada planet mata pelajaran Anda.</p>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px">
             <div style="display:flex;gap:8px">
               <button class="btn btn-secondary btn-sm" onclick="guruToggleAllStudents(true)">Pilih Semua</button>
@@ -1337,7 +1344,7 @@ class SoundEngine {
     if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;
-    const notes = [261.63, 329.63, 392.00, 523.25];
+    const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
     notes.forEach((freq, idx) => {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
@@ -1412,6 +1419,7 @@ function saveLocalData(data) {
 const DEFAULT_SB_URL = 'https://rutnriqytxhitylzpfhx.supabase.co';
 const DEFAULT_SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1dG5yaXF5dHhoaXR5bHpwZmh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQxOTkyMjMsImV4cCI6MjEwOTc3NTIyM30._SZCy-YfTSykTXrKqgxB9dmtJmEFBJBEwa1NIGn0gFc';
 
+// Supabase Init Check
 function initSupabase() {
   const url = localStorage.getItem('sb_url') || DEFAULT_SB_URL;
   const key = localStorage.getItem('sb_key') || DEFAULT_SB_KEY;
@@ -1438,54 +1446,50 @@ function initSupabase() {
 async function syncFromSupabase() {
   if (!supabaseClient) return;
   try {
-    const [
-      { data: u },
-      { data: m },
-      { data: gm },
-      { data: q },
-      { data: ak },
-      { data: sc }
-    ] = await Promise.all([
-      supabaseClient.from('users').select('*'),
-      supabaseClient.from('mapel').select('*'),
-      supabaseClient.from('guru_mapel').select('*'),
-      supabaseClient.from('questions').select('*'),
-      supabaseClient.from('akses_siswa').select('*'),
-      supabaseClient.from('scores').select('*')
-    ]);
+    const { data: u, error: uErr } = await supabaseClient.from('users').select('*');
+    const { data: m, error: mErr } = await supabaseClient.from('mapel').select('*');
+    const { data: gm, error: gmErr } = await supabaseClient.from('guru_mapel').select('*');
+    const { data: q, error: qErr } = await supabaseClient.from('questions').select('*');
+    const { data: ak, error: akErr } = await supabaseClient.from('akses_siswa').select('*');
+    const { data: sc, error: scErr } = await supabaseClient.from('scores').select('*');
 
     const local = getLocalData();
     if (u && u.length > 0) local.users = u;
     if (m && m.length > 0) local.mapel = m;
     if (gm && gm.length > 0) local.guru_mapel = gm;
-    if (q) local.questions = q;
-    if (sc) local.scores = sc;
+    // PENTING: Jika di Supabase ada soal, gunakan data Supabase.
+    // Jika di Supabase belum ada tapi di local ada soal baru, lakukan push ke Supabase agar tidak hilang!
+    if (q && q.length > 0) {
+      // Gabungkan soal lokal yang mungkin baru di-insert tapi belum masuk Supabase
+      const cloudIds = new Set(q.map(item => item.id));
+      const unsynced = (local.questions || []).filter(item => !cloudIds.has(item.id));
+      local.questions = [...q, ...unsynced];
+      // Jika ada soal lokal yang belum masuk ke cloud, kirim ke cloud
+      if (unsynced.length > 0) {
+        supabaseClient.from('questions').upsert(unsynced).then(r => {
+          if (r.error) console.warn('Gagal push soal lokal ke Supabase:', r.error);
+        });
+      }
+    } else if (local.questions && local.questions.length > 0) {
+      // Di Supabase kosong, sinkronkan seluruh soal lokal ke Supabase!
+      supabaseClient.from('questions').upsert(local.questions).then(r => {
+        if (r.error) console.warn('Gagal inisialisasi soal ke Supabase:', r.error);
+      });
+    }
 
-    if (ak) {
+    if (sc && sc.length > 0) local.scores = sc;
+
+    if (ak && ak.length > 0) {
       local.akses = {};
       ak.forEach(item => {
         if (!local.akses[item.mapel_id]) local.akses[item.mapel_id] = [];
-        local.akses[item.mapel_id].push(item.siswa_username);
+        if (!local.akses[item.mapel_id].includes(item.siswa_username)) {
+          local.akses[item.mapel_id].push(item.siswa_username);
+        }
       });
     }
     saveLocalData(local);
-
-    if (currentUser) {
-      if (currentUser.role === 'siswa' && document.getElementById('planetScreen').classList.contains('active')) {
-        renderGalaxyPlanets();
-      } else if (currentUser.role === 'guru' && document.getElementById('dashGuruScreen').classList.contains('active')) {
-        guruUpdateCounters();
-        guruRenderMyQuestions();
-        guruRenderStudentAccess();
-      } else if (currentUser.role === 'kepsek' && document.getElementById('dashKepsekScreen').classList.contains('active')) {
-        ksRefreshMapelDropdown();
-        ksRenderGuruTable();
-        ksRenderMapelTable();
-        ksRenderSiswaTable();
-        ksRenderAllQuestions();
-        ksRenderNilaiTable();
-      }
-    }
+    console.log('Synced successfully from Supabase Cloud!');
   } catch(e) {
     console.warn('Sync from Supabase failed, using local cache:', e);
   }
@@ -1515,7 +1519,7 @@ async function saveSupabaseConfig() {
     res.style.color = '#38bdf8';
     res.textContent = 'Menguji koneksi ke Supabase...';
     const testClient = window.supabase.createClient(url, key);
-    const { error } = await testClient.from('users').select('username').limit(1);
+    const { data, error } = await testClient.from('users').select('username').limit(1);
     if (error) throw error;
 
     localStorage.setItem('sb_url', url);
@@ -1575,11 +1579,13 @@ async function handleLogin() {
     return;
   }
 
+  // Jika koneksi cloud aktif, sinkronkan data terbaru sebelum otentikasi
   if (supabaseClient) {
-    errEl.style.color = '#38bdf8';
-    errEl.textContent = 'Menghubungkan ke server cloud...';
-    await syncFromSupabase();
-    errEl.style.color = '#f87171';
+    try {
+      await syncFromSupabase();
+    } catch(e) {
+      console.warn('Sync on login skipped:', e);
+    }
   }
 
   const data = getLocalData();
@@ -1593,10 +1599,12 @@ async function handleLogin() {
   currentUser = found;
   errEl.textContent = '';
 
+  // Update top bar
   document.getElementById('currentUserBadge').style.display = 'block';
   document.getElementById('currentUserBadge').textContent = `${found.nama} (${found.role.toUpperCase()})`;
   document.getElementById('btnLogoutBar').style.display = 'inline-flex';
 
+  // Navigate to appropriate screen
   document.getElementById('loginScreen').classList.remove('active');
 
   if (role === 'kepsek') {
@@ -1706,21 +1714,27 @@ function switchKsTab(tab, btn) {
 
 function ksRefreshMapelDropdown() {
   const data = getLocalData();
-  const boxGuru = document.getElementById('ksNewGuruMapelCheckboxes');
+  const checkboxContainer = document.getElementById('ksNewGuruMapelCheckboxes');
   const selFilter = document.getElementById('ksFilterSoalMapel');
 
-  if (boxGuru) {
-    boxGuru.innerHTML = '';
+  // Render checkboxes for guru mapel selection (multiple subjects)
+  if (checkboxContainer) {
+    checkboxContainer.innerHTML = '';
     data.mapel.forEach(m => {
-      boxGuru.innerHTML += `
-        <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#e2e8f0;cursor:pointer">
-          <input type="checkbox" class="ks-guru-mapel-chk" value="${m.id}">
-          <span>${m.nama} (Kelas ${m.kelas || '6'})</span>
-        </label>
-      `;
+      const lbl = document.createElement('label');
+      lbl.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background 0.2s;font-size:13px;color:#e2e8f0';
+      lbl.onmouseenter = () => lbl.style.background = 'rgba(99,102,241,0.15)';
+      lbl.onmouseleave = () => lbl.style.background = 'transparent';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.value = m.id; cb.name = 'guruMapelCb';
+      cb.style.cssText = 'width:16px;height:16px;accent-color:var(--accent);cursor:pointer';
+      lbl.appendChild(cb);
+      lbl.appendChild(document.createTextNode(m.nama));
+      checkboxContainer.appendChild(lbl);
     });
   }
 
+  // Refresh soal filter dropdown
   if (selFilter) {
     selFilter.innerHTML = '<option value="">-- Semua Mata Pelajaran --</option>';
     data.mapel.forEach(m => {
@@ -1733,34 +1747,47 @@ function ksAddGuru() {
   const u = document.getElementById('ksNewGuruUser').value.trim();
   const p = document.getElementById('ksNewGuruPass').value.trim();
   const n = document.getElementById('ksNewGuruName').value.trim();
-  const selectedMapels = Array.from(document.querySelectorAll('.ks-guru-mapel-chk:checked')).map(cb => cb.value);
 
-  if (!u || !p || !n || selectedMapels.length === 0) {
-    showToast('Lengkapi semua data guru dan pilih minimal 1 mapel!', 'error');
+  // Collect all checked mapel checkboxes
+  const checkedMapels = Array.from(document.querySelectorAll('#ksNewGuruMapelCheckboxes input[name="guruMapelCb"]:checked'))
+    .map(cb => cb.value);
+
+  if (!u || !p || !n) {
+    showToast('Lengkapi semua data guru!', 'error');
     return;
   }
+  if (checkedMapels.length === 0) {
+    showToast('Pilih minimal satu mata pelajaran untuk guru ini!', 'error');
+    return;
+  }
+
   const data = getLocalData();
   if (data.users.some(x => x.username.toLowerCase() === u.toLowerCase())) {
     showToast('Username guru sudah digunakan!', 'error');
     return;
   }
+
   const newGuru = { username: u, password: p, role: 'guru', nama: n, kelas: '6' };
   data.users.push(newGuru);
-  selectedMapels.forEach(m => data.guru_mapel.push({ guru_username: u, mapel_id: m }));
+
+  // Insert multiple guru_mapel rows (one per selected subject)
+  const guruMapelInserts = checkedMapels.map(mapelId => ({ guru_username: u, mapel_id: mapelId }));
+  guruMapelInserts.forEach(gm => data.guru_mapel.push(gm));
   saveLocalData(data);
 
   if (supabaseClient) {
-    supabaseClient.from('users').insert([newGuru]).then();
-    const gmRows = selectedMapels.map(m => ({ guru_username: u, mapel_id: m }));
-    supabaseClient.from('guru_mapel').insert(gmRows).then();
+    supabaseClient.from('users').insert([newGuru]).then(r => { if(r.error) console.warn('Insert guru error:', r.error); });
+    supabaseClient.from('guru_mapel').insert(guruMapelInserts).then(r => { if(r.error) console.warn('Insert guru_mapel error:', r.error); });
   }
 
+  // Reset form
   document.getElementById('ksNewGuruUser').value = '';
   document.getElementById('ksNewGuruPass').value = '';
   document.getElementById('ksNewGuruName').value = '';
-  document.querySelectorAll('.ks-guru-mapel-chk').forEach(cb => cb.checked = false);
+  document.querySelectorAll('#ksNewGuruMapelCheckboxes input[name="guruMapelCb"]').forEach(cb => cb.checked = false);
+
   ksRenderGuruTable();
-  showToast('Guru berhasil didaftarkan!', 'success');
+  showToast(`Guru berhasil didaftarkan dengan ${checkedMapels.length} mapel!`, 'success');
 }
 
 function ksRenderGuruTable() {
@@ -1770,18 +1797,22 @@ function ksRenderGuruTable() {
   const gurus = data.users.filter(u => u.role === 'guru');
 
   gurus.forEach(g => {
+    // Get ALL mapel assigned to this guru (multiple rows in guru_mapel)
     const rels = data.guru_mapel.filter(gm => gm.guru_username === g.username);
-    const mapelBadges = rels.map(r => {
-      const mp = data.mapel.find(m => m.id === r.mapel_id);
-      return mp ? `<span class="badge badge-blue" style="margin-right:4px">${mp.nama}</span>` : '';
-    }).join('');
-    const mapelName = mapelBadges || '<span style="color:#f87171">Belum ada</span>';
+    let mapelBadges = '';
+    if (rels.length > 0) {
+      mapelBadges = rels.map(rel => {
+        const mapel = data.mapel.find(m => m.id === rel.mapel_id);
+        return mapel ? `<span class="badge badge-blue" style="margin:2px 4px 2px 0">${mapel.nama}</span>` : '';
+      }).filter(b => b).join('');
+    }
+    if (!mapelBadges) mapelBadges = '<span style="color:#f87171">Belum ada</span>';
 
     tb.innerHTML += `
       <tr>
         <td><strong>${g.username}</strong></td>
         <td>${g.nama}</td>
-        <td>${mapelName}</td>
+        <td>${mapelBadges}</td>
         <td>
           <button class="btn btn-danger btn-sm" onclick="ksDeleteGuru('${g.username}')">Hapus</button>
         </td>
@@ -1920,7 +1951,7 @@ function ksRenderSiswaTable() {
   const filterKelas = document.getElementById('ksFilterSiswaKelas') ? document.getElementById('ksFilterSiswaKelas').value : '';
   let siswas = data.users.filter(u => u.role === 'siswa');
   if (filterKelas) {
-    siswas = siswas.filter(s => String(s.kelas || '6') === filterKelas);
+    siswas = siswas.filter(u => String(u.kelas || '6') === filterKelas);
   }
 
   if (siswas.length === 0) {
@@ -1993,7 +2024,7 @@ function ksRenderAllQuestions() {
           </div>
           <div style="font-size:14px;color:#e2e8f0;margin-bottom:6px">${q.text}</div>
           ${q.image_url ? `<img src="${q.image_url}" class="preview-img" style="display:block;margin-bottom:6px">` : ''}
-          ${q.options ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong>${q.options[q.correct] || 'Gambar #' + (q.correct + 1)}</strong> (Opsi: ${q.options.join(', ')})</div>` : ''}
+          ${q.options ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong>${q.options[q.correct] || '-'}</strong> (Opsi: ${q.options.join(', ')})</div>` : ''}
           ${q.answer ? `<div style="font-size:12px;color:#94a3b8">Kunci Uraian: <strong>${q.answer}</strong></div>` : ''}
           ${q.cliff_hint ? `<div style="font-size:11px;color:#fbbf24">📜 Petunjuk Tebing: ${q.cliff_hint}</div>` : ''}
         </div>
@@ -2036,51 +2067,59 @@ function ksRenderNilaiTable() {
 }
 
 /* ==============================================================================
-   E. GURU DASHBOARD LOGIC (EDIT SOAL, CUSTOM JUMLAH OPSI, GAMBAR DI OPSI)
+   E. GURU DASHBOARD LOGIC
    ============================================================================== */
 let guruAssignedMapel = null;
-let editingQuestionId = null;
+let guruAllMapels = [];
 
 function initGuruDash() {
   document.getElementById('dashGuruScreen').classList.add('active');
   document.getElementById('guruProfileName').textContent = currentUser.nama;
 
-  const data = getLocalData();
-  const rels = data.guru_mapel.filter(gm => gm.guru_username === currentUser.username);
-  const assignedList = rels.map(r => data.mapel.find(m => m.id === r.mapel_id)).filter(Boolean);
+  // Setup Paste event listener untuk teks soal dan form jawaban
+  setupClipboardPaste('mcInputText', 'mcImgPrev');
+  setupClipboardPaste('fillInputText', 'fillImgPrev');
+  setupClipboardPaste('essayInputText', 'essayImgPrev');
+  setupClipboardPaste('essayInputAnswer', 'essayAnswerImgPrev');
 
-  if (assignedList.length > 0) {
-    guruAssignedMapel = assignedList[0];
-  } else {
+  const data = getLocalData();
+  // Get ALL mapels assigned to this guru
+  const rels = data.guru_mapel.filter(gm => gm.guru_username === currentUser.username);
+  guruAllMapels = rels.map(rel => data.mapel.find(m => m.id === rel.mapel_id)).filter(Boolean);
+
+  if (guruAllMapels.length === 0) {
     guruAssignedMapel = data.mapel[0] || null;
+  } else {
+    guruAssignedMapel = guruAllMapels[0];
   }
 
-  const selWrap = document.getElementById('guruMapelSelectorWrap');
-  const selEl = document.getElementById('guruSwitchMapelSelect');
-  if (assignedList.length > 1) {
-    selWrap.style.display = 'block';
-    selEl.innerHTML = assignedList.map(m => `<option value="${m.id}">${m.nama}</option>`).join('');
+  // Build mapel selector in sidebar if guru has multiple subjects
+  const profileMapelEl = document.getElementById('guruProfileMapel');
+  if (guruAllMapels.length > 1) {
+    let selectHtml = '<select id="guruMapelSelector" class="form-control" style="margin-top:6px;padding:6px 10px;font-size:12px;background:rgba(0,0,0,0.4);border:1px solid var(--space-border);color:#fff;border-radius:8px" onchange="guruSwitchMapel(this.value)">';
+    guruAllMapels.forEach(m => {
+      selectHtml += `<option value="${m.id}" ${m.id === guruAssignedMapel.id ? 'selected' : ''}>${m.nama}</option>`;
+    });
+    selectHtml += '</select>';
+    profileMapelEl.innerHTML = `<span style="font-size:11px;color:#94a3b8">Mapel Aktif:</span>${selectHtml}`;
   } else {
-    selWrap.style.display = 'none';
+    const mapelTitle = guruAssignedMapel ? guruAssignedMapel.nama : 'Belum Ditugaskan';
+    profileMapelEl.textContent = `Mapel: ${mapelTitle}`;
   }
 
   const mapelTitle = guruAssignedMapel ? guruAssignedMapel.nama : 'Belum Ditugaskan';
-  document.getElementById('guruProfileMapel').textContent = `Mapel: ${mapelTitle}`;
   document.getElementById('guruMapelHeaderTitle').textContent = mapelTitle;
 
-  cancelEditQuestion();
   guruUpdateCounters();
   guruRenderMyQuestions();
   guruRenderStudentAccess();
 }
 
-function onGuruSwitchMapel(mapelId) {
+function guruSwitchMapel(mapelId) {
   const data = getLocalData();
   guruAssignedMapel = data.mapel.find(m => m.id === mapelId) || null;
   const mapelTitle = guruAssignedMapel ? guruAssignedMapel.nama : 'Belum Ditugaskan';
-  document.getElementById('guruProfileMapel').textContent = `Mapel: ${mapelTitle}`;
   document.getElementById('guruMapelHeaderTitle').textContent = mapelTitle;
-  cancelEditQuestion();
   guruUpdateCounters();
   guruRenderMyQuestions();
   guruRenderStudentAccess();
@@ -2095,7 +2134,7 @@ function switchGuruTab(tab, btn) {
   document.getElementById('guruTab' + mapTab[tab]).style.display = 'block';
 
   document.querySelectorAll('#dashGuruScreen .nav-item').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
+  btn.classList.add('active');
 
   if (tab === 'daftarSoal') guruRenderMyQuestions();
   if (tab === 'aksesSiswa') guruRenderStudentAccess();
@@ -2103,7 +2142,7 @@ function switchGuruTab(tab, btn) {
 
 function guruSwitchQForm(type, btn) {
   document.querySelectorAll('.q-tab-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
+  btn.classList.add('active');
 
   document.getElementById('guruFormMc').style.display = type === 'mc' ? 'block' : 'none';
   document.getElementById('guruFormFill').style.display = type === 'fill' ? 'block' : 'none';
@@ -2129,328 +2168,254 @@ function guruUpdateCounters() {
     : `<span class="badge badge-orange">⚠️ Belum Lengkap: ${mcCount}/15 PG • ${fillCount}/10 Isian • ${essayCount}/5 Uraian</span>`;
 }
 
-function handleImagePreview(input, imgId, clearBtnId) {
+// Helper: Kompresi gambar client-side (Max 800px, JPEG kualitas 0.7)
+// Menjamin loading sangat cepat bahkan di koneksi lambat / 2G-3G & hemat storage Supabase
+function compressImageFile(file, maxWidth = 800, maxHeight = 800, quality = 0.72) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width;
+        let h = img.height;
+        if (w > maxWidth || h > maxHeight) {
+          const ratio = Math.min(maxWidth / w, maxHeight / h);
+          w = Math.round(w * ratio);
+          h = Math.round(h * ratio);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(dataUrl);
+      };
+      img.onerror = reject;
+      img.src = ev.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleImagePreview(input, imgId) {
   const file = input.files[0];
   const imgEl = document.getElementById(imgId);
-  const clearBtn = clearBtnId ? document.getElementById(clearBtnId) : null;
   if (!file) {
     imgEl.style.display = 'none';
     imgEl.src = '';
-    if (clearBtn) clearBtn.style.display = 'none';
+    return;
+  }
+  try {
+    const compressed = await compressImageFile(file);
+    imgEl.src = compressed;
+    imgEl.style.display = 'block';
+  } catch(e) {
+    console.warn('Gagal kompres gambar:', e);
+    const reader = new FileReader();
+    reader.onload = e => {
+      imgEl.src = e.target.result;
+      imgEl.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+// Support Paste Gambar dari Clipboard ke elemen Form Soal & Jawaban
+function setupClipboardPaste(targetAreaId, previewImgId) {
+  const area = document.getElementById(targetAreaId);
+  if (!area) return;
+  area.addEventListener('paste', async (e) => {
+    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    for (let item of items) {
+      if (item.kind === 'file' && item.type.startsWith('image/')) {
+        const blob = item.getAsFile();
+        try {
+          const compressed = await compressImageFile(blob);
+          const imgEl = document.getElementById(previewImgId);
+          if (imgEl) {
+            imgEl.src = compressed;
+            imgEl.style.display = 'block';
+            showToast('Gambar berhasil ditempel (paste) & dioptimasi! 📋✨', 'success');
+          }
+        } catch(err) {
+          console.warn('Gagal memproses gambar paste:', err);
+        }
+        break;
+      }
+    }
+  });
+}
+
+// MC option image preview handler
+function handleMcOptImg(input, idx) {
+  const file = input.files[0];
+  const imgEl = document.getElementById('mcOptImg' + idx);
+  if (!file) {
+    if (imgEl) { imgEl.style.display = 'none'; imgEl.src = ''; }
     return;
   }
   const reader = new FileReader();
   reader.onload = e => {
     imgEl.src = e.target.result;
     imgEl.style.display = 'block';
-    if (clearBtn) clearBtn.style.display = 'inline-flex';
   };
   reader.readAsDataURL(file);
 }
 
-function clearQuestionImg(prefix) {
-  document.getElementById(prefix + 'InputFile').value = '';
-  const imgEl = document.getElementById(prefix + 'ImgPrev');
-  imgEl.src = '';
-  imgEl.style.display = 'none';
-  document.getElementById(prefix + 'ClearImgBtn').style.display = 'none';
-}
+// Dynamic fill option management
+let fillOptionCounter = 4; // already have 0-3
 
-/* Dynamic Option Rows (Custom Count & Image per Option) */
-function resetOptionRows(prefix, count = 4, values = [], images = [], correctIdx = 0) {
-  const container = document.getElementById(prefix + 'OptionsContainer');
-  container.innerHTML = '';
-  for (let i = 0; i < count; i++) {
-    addDynamicOptionRow(prefix, values[i] || '', images[i] || '', i === correctIdx);
-  }
-}
-
-function addDynamicOptionRow(prefix, textVal = '', imgVal = '', isChecked = false) {
-  const container = document.getElementById(prefix + 'OptionsContainer');
-  const idx = container.children.length;
+function addFillOption() {
+  const container = document.getElementById('fillOptionsContainer');
+  const idx = fillOptionCounter++;
   const row = document.createElement('div');
-  row.className = prefix + '-opt-row';
-  row.style.cssText = 'background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)';
+  row.className = 'fill-option-row';
+  row.style.cssText = 'display:flex;align-items:center;gap:10px';
   row.innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <input type="radio" name="${prefix}CorrectRad" value="${idx}" ${(isChecked || idx === 0) ? 'checked' : ''}>
-      <input type="text" class="form-control ${prefix}-opt-text" value="${escapeAttr(textVal)}" placeholder="Teks Pilihan #${idx + 1}">
-      <button type="button" class="btn btn-danger btn-sm" title="Hapus pilihan ini" onclick="removeDynamicOptionRow(this, '${prefix}')">✕</button>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;padding-left:24px;flex-wrap:wrap">
-      <label style="font-size:11px;color:#94a3b8;margin:0;cursor:pointer">
-        🖼️ Gambar Opsi (Opsional):
-        <input type="file" accept="image/*" style="font-size:11px;color:#cbd5e1" onchange="handleOptionImageChange(this)">
-      </label>
-      <img class="preview-img ${prefix}-opt-img" src="${imgVal || ''}" style="max-height:60px;margin:0;display:${imgVal ? 'block' : 'none'}">
-      <button type="button" class="btn btn-secondary btn-sm opt-clear-img-btn" style="display:${imgVal ? 'inline-flex' : 'none'};padding:3px 8px;font-size:11px" onclick="clearOptionImg(this)">Hapus Gambar</button>
-    </div>
+    <input type="radio" name="fillCorrectRad" value="${idx}" style="width:16px;height:16px;accent-color:var(--accent)">
+    <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi ${idx + 1}">
+    <button type="button" class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:16px;line-height:1" onclick="removeFillOption(this)" title="Hapus pilihan">×</button>
   `;
   container.appendChild(row);
-  reindexOptionRadios(prefix);
 }
 
-function removeDynamicOptionRow(btn, prefix) {
-  const container = document.getElementById(prefix + 'OptionsContainer');
-  if (container.children.length <= 2) {
-    showToast('Minimal harus ada 2 pilihan jawaban!', 'error');
-    return;
-  }
-  btn.closest('.' + prefix + '-opt-row').remove();
-  reindexOptionRadios(prefix);
-}
-
-function reindexOptionRadios(prefix) {
-  const rows = document.querySelectorAll('.' + prefix + '-opt-row');
-  let anyChecked = false;
-  rows.forEach((row, i) => {
-    const rad = row.querySelector('input[type="radio"]');
-    const inp = row.querySelector('.' + prefix + '-opt-text');
-    rad.value = i;
-    inp.placeholder = `Teks Pilihan #${i + 1}`;
-    if (rad.checked) anyChecked = true;
+function removeFillOption(btn) {
+  const row = btn.closest('.fill-option-row');
+  if (row) row.remove();
+  // Re-index radio values
+  const rows = document.querySelectorAll('#fillOptionsContainer .fill-option-row');
+  rows.forEach((r, i) => {
+    const radio = r.querySelector('input[type="radio"]');
+    if (radio) radio.value = i;
   });
-  if (!anyChecked && rows.length > 0) {
-    rows[0].querySelector('input[type="radio"]').checked = true;
+}
+
+function resetFillOptions() {
+  const container = document.getElementById('fillOptionsContainer');
+  fillOptionCounter = 4;
+  container.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const row = document.createElement('div');
+    row.className = 'fill-option-row';
+    row.style.cssText = 'display:flex;align-items:center;gap:10px';
+    row.innerHTML = `
+      <input type="radio" name="fillCorrectRad" value="${i}" ${i === 0 ? 'checked' : ''} style="width:16px;height:16px;accent-color:var(--accent)">
+      <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi ${i + 1}">
+    `;
+    container.appendChild(row);
   }
 }
 
-function handleOptionImageChange(input) {
-  const file = input.files[0];
-  const wrap = input.closest('div');
-  const imgEl = wrap.querySelector('img');
-  const clearBtn = wrap.querySelector('.opt-clear-img-btn');
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    imgEl.src = e.target.result;
-    imgEl.style.display = 'block';
-    if (clearBtn) clearBtn.style.display = 'inline-flex';
-  };
-  reader.readAsDataURL(file);
-}
-
-function clearOptionImg(btn) {
-  const wrap = btn.closest('div');
-  const imgEl = wrap.querySelector('img');
-  const fileInp = wrap.querySelector('input[type="file"]');
-  imgEl.src = '';
-  imgEl.style.display = 'none';
-  if (fileInp) fileInp.value = '';
-  btn.style.display = 'none';
-}
-
-function startEditQuestion(qid) {
-  const data = getLocalData();
-  const q = data.questions.find(item => item.id === qid);
-  if (!q) return;
-
-  editingQuestionId = qid;
-  document.getElementById('guruFormModeTitle').textContent = '✏️ Edit Soal Ujian';
-
-  switchGuruTab('inputSoal', document.getElementById('navGuruInput'));
-
-  if (q.type === 'mc') {
-    guruSwitchQForm('mc', document.getElementById('tabBtnMc'));
-    document.getElementById('mcInputText').value = q.text || '';
-    const imgPrev = document.getElementById('mcImgPrev');
-    const clearBtn = document.getElementById('mcClearImgBtn');
-    if (q.image_url) {
-      imgPrev.src = q.image_url;
-      imgPrev.style.display = 'block';
-      clearBtn.style.display = 'inline-flex';
-    } else {
-      imgPrev.src = '';
-      imgPrev.style.display = 'none';
-      clearBtn.style.display = 'none';
-    }
-    const opts = (q.options && q.options.length > 0) ? q.options : ['', ''];
-    const optImgs = q.option_images || [];
-    resetOptionRows('mc', opts.length, opts, optImgs, q.correct || 0);
-    document.getElementById('btnSaveMc').textContent = '💾 Update Soal Pilihan Ganda';
-    document.getElementById('btnCancelEditMc').style.display = 'inline-flex';
-  } else if (q.type === 'fill') {
-    guruSwitchQForm('fill', document.getElementById('tabBtnFill'));
-    document.getElementById('fillInputText').value = q.text || '';
-    const imgPrev = document.getElementById('fillImgPrev');
-    const clearBtn = document.getElementById('fillClearImgBtn');
-    if (q.image_url) {
-      imgPrev.src = q.image_url;
-      imgPrev.style.display = 'block';
-      clearBtn.style.display = 'inline-flex';
-    } else {
-      imgPrev.src = '';
-      imgPrev.style.display = 'none';
-      clearBtn.style.display = 'none';
-    }
-    const opts = (q.options && q.options.length > 0) ? q.options : ['', ''];
-    const optImgs = q.option_images || [];
-    resetOptionRows('fill', opts.length, opts, optImgs, q.correct || 0);
-    document.getElementById('btnSaveFill').textContent = '💾 Update Soal Isian';
-    document.getElementById('btnCancelEditFill').style.display = 'inline-flex';
-  } else if (q.type === 'essay') {
-    guruSwitchQForm('essay', document.getElementById('tabBtnEssay'));
-    document.getElementById('essayInputText').value = q.text || '';
-    document.getElementById('essayInputAnswer').value = q.answer || '';
-    document.getElementById('essayInputCliffHint').value = q.cliff_hint || '';
-    const imgPrev = document.getElementById('essayImgPrev');
-    const clearBtn = document.getElementById('essayClearImgBtn');
-    if (q.image_url) {
-      imgPrev.src = q.image_url;
-      imgPrev.style.display = 'block';
-      clearBtn.style.display = 'inline-flex';
-    } else {
-      imgPrev.src = '';
-      imgPrev.style.display = 'none';
-      clearBtn.style.display = 'none';
-    }
-    document.getElementById('btnSaveEssay').textContent = '💾 Update Soal Uraian';
-    document.getElementById('btnCancelEditEssay').style.display = 'inline-flex';
-  }
-}
-
-function cancelEditQuestion() {
-  editingQuestionId = null;
-  document.getElementById('guruFormModeTitle').textContent = 'Buat Soal Ujian';
-
-  ['mc', 'fill', 'essay'].forEach(p => {
-    document.getElementById(p + 'InputText').value = '';
-    document.getElementById(p + 'InputFile').value = '';
-    const img = document.getElementById(p + 'ImgPrev');
-    img.src = '';
-    img.style.display = 'none';
-    const clr = document.getElementById(p + 'ClearImgBtn');
-    if (clr) clr.style.display = 'none';
-  });
-  document.getElementById('essayInputAnswer').value = '';
-  document.getElementById('essayInputCliffHint').value = '';
-
-  resetOptionRows('mc', 4);
-  resetOptionRows('fill', 4);
-
-  document.getElementById('btnSaveMc').textContent = '💾 Simpan Soal Pilihan Ganda';
-  document.getElementById('btnSaveFill').textContent = '💾 Simpan Soal Isian';
-  document.getElementById('btnSaveEssay').textContent = '💾 Simpan Soal Uraian';
-  document.getElementById('btnCancelEditMc').style.display = 'none';
-  document.getElementById('btnCancelEditFill').style.display = 'none';
-  document.getElementById('btnCancelEditEssay').style.display = 'none';
-}
-
-function guruSaveMcQuestion() {
+async function guruSaveMcQuestion() {
   if (!guruAssignedMapel) { showToast('Anda belum ditugaskan ke mapel manapun!', 'error'); return; }
   const data = getLocalData();
   const mcQs = data.questions.filter(q => q.mapel_id === guruAssignedMapel.id && q.type === 'mc');
-  if (!editingQuestionId && mcQs.length >= 15) { showToast('Maksimal 15 soal pilihan ganda!', 'error'); return; }
+  if (mcQs.length >= 15) { showToast('Maksimal 15 soal pilihan ganda!', 'error'); return; }
 
   const text = document.getElementById('mcInputText').value.trim();
   if (!text) { showToast('Tuliskan pertanyaan!', 'error'); return; }
 
-  const rows = Array.from(document.querySelectorAll('.mc-opt-row'));
-  const opts = rows.map(r => r.querySelector('.mc-opt-text').value.trim());
-  const optImgs = rows.map(r => {
-    const img = r.querySelector('.mc-opt-img');
-    return (img && img.style.display !== 'none' && img.getAttribute('src')) ? img.src : null;
-  });
-
-  if (opts.some((o, i) => !o && !optImgs[i])) {
-    showToast('Setiap pilihan jawaban harus berisi teks atau gambar!', 'error');
-    return;
-  }
+  const opts = [0, 1, 2, 3].map(i => document.getElementById('mcOptText' + i).value.trim());
+  if (opts.some(o => !o)) { showToast('Lengkapi keempat pilihan jawaban!', 'error'); return; }
 
   const correctRad = document.querySelector('input[name="mcCorrectRad"]:checked');
   const correct = correctRad ? parseInt(correctRad.value) : 0;
   const imgEl = document.getElementById('mcImgPrev');
-  const image_url = (imgEl && imgEl.style.display !== 'none' && imgEl.getAttribute('src')) ? imgEl.src : null;
+  const image_url = (imgEl && imgEl.style.display !== 'none') ? imgEl.src : null;
 
-  const payload = {
-    id: editingQuestionId || ((window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('q_mc_' + Date.now())),
+  const newQ = {
+    id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('q_mc_' + Date.now()),
     mapel_id: guruAssignedMapel.id,
     type: 'mc',
     text,
     image_url,
     options: opts,
-    option_images: optImgs,
     correct,
     created_by: currentUser.username,
     created_at: new Date().toISOString()
   };
 
-  if (editingQuestionId) {
-    const idx = data.questions.findIndex(q => q.id === editingQuestionId);
-    if (idx !== -1) data.questions[idx] = payload;
-    if (supabaseClient) supabaseClient.from('questions').update(payload).eq('id', editingQuestionId).then();
-    showToast('Soal pilihan ganda berhasil diperbarui!', 'success');
-  } else {
-    data.questions.push(payload);
-    if (supabaseClient) supabaseClient.from('questions').insert([payload]).then();
-    showToast('Soal pilihan ganda tersimpan!', 'success');
+  data.questions.push(newQ);
+  saveLocalData(data);
+  if (supabaseClient) {
+    const r = await supabaseClient.from('questions').insert([newQ]);
+    if (r.error) console.warn('Supabase insert MC error:', r.error);
   }
 
-  saveLocalData(data);
-  cancelEditQuestion();
+  // Reset Form
+  document.getElementById('mcInputText').value = '';
+  [0, 1, 2, 3].forEach(i => document.getElementById('mcOptText' + i).value = '');
+  document.getElementById('mcInputFile').value = '';
+  imgEl.style.display = 'none';
+
   guruUpdateCounters();
+  guruRenderMyQuestions();
+  showToast('Soal pilihan ganda tersimpan!', 'success');
 }
 
-function guruSaveFillQuestion() {
+async function guruSaveFillQuestion() {
   if (!guruAssignedMapel) { showToast('Anda belum ditugaskan ke mapel manapun!', 'error'); return; }
   const data = getLocalData();
   const fillQs = data.questions.filter(q => q.mapel_id === guruAssignedMapel.id && q.type === 'fill');
-  if (!editingQuestionId && fillQs.length >= 10) { showToast('Maksimal 10 soal isian rudal!', 'error'); return; }
+  if (fillQs.length >= 10) { showToast('Maksimal 10 soal isian rudal!', 'error'); return; }
 
   const text = document.getElementById('fillInputText').value.trim();
   if (!text) { showToast('Tuliskan pertanyaan isian!', 'error'); return; }
 
-  const rows = Array.from(document.querySelectorAll('.fill-opt-row'));
-  const opts = rows.map(r => r.querySelector('.fill-opt-text').value.trim());
-  const optImgs = rows.map(r => {
-    const img = r.querySelector('.fill-opt-img');
-    return (img && img.style.display !== 'none' && img.getAttribute('src')) ? img.src : null;
-  });
-
-  if (opts.some((o, i) => !o && !optImgs[i])) {
-    showToast('Setiap pilihan amunisi harus berisi teks atau gambar!', 'error');
-    return;
-  }
+  // Collect ALL option texts from dynamic rows
+  const optInputs = document.querySelectorAll('#fillOptionsContainer .fill-opt-text');
+  const opts = Array.from(optInputs).map(inp => inp.value.trim()).filter(o => o);
+  if (opts.length < 2) { showToast('Minimal buat 2 pilihan amunisi!', 'error'); return; }
 
   const correctRad = document.querySelector('input[name="fillCorrectRad"]:checked');
   const correct = correctRad ? parseInt(correctRad.value) : 0;
   const imgEl = document.getElementById('fillImgPrev');
-  const image_url = (imgEl && imgEl.style.display !== 'none' && imgEl.getAttribute('src')) ? imgEl.src : null;
+  const image_url = (imgEl && imgEl.style.display !== 'none') ? imgEl.src : null;
 
-  const payload = {
-    id: editingQuestionId || ((window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('q_fill_' + Date.now())),
+  // Answer image
+  const ansImgEl = document.getElementById('fillAnswerImgPrev');
+  const answer_image_url = (ansImgEl && ansImgEl.style.display !== 'none') ? ansImgEl.src : null;
+
+  const newQ = {
+    id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('q_fill_' + Date.now()),
     mapel_id: guruAssignedMapel.id,
     type: 'fill',
     text,
     image_url,
+    answer_image_url,
     options: opts,
-    option_images: optImgs,
     correct,
     created_by: currentUser.username,
     created_at: new Date().toISOString()
   };
 
-  if (editingQuestionId) {
-    const idx = data.questions.findIndex(q => q.id === editingQuestionId);
-    if (idx !== -1) data.questions[idx] = payload;
-    if (supabaseClient) supabaseClient.from('questions').update(payload).eq('id', editingQuestionId).then();
-    showToast('Soal isian rudal berhasil diperbarui!', 'success');
-  } else {
-    data.questions.push(payload);
-    if (supabaseClient) supabaseClient.from('questions').insert([payload]).then();
-    showToast('Soal isian rudal tersimpan!', 'success');
+  data.questions.push(newQ);
+  saveLocalData(data);
+  if (supabaseClient) {
+    const r = await supabaseClient.from('questions').insert([newQ]);
+    if (r.error) console.warn('Supabase insert fill error:', r.error);
   }
 
-  saveLocalData(data);
-  cancelEditQuestion();
+  // Reset Form
+  document.getElementById('fillInputText').value = '';
+  document.getElementById('fillInputFile').value = '';
+  imgEl.style.display = 'none';
+  if (document.getElementById('fillAnswerFile')) document.getElementById('fillAnswerFile').value = '';
+  if (ansImgEl) ansImgEl.style.display = 'none';
+  resetFillOptions();
+
   guruUpdateCounters();
+  guruRenderMyQuestions();
+  showToast('Soal isian rudal tersimpan!', 'success');
 }
 
-function guruSaveEssayQuestion() {
+async function guruSaveEssayQuestion() {
   if (!guruAssignedMapel) { showToast('Anda belum ditugaskan ke mapel manapun!', 'error'); return; }
   const data = getLocalData();
   const essayQs = data.questions.filter(q => q.mapel_id === guruAssignedMapel.id && q.type === 'essay');
-  if (!editingQuestionId && essayQs.length >= 5) { showToast('Maksimal 5 soal uraian tebing jurang!', 'error'); return; }
+  if (essayQs.length >= 5) { showToast('Maksimal 5 soal uraian tebing jurang!', 'error'); return; }
 
   const text = document.getElementById('essayInputText').value.trim();
   const answer = document.getElementById('essayInputAnswer').value.trim();
@@ -2459,34 +2424,44 @@ function guruSaveEssayQuestion() {
   if (!text || !answer) { showToast('Lengkapi teks soal dan kunci jawaban uraian!', 'error'); return; }
 
   const imgEl = document.getElementById('essayImgPrev');
-  const image_url = (imgEl && imgEl.style.display !== 'none' && imgEl.getAttribute('src')) ? imgEl.src : null;
+  const image_url = (imgEl && imgEl.style.display !== 'none') ? imgEl.src : null;
 
-  const payload = {
-    id: editingQuestionId || ((window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('q_essay_' + Date.now())),
+  // Answer image
+  const ansImgEl = document.getElementById('essayAnswerImgPrev');
+  const answer_image_url = (ansImgEl && ansImgEl.style.display !== 'none') ? ansImgEl.src : null;
+
+  const newQ = {
+    id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('q_essay_' + Date.now()),
     mapel_id: guruAssignedMapel.id,
     type: 'essay',
     text,
     image_url,
     answer,
+    answer_image_url,
     cliff_hint: cliff_hint || answer,
     created_by: currentUser.username,
     created_at: new Date().toISOString()
   };
 
-  if (editingQuestionId) {
-    const idx = data.questions.findIndex(q => q.id === editingQuestionId);
-    if (idx !== -1) data.questions[idx] = payload;
-    if (supabaseClient) supabaseClient.from('questions').update(payload).eq('id', editingQuestionId).then();
-    showToast('Soal uraian berhasil diperbarui!', 'success');
-  } else {
-    data.questions.push(payload);
-    if (supabaseClient) supabaseClient.from('questions').insert([payload]).then();
-    showToast('Soal uraian tebing jurang tersimpan!', 'success');
+  data.questions.push(newQ);
+  saveLocalData(data);
+  if (supabaseClient) {
+    const r = await supabaseClient.from('questions').insert([newQ]);
+    if (r.error) console.warn('Supabase insert essay error:', r.error);
   }
 
-  saveLocalData(data);
-  cancelEditQuestion();
+  // Reset Form
+  document.getElementById('essayInputText').value = '';
+  document.getElementById('essayInputAnswer').value = '';
+  document.getElementById('essayInputCliffHint').value = '';
+  document.getElementById('essayInputFile').value = '';
+  imgEl.style.display = 'none';
+  if (document.getElementById('essayAnswerFile')) document.getElementById('essayAnswerFile').value = '';
+  if (ansImgEl) ansImgEl.style.display = 'none';
+
   guruUpdateCounters();
+  guruRenderMyQuestions();
+  showToast('Soal uraian tebing jurang tersimpan!', 'success');
 }
 
 function guruRenderMyQuestions() {
@@ -2509,33 +2484,14 @@ function guruRenderMyQuestions() {
     html += `<div class="glass-card">`;
     html += `<h3>${title} - Total: ${list.length}</h3>`;
     list.forEach((q, idx) => {
-      const optImgs = q.option_images || [];
-      let optListHtml = '';
-      if (q.options) {
-        optListHtml = '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">';
-        q.options.forEach((opt, i) => {
-          const isCorr = i === q.correct;
-          optListHtml += `
-            <div style="padding:4px 8px;border-radius:6px;font-size:11px;border:1px solid ${isCorr ? '#10b981' : 'rgba(255,255,255,0.1)'};background:${isCorr ? 'rgba(16,185,129,0.15)' : 'rgba(255,255,255,0.03)'};color:${isCorr ? '#34d399' : '#cbd5e1'}">
-              ${optImgs[i] ? `<img src="${optImgs[i]}" style="max-height:36px;border-radius:4px;display:block;margin-bottom:2px">` : ''}
-              <span>${i + 1}. ${opt || '(Gambar)'} ${isCorr ? '✓' : ''}</span>
-            </div>
-          `;
-        });
-        optListHtml += '</div>';
-      }
-
       html += `
         <div style="background:rgba(0,0,0,0.3);padding:12px;border-radius:10px;margin-bottom:8px;position:relative">
-          <div style="position:absolute;top:10px;right:10px;display:flex;gap:6px">
-            <button class="btn btn-secondary btn-sm" onclick="startEditQuestion('${q.id}')">✏️ Edit</button>
-            <button class="btn btn-danger btn-sm" onclick="guruDeleteQuestion('${q.id}')">Hapus</button>
-          </div>
-          <div style="font-weight:700;color:#fff;margin-bottom:4px;padding-right:135px">${idx + 1}. ${q.text}</div>
+          <button class="btn btn-danger btn-sm" style="position:absolute;top:10px;right:10px" onclick="guruDeleteQuestion('${q.id}')">Hapus</button>
+          <div style="font-weight:700;color:#fff;margin-bottom:4px">${idx + 1}. ${q.text}</div>
           ${q.image_url ? `<img src="${q.image_url}" class="preview-img" style="display:block;margin-bottom:6px">` : ''}
-          ${optListHtml}
-          ${q.answer ? `<div style="font-size:12px;color:#94a3b8;margin-top:4px">Kunci: <strong style="color:#34d399">${q.answer}</strong></div>` : ''}
-          ${q.cliff_hint ? `<div style="font-size:11px;color:#fbbf24;margin-top:2px">📜 Petunjuk Tebing: ${q.cliff_hint}</div>` : ''}
+          ${q.options ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong style="color:#34d399">${q.options[q.correct]}</strong></div>` : ''}
+          ${q.answer ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong style="color:#34d399">${q.answer}</strong></div>` : ''}
+          ${q.cliff_hint ? `<div style="font-size:11px;color:#fbbf24">📜 Petunjuk Tebing: ${q.cliff_hint}</div>` : ''}
         </div>
       `;
     });
@@ -2550,7 +2506,6 @@ function guruDeleteQuestion(qid) {
   data.questions = data.questions.filter(q => q.id !== qid);
   saveLocalData(data);
   if (supabaseClient) supabaseClient.from('questions').delete().eq('id', qid).then();
-  if (editingQuestionId === qid) cancelEditQuestion();
   guruUpdateCounters();
   guruRenderMyQuestions();
   showToast('Soal dihapus', 'info');
@@ -2601,6 +2556,7 @@ function guruSaveStudentAccess() {
   saveLocalData(data);
 
   if (supabaseClient) {
+    // Delete and re-insert into akses_siswa
     supabaseClient.from('akses_siswa').delete().eq('mapel_id', guruAssignedMapel.id).then(() => {
       if (selected.length > 0) {
         const rows = selected.map(sw => ({ mapel_id: guruAssignedMapel.id, siswa_username: sw }));
@@ -2625,18 +2581,16 @@ function renderGalaxyPlanets() {
   grid.innerHTML = '';
 
   const studentUser = currentUser.username;
-  const studentKelas = String(currentUser.kelas || '');
   const permittedPlanets = [];
 
   data.mapel.forEach(m => {
     const allowed = data.akses[m.id] || [];
-    // Diizinkan jika didaftarkan secara eksplisit oleh guru, ATAU jika mapel belum membatasi akses dan tingkat kelasnya sesuai dengan siswa
-    const isPermitted = allowed.includes(studentUser) || (allowed.length === 0 && studentKelas && String(m.kelas) === studentKelas);
-    if (isPermitted) {
+    if (allowed.includes(studentUser)) {
       const qs = data.questions.filter(q => q.mapel_id === m.id);
       const mcC = qs.filter(q => q.type === 'mc').length;
       const fillC = qs.filter(q => q.type === 'fill').length;
       const essayC = qs.filter(q => q.type === 'essay').length;
+      // Complete is 15 MC, 10 Fill, 5 Essay
       const isReady = (mcC >= 15 && fillC >= 10 && essayC >= 5);
       permittedPlanets.push({ ...m, isReady, mcC, fillC, essayC });
     }
@@ -2648,7 +2602,7 @@ function renderGalaxyPlanets() {
         <div style="font-size:42px;margin-bottom:10px">📡</div>
         <h3 style="color:#fbbf24">Belum Ada Planet yang Diizinkan</h3>
         <p style="color:#94a3b8;font-size:14px">
-          Akunmu (Kelas ${studentKelas || '-'}) belum didaftarkan untuk mengakses planet mata pelajaran apapun. Silakan hubungi Guru Pengampu untuk membuka akses planetmu!
+          Akunmu belum didaftarkan untuk mengakses planet mata pelajaran apapun. Silakan hubungi Guru Pengampu untuk membuka akses planetmu!
         </p>
       </div>
     `;
@@ -2677,9 +2631,11 @@ function renderGalaxyPlanets() {
 
 function onStudentSelectPlanet(planet, cardEl) {
   if (planet.isReady) {
+    // Sound & Enter
     sound.playMissile();
     launchFlightMission(planet);
   } else {
+    // DISAPPEARING PLANET MECHANIC
     sound.playPlanetVanish();
     cardEl.classList.add('vanishing');
 
@@ -2745,7 +2701,7 @@ let gameState = {
   mcScore: 0,
   fillScore: 0,
   essayScore: 0,
-  phase: 'mc',
+  phase: 'mc', // mc, fill, essay
   cockpitRoll: 0,
   cockpitTargetRoll: 0,
   warpSpeed: 1,
@@ -2849,9 +2805,11 @@ function renderFlightScene() {
   const ch = gameCanvas.height;
   const ctx = gameCtx;
 
+  // Cockpit Roll & Evasion interpolation
   gameState.cockpitRoll += (gameState.cockpitTargetRoll - gameState.cockpitRoll) * 0.12;
   if (Math.abs(gameState.cockpitRoll) < 0.001) gameState.cockpitRoll = 0;
 
+  // Shake
   let shakeX = 0, shakeY = 0;
   if (gameState.shakeAmount > 0) {
     shakeX = (Math.random() - 0.5) * gameState.shakeAmount;
@@ -2865,6 +2823,7 @@ function renderFlightScene() {
   ctx.rotate(gameState.cockpitRoll);
   ctx.translate(-cw / 2, -ch / 2);
 
+  // Background deep space
   let grad = ctx.createLinearGradient(0, 0, 0, ch);
   if (gameState.phase === 'mc') {
     grad.addColorStop(0, '#040714'); grad.addColorStop(1, '#0e0e28');
@@ -2876,6 +2835,7 @@ function renderFlightScene() {
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, cw, ch);
 
+  // Starfield with warp motion
   starsField.forEach(s => {
     s.x -= s.speed * gameState.warpSpeed;
     if (s.x < 0) { s.x = cw + 10; s.y = Math.random() * ch; }
@@ -2889,6 +2849,7 @@ function renderFlightScene() {
     ctx.stroke();
   });
 
+  // Scene rendering by phase
   if (gameState.phase === 'mc') {
     renderMcScene(ctx, cw, ch);
   } else if (gameState.phase === 'fill') {
@@ -2897,6 +2858,7 @@ function renderFlightScene() {
     renderEssayScene(ctx, cw, ch);
   }
 
+  // Lasers
   gameState.lasers = gameState.lasers.filter(l => {
     l.x += l.vx;
     l.y += l.vy;
@@ -2913,6 +2875,7 @@ function renderFlightScene() {
     return l.x < cw + 80;
   });
 
+  // Missiles
   gameState.missiles = gameState.missiles.filter(m => {
     m.x += m.vx;
     m.y += m.vy;
@@ -2923,6 +2886,7 @@ function renderFlightScene() {
     ctx.beginPath();
     ctx.arc(m.x, m.y, 6, 0, Math.PI * 2);
     ctx.fill();
+    // Flame trail
     ctx.fillStyle = '#ef4444';
     ctx.beginPath();
     ctx.arc(m.x - 12, m.y, 4, 0, Math.PI * 2);
@@ -2931,6 +2895,7 @@ function renderFlightScene() {
     return m.x < cw + 80;
   });
 
+  // Explosions
   gameState.explosions = gameState.explosions.filter(e => {
     e.frame++;
     const progress = e.frame / e.maxFrame;
@@ -2953,15 +2918,18 @@ function renderFlightScene() {
     return e.frame < e.maxFrame;
   });
 
+  // Cockpit Frame & HUD Yoke overlay
   drawCockpitFrame(ctx, cw, ch);
 
   ctx.restore();
 }
 
 function renderMcScene(ctx, cw, ch) {
+  // Obstacle Drone / Asteroid Barrier
   const cx = cw * 0.68;
   const cy = ch * 0.38 + Math.sin(Date.now() / 450) * 14;
 
+  // Space Drone
   ctx.save();
   ctx.fillStyle = '#1e1b4b';
   ctx.strokeStyle = '#ef4444';
@@ -2979,11 +2947,13 @@ function renderMcScene(ctx, cw, ch) {
   ctx.fill();
   ctx.stroke();
 
+  // Core sensor
   ctx.fillStyle = '#ef4444';
   ctx.beginPath();
   ctx.arc(cx, cy, 10 + Math.sin(Date.now() / 200) * 3, 0, Math.PI * 2);
   ctx.fill();
 
+  // Floating Asteroids around
   for (let i = 0; i < 3; i++) {
     const ax = cw * 0.42 + i * 110 + Math.sin(Date.now() / 900 + i) * 15;
     const ay = ch * 0.52 + Math.cos(Date.now() / 700 + i) * 20;
@@ -2993,6 +2963,7 @@ function renderMcScene(ctx, cw, ch) {
 }
 
 function renderFillScene(ctx, cw, ch) {
+  // Heavy Battle Cruiser Target
   const cx = cw * 0.72;
   const cy = ch * 0.36 + Math.sin(Date.now() / 600) * 18;
 
@@ -3003,6 +2974,7 @@ function renderFillScene(ctx, cw, ch) {
   ctx.shadowColor = '#f59e0b';
   ctx.shadowBlur = 20;
 
+  // Cruiser Hull
   ctx.beginPath();
   ctx.moveTo(cx - 80, cy);
   ctx.lineTo(cx + 70, cy - 40);
@@ -3012,6 +2984,7 @@ function renderFillScene(ctx, cw, ch) {
   ctx.fill();
   ctx.stroke();
 
+  // Shield Matrix
   ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
   ctx.strokeRect(cx - 90, cy - 50, 200, 100);
 
@@ -3019,9 +2992,11 @@ function renderFillScene(ctx, cw, ch) {
 }
 
 function renderEssayScene(ctx, cw, ch) {
+  // Canyon Cliff Walls
   const canyonH = ch * 0.55;
 
   ctx.save();
+  // Left Cliff Wall
   ctx.fillStyle = '#2b110a';
   ctx.beginPath();
   ctx.moveTo(0, canyonH - 80);
@@ -3033,6 +3008,7 @@ function renderEssayScene(ctx, cw, ch) {
   ctx.closePath();
   ctx.fill();
 
+  // Right Cliff Wall
   ctx.fillStyle = '#2b110a';
   ctx.beginPath();
   ctx.moveTo(cw, canyonH - 80);
@@ -3044,9 +3020,11 @@ function renderEssayScene(ctx, cw, ch) {
   ctx.closePath();
   ctx.fill();
 
+  // Canyon Abyss
   ctx.fillStyle = '#050204';
   ctx.fillRect(cw * 0.32, canyonH - 30, cw * 0.36, ch - canyonH + 30);
 
+  // Canyon Dreadnought Boss
   const bx = cw * 0.5;
   const by = canyonH - 60 + Math.sin(Date.now() / 500) * 12;
 
@@ -3066,11 +3044,13 @@ function renderEssayScene(ctx, cw, ch) {
   ctx.fill();
   ctx.stroke();
 
+  // Boss Eye
   ctx.fillStyle = '#ff0055';
   ctx.beginPath();
   ctx.arc(bx, by - 15, 12, 0, Math.PI * 2);
   ctx.fill();
 
+  // Ancient Cliff Runes Marker
   ctx.font = '700 13px Orbitron';
   ctx.fillStyle = '#fbbf24';
   ctx.fillText('📜 TEBING JURANG: KUNCI ARTEFAK', cw * 0.16, canyonH - 40);
@@ -3100,6 +3080,7 @@ function drawMiniAsteroid(ctx, x, y, r) {
 function drawCockpitFrame(ctx, cw, ch) {
   ctx.save();
 
+  // Bottom Dashboard Panel
   const panelH = ch * 0.26;
   const panelY = ch - panelH;
 
@@ -3117,6 +3098,7 @@ function drawCockpitFrame(ctx, cw, ch) {
   ctx.closePath();
   ctx.fill();
 
+  // Edge Neon Glow
   ctx.strokeStyle = '#00f0ff';
   ctx.lineWidth = 2;
   ctx.shadowColor = '#00f0ff';
@@ -3127,7 +3109,9 @@ function drawCockpitFrame(ctx, cw, ch) {
   ctx.stroke();
   ctx.shadowBlur = 0;
 
+  // Cockpit Side Pillars
   ctx.fillStyle = '#0f1422';
+  // Left
   ctx.beginPath();
   ctx.moveTo(0, 0);
   ctx.lineTo(cw * 0.06, 0);
@@ -3135,7 +3119,7 @@ function drawCockpitFrame(ctx, cw, ch) {
   ctx.lineTo(0, ch * 0.78);
   ctx.closePath();
   ctx.fill();
-
+  // Right
   ctx.beginPath();
   ctx.moveTo(cw, 0);
   ctx.lineTo(cw * 0.94, 0);
@@ -3144,6 +3128,7 @@ function drawCockpitFrame(ctx, cw, ch) {
   ctx.closePath();
   ctx.fill();
 
+  // Center Radar Screen
   const rx = cw * 0.5;
   const ry = panelY + 50;
   ctx.fillStyle = '#04130d';
@@ -3152,6 +3137,7 @@ function drawCockpitFrame(ctx, cw, ch) {
   ctx.lineWidth = 1;
   ctx.strokeRect(rx - 65, ry - 35, 130, 70);
 
+  // Radar sweep
   const sweepAngle = (Date.now() / 900) % (Math.PI * 2);
   ctx.strokeStyle = '#34d399';
   ctx.beginPath();
@@ -3159,6 +3145,7 @@ function drawCockpitFrame(ctx, cw, ch) {
   ctx.lineTo(rx + Math.cos(sweepAngle) * 60, ry + Math.sin(sweepAngle) * 32);
   ctx.stroke();
 
+  // Target Lock Bracket in center of screen
   const reticleX = cw * 0.5;
   const reticleY = ch * 0.38;
   ctx.strokeStyle = 'rgba(0, 240, 255, 0.6)';
@@ -3168,6 +3155,7 @@ function drawCockpitFrame(ctx, cw, ch) {
   ctx.arc(reticleX, reticleY, 6, 0, Math.PI * 2);
   ctx.stroke();
 
+  // Control Yoke / Steering Handle
   ctx.strokeStyle = '#334155';
   ctx.lineWidth = 10;
   ctx.lineCap = 'round';
@@ -3176,6 +3164,7 @@ function drawCockpitFrame(ctx, cw, ch) {
   ctx.quadraticCurveTo(cw * 0.5, ch - 55, cw * 0.62, ch - 15);
   ctx.stroke();
 
+  // Tactical Mode Display
   ctx.font = '700 13px Orbitron';
   ctx.fillStyle = '#00f0ff';
   ctx.textAlign = 'center';
@@ -3188,7 +3177,7 @@ function drawCockpitFrame(ctx, cw, ch) {
 }
 
 /* ==============================================================================
-   H. QUESTION LOGIC & INTERACTION (SUPPORTS DYNAMIC OPTIONS & OPTION IMAGES)
+   H. QUESTION LOGIC & INTERACTION
    ============================================================================== */
 function presentQuestion() {
   if (gameState.qIndex >= 30) {
@@ -3196,6 +3185,10 @@ function presentQuestion() {
     return;
   }
 
+  // Phase categorization
+  // 0..14 => MC (15 Qs)
+  // 15..24 => Fill (10 Qs)
+  // 25..29 => Essay (5 Qs)
   if (gameState.qIndex < 15) {
     gameState.phase = 'mc';
     renderMcQuestionCard(gameState.mcQuestions[gameState.qIndex]);
@@ -3220,19 +3213,12 @@ function renderMcQuestionCard(q) {
     ${q.image_url ? `<img src="${q.image_url}" class="q-body-img">` : ''}
     <div class="mc-grid">
   `;
-  const labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-  const optImages = q.option_images || [];
+  const labels = ['A', 'B', 'C', 'D'];
   q.options.forEach((opt, idx) => {
-    const imgTag = optImages[idx]
-      ? `<img src="${optImages[idx]}" style="max-height:90px;max-width:100%;border-radius:8px;display:block;margin-bottom:6px;border:1px solid rgba(255,255,255,0.15)">`
-      : '';
     html += `
       <div class="mc-choice-btn" data-idx="${idx}" onclick="selectMcOption(this, ${idx})">
-        <span class="mc-badge">${labels[idx] || (idx + 1)}</span>
-        <div style="flex:1">
-          ${imgTag}
-          <span>${opt || ''}</span>
-        </div>
+        <span class="mc-badge">${labels[idx]}</span>
+        <span>${opt}</span>
       </div>
     `;
   });
@@ -3271,13 +3257,14 @@ function submitMcAnswer(correctIdx) {
       triggerExplosion(gameCanvas.width * 0.68, gameCanvas.height * 0.38);
       gameState.score += 2;
       gameState.mcScore += 2;
-      gameState.warpSpeed = 7;
+      gameState.warpSpeed = 7; // Warp speed rush forward
       showToast('Bagus! Rintangan hancur (+2 Poin) 💥', 'success');
       updateGameHUD();
     }, 250);
   } else {
+    // Evasive Maneuver
     sound.playEvasion();
-    gameState.cockpitTargetRoll = -0.18;
+    gameState.cockpitTargetRoll = -0.18; // Roll left
     gameState.shakeAmount = 25;
     showToast('Jawaban salah! Pesawat bermanuver menghindar (+0 Poin)', 'error');
     setTimeout(() => { gameState.cockpitTargetRoll = 0; }, 700);
@@ -3292,20 +3279,11 @@ function submitMcAnswer(correctIdx) {
   }, 1600);
 }
 
-let selectedFillIdx = null;
-function selectFillAmmo(btnEl, idx) {
-  document.querySelectorAll('.missile-ammo-btn').forEach(b => b.classList.remove('selected'));
-  btnEl.classList.add('selected');
-  selectedFillIdx = idx;
-}
-
 function renderFillQuestionCard(q) {
   const overlay = document.getElementById('flightDialog');
   const modal = document.getElementById('flightModalContent');
   const num = gameState.qIndex - 15 + 1;
-  selectedFillIdx = null;
 
-  const optImages = q.option_images || [];
   let html = `
     <div class="modal-phase-tag phase-fill">KAPAL MUSUH #${num} • ISIAN RUDAL (3 POIN)</div>
     <div class="q-body-text">${q.text}</div>
@@ -3313,24 +3291,14 @@ function renderFillQuestionCard(q) {
 
     <div class="missile-ammo-dock">
       <div class="ammo-title">🚀 PILIH AMUNISI RUDAL TAKTIS:</div>
-      <div class="missile-ammo-grid">
+      <select id="missileDropdownAnswer" class="missile-select">
+        <option value="">-- Buka Wadah Amunisi --</option>
   `;
   q.options.forEach((opt, idx) => {
-    const imgTag = optImages[idx]
-      ? `<img src="${optImages[idx]}" style="max-height:75px;max-width:100%;border-radius:6px;display:block;margin-bottom:4px">`
-      : '';
-    html += `
-      <div class="missile-ammo-btn" onclick="selectFillAmmo(this, ${idx})">
-        <span class="mc-badge" style="border-color:#f59e0b;color:#fbbf24">#${idx + 1}</span>
-        <div style="flex:1">
-          ${imgTag}
-          <span>${opt || ''}</span>
-        </div>
-      </div>
-    `;
+    html += `<option value="${idx}">🚀 Rudal Bay #${idx + 1}: ${opt}</option>`;
   });
   html += `
-      </div>
+      </select>
     </div>
     <button class="btn-fire-action" onclick="submitFillAnswer(${q.correct})">🚀 TEMBAKKAN RUDAL KE TARGET!</button>
   `;
@@ -3340,11 +3308,13 @@ function renderFillQuestionCard(q) {
 }
 
 function submitFillAnswer(correctIdx) {
-  if (selectedFillIdx === null) {
+  const sel = document.getElementById('missileDropdownAnswer');
+  const val = sel.value;
+  if (val === '') {
     showToast('Pilih amunisi rudal terlebih dahulu!', 'error');
     return;
   }
-  const isCorrect = (selectedFillIdx === correctIdx);
+  const isCorrect = (parseInt(val) === correctIdx);
 
   if (isCorrect) {
     sound.playMissile();
@@ -3359,8 +3329,9 @@ function submitFillAnswer(correctIdx) {
       updateGameHUD();
     }, 400);
   } else {
+    // Evasive Maneuver
     sound.playEvasion();
-    gameState.cockpitTargetRoll = 0.18;
+    gameState.cockpitTargetRoll = 0.18; // Roll right
     gameState.shakeAmount = 25;
     showToast('Rudal meleset! Pesawat bermanuver darurat (+0 Poin)', 'error');
     setTimeout(() => { gameState.cockpitTargetRoll = 0; }, 700);
@@ -3369,7 +3340,6 @@ function submitFillAnswer(correctIdx) {
   setTimeout(() => {
     document.getElementById('flightDialog').classList.remove('active');
     gameState.warpSpeed = 1.5;
-    selectedFillIdx = null;
     gameState.qIndex++;
     setTimeout(() => presentQuestion(), 700);
   }, 1600);
@@ -3414,12 +3384,7 @@ function insertCliffHint(hint) {
 
 function escapeHtml(str) {
   if (!str) return '';
-  return str.replace(/'/g, "\'").replace(/"/g, '&quot;');
-}
-
-function escapeAttr(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
 function submitEssayAnswer(keyAnswer) {
@@ -3431,6 +3396,7 @@ function submitEssayAnswer(keyAnswer) {
     return;
   }
 
+  // Evaluation: keyword matching ratio
   const keys = keyAnswer.toLowerCase().split(/[,;.\s]+/).filter(w => w.length > 2);
   let matches = 0;
   keys.forEach(k => {
@@ -3494,6 +3460,7 @@ function completeFlightMission() {
   document.getElementById('gameScreen').style.display = 'none';
   if (gameAnimId) cancelAnimationFrame(gameAnimId);
 
+  // Save score to local & Supabase
   const finalScore = gameState.score;
   const scoreRecord = {
     siswa_username: currentUser.username,
@@ -3513,6 +3480,7 @@ function completeFlightMission() {
     supabaseClient.from('scores').insert([scoreRecord]).then();
   }
 
+  // Display Score Screen
   const scoreScreen = document.getElementById('scoreScreen');
   document.getElementById('finalScoreDisplay').textContent = finalScore;
   document.getElementById('statScoreMc').textContent = `${gameState.mcScore} / 30`;
@@ -3528,11 +3496,10 @@ function completeFlightMission() {
     msgEl.className = 'score-eval-message encourage';
   }
 
-  const studentKelas = String(currentUser.kelas || '');
+  // Check remaining allowed planets
   const remaining = data.mapel.filter(m => {
     const allowed = data.akses[m.id] || [];
-    const isPermitted = allowed.includes(currentUser.username) || (allowed.length === 0 && studentKelas && String(m.kelas) === studentKelas);
-    return isPermitted && m.id !== gameState.planet.id;
+    return allowed.includes(currentUser.username) && m.id !== gameState.planet.id;
   });
 
   const actionsEl = document.getElementById('scoreActionsContainer');
@@ -3568,12 +3535,15 @@ function seedFullDemoQuestions() {
   const data = getLocalData();
   const targetMapelId = 'mapel_ipa';
 
+  // Check if mapel_ipa exists
   if (!data.mapel.some(m => m.id === targetMapelId)) {
     data.mapel.push({ id: targetMapelId, nama: 'Ilmu Pengetahuan Alam (IPA)', warna: '#2ecc71', kelas: '6', deskripsi: 'Planet Biosfer' });
   }
 
+  // Remove old questions for this mapel to seed fresh
   data.questions = data.questions.filter(q => q.mapel_id !== targetMapelId);
 
+  // 15 Pilihan Ganda (PG)
   const mcSample = [
     { text: 'Planet yang dijuluki sebagai Planet Merah dalam sistem tata surya kita adalah...', opts: ['Venus', 'Mars', 'Merkurius', 'Jupiter'], correct: 1 },
     { text: 'Bintang terdekat dengan planet Bumi yang menjadi pusat tata surya adalah...', opts: ['Matahari', 'Sirius', 'Proxima Centauri', 'Polaris'], correct: 0 },
@@ -3600,13 +3570,13 @@ function seedFullDemoQuestions() {
       text: m.text,
       image_url: null,
       options: m.opts,
-      option_images: [],
       correct: m.correct,
       created_by: 'admin',
       created_at: new Date().toISOString()
     });
   });
 
+  // 10 Isian (Fill Rudal)
   const fillSample = [
     { text: 'Alat optik pembesar yang digunakan para astronom untuk mengamati benda langit yang jauh adalah...', opts: ['Teleskop', 'Mikroskop', 'Periskop', 'Lup'], correct: 0 },
     { text: 'Lapisan gas Ozon pada atmosfer bumi berfungsi menyerap radiasi sinar berbahaya yaitu sinar...', opts: ['Inframerah', 'Ultraviolet', 'Sinar Gamma', 'Gelombang Radio'], correct: 1 },
@@ -3628,13 +3598,13 @@ function seedFullDemoQuestions() {
       text: f.text,
       image_url: null,
       options: f.opts,
-      option_images: [],
       correct: f.correct,
       created_by: 'admin',
       created_at: new Date().toISOString()
     });
   });
 
+  // 5 Uraian (Essay Boss Jurang)
   const essaySample = [
     {
       text: 'Jelaskan mengapa planet Bumi merupakan satu-satunya planet di tata surya kita yang dapat dihuni oleh kehidupan makhluk hidup!',
