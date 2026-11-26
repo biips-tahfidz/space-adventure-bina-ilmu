@@ -21,7 +21,7 @@
     }
     #space-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
     .container {
-      position: relative; z-index: 2; max-width: 1040px; margin: 0 auto;
+      position: relative; z-index: 2; max-width: 1060px; margin: 0 auto;
       background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(10px);
       border: 1px solid rgba(99, 102, 241, 0.35); padding: 22px 26px;
       border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
@@ -121,6 +121,7 @@
     .btn-danger { background: #ef4444; color: #fff; }
     .btn-primary-xs { background: #3b82f6; color: #fff; padding: 6px 11px; font-size: 0.79rem; }
     .btn-secondary-xs { background: #475569; color: #fff; padding: 6px 10px; font-size: 0.79rem; }
+    .btn-warning-xs { background: #f59e0b; color: #0f172a; padding: 4px 9px; font-size: 0.76rem; }
     .btn-danger-xs { background: #ef4444; color: #fff; padding: 4px 9px; font-size: 0.76rem; }
 
     .card-panel {
@@ -170,15 +171,28 @@
 
     /* CHECKBOX MATRIX MAPEL LINTAS KELAS */
     .kelas-matrix-group {
-      background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 12px; margin-bottom: 10px;
+      background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px;
     }
-    .kelas-matrix-title { font-weight: 700; color: #38bdf8; font-size: 0.88rem; margin-bottom: 8px; }
-    .checkbox-mapel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 7px; }
+    .kelas-matrix-header {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      gap: 8px; margin-bottom: 10px; padding-bottom: 7px; border-bottom: 1px dashed #334155;
+    }
+    .kelas-matrix-title { font-weight: 700; color: #38bdf8; font-size: 0.92rem; }
+    .checkbox-mapel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
     .chk-mapel-item {
-      display: flex; align-items: center; gap: 7px; background: #1e293b; border: 1px solid #334155;
-      padding: 6px 10px; border-radius: 8px; cursor: pointer; margin-top: 0; font-size: 0.81rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      background: #1e293b; border: 1px solid #334155;
+      padding: 6px 9px; border-radius: 8px; margin-top: 0; font-size: 0.81rem;
     }
     .chk-mapel-item:has(input:checked) { border-color: #10b981; background: rgba(16, 185, 129, 0.18); color: #fff; }
+    .chk-mapel-left { display: flex; align-items: center; gap: 7px; cursor: pointer; flex: 1; margin-top: 0; }
+    .mapel-actions-mini { display: flex; gap: 4px; flex-shrink: 0; }
+    .btn-icon-mini {
+      background: rgba(15, 23, 42, 0.75); color: #cbd5e1; border: 1px solid #475569;
+      padding: 2px 6px; border-radius: 6px; font-size: 0.72rem; line-height: 1.2;
+    }
+    .btn-icon-mini:hover { border-color: #38bdf8; color: #fff; }
+    .btn-icon-mini.del:hover { border-color: #ef4444; background: #ef4444; color: #fff; }
 
     /* KARTU DATA */
     .item-card {
@@ -252,7 +266,7 @@
       display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 12px;
     }
     .modal-content {
-      background: #1e293b; border: 1px solid rgba(99, 102, 241, 0.45); width: 100%; max-width: 760px;
+      background: #1e293b; border: 1px solid rgba(99, 102, 241, 0.45); width: 100%; max-width: 780px;
       max-height: 92vh; overflow-y: auto; padding: 22px; border-radius: 18px;
     }
     .modal-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #334155; }
@@ -273,6 +287,10 @@
       display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
       background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
       border: 1px solid rgba(99, 102, 241, 0.45); border-radius: 14px; padding: 14px 18px; margin-bottom: 16px;
+    }
+    .mapel-pill-card {
+      display: inline-flex; align-items: center; gap: 8px; background: #1e293b;
+      border: 1px solid #475569; padding: 7px 11px; border-radius: 10px; margin: 4px 6px 4px 0; font-size: 0.85rem;
     }
   </style>
 </head>
@@ -413,12 +431,12 @@
         <div id="daftar-soal"></div>
       </div>
 
-      <!-- SUB-PANEL B: CHECKBOX MAPEL LINTAS KELAS -->
+      <!-- SUB-PANEL B: CHECKBOX MAPEL LINTAS KELAS + TAMBAH/EDIT/HAPUS MAPEL PER KELAS -->
       <div id="panel-guru-mapel" class="card-panel hidden">
         <div class="flex-between" style="margin-bottom:12px;">
           <div>
-            <h3>Centang Mata Pelajaran &amp; Kelas yang Anda Ajarkan</h3>
-            <p class="subtitle-sm">Satu guru dapat memilih lebih dari satu mata pelajaran dan lintas kelas (Kelas 1 – 6). Planet siswa otomatis menyesuaikan.</p>
+            <h3>Centang &amp; Kelola Mata Pelajaran per Kelas (Kelas 1 – 6)</h3>
+            <p class="subtitle-sm">Anda dapat mencentang mapel yang diajar, menambah mapel baru di setiap kelas, maupun mengedit/menghapus mapel.</p>
           </div>
           <button id="btn-simpan-mapel-guru" type="button" class="btn-success">💾 Simpan Pilihan Mapel</button>
         </div>
@@ -449,6 +467,7 @@
       <div class="sub-tabs">
         <button id="subtab-admin-guru" type="button" class="btn-subtab active">👨‍🏫 Kelola Ustadz / Guru</button>
         <button id="subtab-admin-siswa" type="button" class="btn-subtab">🧑‍🎓 Kelola Siswa &amp; Kelas (1–6)</button>
+        <button id="subtab-admin-mapel" type="button" class="btn-subtab">🪐 Kelola Daftar Mapel per Kelas</button>
       </div>
 
       <!-- KELOLA GURU -->
@@ -485,7 +504,64 @@
         </div>
         <div id="daftar-siswa-admin"></div>
       </div>
+
+      <!-- KELOLA DAFTAR MAPEL PER KELAS (ADMIN) -->
+      <div id="panel-admin-mapel" class="card-panel hidden">
+        <div class="flex-between" style="margin-bottom:12px;">
+          <div>
+            <h3>Master Mata Pelajaran per Jenjang Kelas (Kelas 1 – 6)</h3>
+            <p class="subtitle-sm">Tambah mata pelajaran baru khusus di setiap kelas, edit nama/ikon mapel, atau hapus mapel yang tidak digunakan.</p>
+          </div>
+        </div>
+        <div id="daftar-mapel-per-kelas-admin"></div>
+      </div>
     </main>
+  </div>
+
+  <!-- ==================== MODAL TAMBAH / EDIT MATA PELAJARAN PER KELAS ==================== -->
+  <div id="modal-mapel-kelas" class="modal hidden">
+    <div class="modal-content" style="max-width:480px;">
+      <div class="modal-header-bar">
+        <h3 id="judul-modal-mapel">🪐 Tambah / Edit Mata Pelajaran</h3>
+        <button type="button" class="btn-close-icon" data-close="modal-mapel-kelas">✕</button>
+      </div>
+      <form id="form-mapel-kelas">
+        <input type="hidden" id="mapel-kelas-target" />
+        <input type="hidden" id="mapel-edit-index" value="-1" />
+
+        <label for="inp-mapel-kelas-display">Jenjang Kelas</label>
+        <input type="text" id="inp-mapel-kelas-display" readonly style="opacity:0.75;" />
+
+        <div class="grid-2">
+          <div>
+            <label for="inp-mapel-ikon">Ikon Planet / Simbol</label>
+            <select id="inp-mapel-ikon">
+              <option value="🪐">🪐 Saturnus (Matematika)</option>
+              <option value="🌍">🌍 Bumi (Sains/IPA)</option>
+              <option value="🌕">🌕 Bulan (Bahasa)</option>
+              <option value="🌙">🌙 Sabit (PAI/Tahfidz)</option>
+              <option value="🛸">🛸 UFO (Bahasa Asing)</option>
+              <option value="☄️">☄️ Komet (IPS/Sosial)</option>
+              <option value="⭐">⭐ Bintang (PKn/Karakter)</option>
+              <option value="🛰️">🛰️ Satelit (TIK/Komputer)</option>
+              <option value="🔥">🔥 Matahari (PJOK)</option>
+              <option value="🌌">🌌 Galaksi (Seni/Prakarya)</option>
+              <option value="📚">📚 Buku (Muatan Lokal)</option>
+              <option value="🕌">🕌 Masjid (Diniyah/Arab)</option>
+            </select>
+          </div>
+          <div>
+            <label for="inp-mapel-nama">Nama Mata Pelajaran</label>
+            <input type="text" id="inp-mapel-nama" required placeholder="Contoh: Bahasa Arab / Tahfidz" />
+          </div>
+        </div>
+
+        <div class="aksi-form-between">
+          <button type="button" class="btn-secondary" data-close="modal-mapel-kelas">Batal</button>
+          <button type="submit" class="btn-success">💾 Simpan Mata Pelajaran</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- ==================== MODAL EDIT PROFIL KEPALA SEKOLAH ==================== -->
@@ -532,7 +608,7 @@
           </div>
         </div>
         <label>Pilih Mata Pelajaran &amp; Kelas yang Diampu (Bisa Lintas Kelas):</label>
-        <div id="modal-guru-matrix" style="max-height:300px;overflow-y:auto;margin-top:6px;"></div>
+        <div id="modal-guru-matrix" style="max-height:320px;overflow-y:auto;margin-top:6px;"></div>
         <div class="aksi-form-between">
           <button type="button" class="btn-secondary" data-close="modal-guru">Batal</button>
           <button type="submit" class="btn-success">💾 Simpan Data Guru</button>
@@ -742,20 +818,44 @@
   <script>
     (function () {
       const DAFTAR_KELAS = ['Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas 4', 'Kelas 5', 'Kelas 6'];
-      const DAFTAR_MAPEL = [
-        { nama: 'Matematika', ikon: '🪐', warna: 'linear-gradient(135deg, #f59e0b, #d97706)' },
-        { nama: 'IPA / Sains', ikon: '🌍', warna: 'linear-gradient(135deg, #10b981, #047857)' },
-        { nama: 'Bahasa Indonesia', ikon: '🌕', warna: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' },
-        { nama: 'Bahasa Inggris', ikon: '🛸', warna: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' },
-        { nama: 'PAI / Tahfidz', ikon: '🌙', warna: 'linear-gradient(135deg, #14b8a6, #0f766e)' },
-        { nama: 'IPS / Sosial', ikon: '☄️', warna: 'linear-gradient(135deg, #ec4899, #be185d)' },
-        { nama: 'PKn / Karakter', ikon: '⭐', warna: 'linear-gradient(135deg, #eab308, #a16207)' },
-        { nama: 'Informatika / TIK', ikon: '🛰️', warna: 'linear-gradient(135deg, #06b6d4, #0e7490)' },
-        { nama: 'PJOK / Olahraga', ikon: '🔥', warna: 'linear-gradient(135deg, #ef4444, #b91c1c)' },
-        { nama: 'Seni Budaya', ikon: '🌌', warna: 'linear-gradient(135deg, #a855f7, #7e22ce)' },
+      const WARNA_PLANET_PALETTE = [
+        'linear-gradient(135deg, #f59e0b, #d97706)',
+        'linear-gradient(135deg, #10b981, #047857)',
+        'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+        'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+        'linear-gradient(135deg, #14b8a6, #0f766e)',
+        'linear-gradient(135deg, #ec4899, #be185d)',
+        'linear-gradient(135deg, #eab308, #a16207)',
+        'linear-gradient(135deg, #06b6d4, #0e7490)',
+        'linear-gradient(135deg, #ef4444, #b91c1c)',
+        'linear-gradient(135deg, #a855f7, #7e22ce)',
       ];
 
-      const STORAGE_KEY = 'space_cbt_school_state_v3';
+      function buatDefaultMapelPerKelas() {
+        const base = [
+          { nama: 'Matematika', ikon: '🪐' },
+          { nama: 'IPA / Sains', ikon: '🌍' },
+          { nama: 'Bahasa Indonesia', ikon: '🌕' },
+          { nama: 'Bahasa Inggris', ikon: '🛸' },
+          { nama: 'PAI / Tahfidz', ikon: '🌙' },
+          { nama: 'IPS / Sosial', ikon: '☄️' },
+          { nama: 'PKn / Karakter', ikon: '⭐' },
+          { nama: 'Informatika / TIK', ikon: '🛰️' },
+          { nama: 'PJOK / Olahraga', ikon: '🔥' },
+          { nama: 'Seni Budaya', ikon: '🌌' },
+        ];
+        const obj = {};
+        DAFTAR_KELAS.forEach((k) => {
+          obj[k] = base.map((m, idx) => ({
+            nama: m.nama,
+            ikon: m.ikon,
+            warna: WARNA_PLANET_PALETTE[idx % WARNA_PLANET_PALETTE.length],
+          }));
+        });
+        return obj;
+      }
+
+      const STORAGE_KEY = 'space_cbt_school_state_v4';
 
       // State Default Sekolah
       let state = {
@@ -765,6 +865,7 @@
           sekolah: 'SD Bina Ilmu Blora',
           alamat: 'Blora, Jawa Tengah',
         },
+        mapelPerKelas: buatDefaultMapelPerKelas(),
         teachers: [
           {
             id: 'guru_1',
@@ -795,6 +896,14 @@
             const parsed = JSON.parse(raw);
             state = { ...state, ...parsed };
           }
+          if (!state.mapelPerKelas || typeof state.mapelPerKelas !== 'object') {
+            state.mapelPerKelas = buatDefaultMapelPerKelas();
+          }
+          DAFTAR_KELAS.forEach((k) => {
+            if (!Array.isArray(state.mapelPerKelas[k])) {
+              state.mapelPerKelas[k] = [];
+            }
+          });
         } catch (_) {}
       }
 
@@ -855,7 +964,6 @@
           const durasi = 2.95;
           const now = ctx.currentTime;
 
-          // Sub-Bass Boom
           const osc = ctx.createOscillator();
           const bassGain = ctx.createGain();
           osc.type = isDamage ? 'sawtooth' : 'sine';
@@ -868,7 +976,6 @@
           osc.start(now);
           osc.stop(now + durasi);
 
-          // Gemuruh Ledakan White Noise
           const bufferSize = ctx.sampleRate * durasi;
           const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
           const data = buffer.getChannelData(0);
@@ -1056,25 +1163,139 @@
       document.getElementById('tab-guru').addEventListener('click', () => switchMainView('guru'));
       document.getElementById('tab-admin').addEventListener('click', () => switchMainView('admin'));
 
-      // ==================== HELPER MATRIX MAPEL LINTAS KELAS ====================
+      // ==================== CRUD MATA PELAJARAN PER KELAS (TAMBAH / EDIT / HAPUS) ====================
+      function bukaModalMapelKelas(kelas, indexEdit = -1) {
+        document.getElementById('mapel-kelas-target').value = kelas;
+        document.getElementById('mapel-edit-index').value = String(indexEdit);
+        document.getElementById('inp-mapel-kelas-display').value = kelas;
+
+        if (indexEdit >= 0 && state.mapelPerKelas[kelas]?.[indexEdit]) {
+          const item = state.mapelPerKelas[kelas][indexEdit];
+          document.getElementById('judul-modal-mapel').textContent = `✏️ Edit Mata Pelajaran (${kelas})`;
+          document.getElementById('inp-mapel-ikon').value = item.ikon || '🪐';
+          document.getElementById('inp-mapel-nama').value = item.nama;
+        } else {
+          document.getElementById('judul-modal-mapel').textContent = `➕ Tambah Mata Pelajaran di ${kelas}`;
+          document.getElementById('inp-mapel-ikon').value = '🪐';
+          document.getElementById('inp-mapel-nama').value = '';
+        }
+        document.getElementById('modal-mapel-kelas').classList.remove('hidden');
+      }
+
+      function hapusMapelDiKelas(kelas, indexHapus) {
+        const list = state.mapelPerKelas[kelas] || [];
+        const target = list[indexHapus];
+        if (!target) return;
+        if (!confirm(`Hapus mata pelajaran "${target.nama}" dari ${kelas}?`)) return;
+
+        list.splice(indexHapus, 1);
+        // Bersihkan assignment guru untuk mapel yang dihapus di kelas ini
+        state.teachers.forEach((t) => {
+          t.assignments = (t.assignments || []).filter((a) => !(a.kelas === kelas && a.mapel === target.nama));
+        });
+        saveState();
+        refreshSemuaTampilanMapel();
+      }
+
+      document.getElementById('form-mapel-kelas').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const kelas = document.getElementById('mapel-kelas-target').value;
+        const indexEdit = parseInt(document.getElementById('mapel-edit-index').value, 10);
+        const ikon = document.getElementById('inp-mapel-ikon').value;
+        const namaBaru = document.getElementById('inp-mapel-nama').value.trim();
+        if (!namaBaru) return;
+
+        const list = state.mapelPerKelas[kelas] || [];
+        const duplikat = list.some((m, idx) => idx !== indexEdit && m.nama.toLowerCase() === namaBaru.toLowerCase());
+        if (duplikat) {
+          alert(`Mata pelajaran "${namaBaru}" sudah ada di ${kelas}.`);
+          return;
+        }
+
+        if (indexEdit >= 0 && list[indexEdit]) {
+          const namaLama = list[indexEdit].nama;
+          list[indexEdit] = { ...list[indexEdit], nama: namaBaru, ikon };
+
+          // Sinkronkan nama mapel di assignment guru dan soal yang sudah ada di kelas tersebut
+          state.teachers.forEach((t) => {
+            t.assignments = (t.assignments || []).map((a) =>
+              a.kelas === kelas && a.mapel === namaLama ? { ...a, mapel: namaBaru } : a
+            );
+          });
+          state.soalList = state.soalList.map((s) =>
+            s.kelas === kelas && s.mapel === namaLama ? { ...s, mapel: namaBaru } : s
+          );
+        } else {
+          const warna = WARNA_PLANET_PALETTE[list.length % WARNA_PLANET_PALETTE.length];
+          list.push({ nama: namaBaru, ikon, warna });
+        }
+
+        state.mapelPerKelas[kelas] = list;
+        saveState();
+        document.getElementById('modal-mapel-kelas').classList.add('hidden');
+        refreshSemuaTampilanMapel();
+        alert(`✅ Mata pelajaran "${namaBaru}" (${kelas}) berhasil disimpan!`);
+      });
+
+      function refreshSemuaTampilanMapel() {
+        renderPanelGuru();
+        renderPanelAdmin();
+        renderBriefingSiswa();
+        if (!document.getElementById('modal-guru').classList.contains('hidden')) {
+          const curChecked = ambilAssignmentsDariMatrix(document.getElementById('modal-guru-matrix'), 'modal_guru_assign');
+          renderMatrixCheckboxes(document.getElementById('modal-guru-matrix'), curChecked, 'modal_guru_assign');
+        }
+      }
+
+      // ==================== HELPER MATRIX MAPEL LINTAS KELAS (DENGAN TOMBOL + MAPEL, EDIT & HAPUS) ====================
       function renderMatrixCheckboxes(containerEl, selectedAssignments, inputName) {
         containerEl.innerHTML = '';
         DAFTAR_KELAS.forEach((kelas) => {
+          const daftarMapelKelas = state.mapelPerKelas[kelas] || [];
           const group = document.createElement('div');
           group.className = 'kelas-matrix-group';
-          group.innerHTML = `<div class="kelas-matrix-title">📘 ${kelas}</div><div class="checkbox-mapel-grid"></div>`;
-          const grid = group.querySelector('.checkbox-mapel-grid');
+          group.innerHTML = `
+            <div class="kelas-matrix-header">
+              <span class="kelas-matrix-title">📘 ${kelas} (${daftarMapelKelas.length} Mapel)</span>
+              <button type="button" class="btn-primary-xs btn-add-mapel-kelas">+ Tambah Mapel ${kelas}</button>
+            </div>
+            <div class="checkbox-mapel-grid"></div>
+          `;
 
-          DAFTAR_MAPEL.forEach((m) => {
-            const isChecked = selectedAssignments.some((a) => a.kelas === kelas && a.mapel === m.nama);
-            const lbl = document.createElement('label');
-            lbl.className = 'chk-mapel-item';
-            lbl.innerHTML = `
-              <input type="checkbox" name="${inputName}" data-kelas="${kelas}" data-mapel="${escapeHtml(m.nama)}" ${isChecked ? 'checked' : ''} />
-              <span>${m.ikon} ${escapeHtml(m.nama)}</span>
-            `;
-            grid.appendChild(lbl);
+          group.querySelector('.btn-add-mapel-kelas').addEventListener('click', () => {
+            bukaModalMapelKelas(kelas, -1);
           });
+
+          const grid = group.querySelector('.checkbox-mapel-grid');
+          if (!daftarMapelKelas.length) {
+            grid.innerHTML = `<span class="subtitle-sm">Belum ada mapel di ${kelas}. Klik <b>+ Tambah Mapel ${kelas}</b>.</span>`;
+          } else {
+            daftarMapelKelas.forEach((m, idx) => {
+              const isChecked = selectedAssignments.some((a) => a.kelas === kelas && a.mapel === m.nama);
+              const itemDiv = document.createElement('div');
+              itemDiv.className = 'chk-mapel-item';
+              itemDiv.innerHTML = `
+                <label class="chk-mapel-left">
+                  <input type="checkbox" name="${inputName}" data-kelas="${kelas}" data-mapel="${escapeHtml(m.nama)}" ${isChecked ? 'checked' : ''} />
+                  <span>${m.ikon} ${escapeHtml(m.nama)}</span>
+                </label>
+                <div class="mapel-actions-mini">
+                  <button type="button" class="btn-icon-mini edit" title="Edit Mapel">✏️</button>
+                  <button type="button" class="btn-icon-mini del" title="Hapus Mapel">🗑️</button>
+                </div>
+              `;
+              itemDiv.querySelector('.edit').addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                bukaModalMapelKelas(kelas, idx);
+              });
+              itemDiv.querySelector('.del').addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                hapusMapelDiKelas(kelas, idx);
+              });
+              grid.appendChild(itemDiv);
+            });
+          }
+
           containerEl.appendChild(group);
         });
       }
@@ -1117,25 +1338,65 @@
         alert('✅ Profil Kepala Sekolah / Admin berhasil diperbarui!');
       });
 
-      document.getElementById('subtab-admin-guru').addEventListener('click', () => {
-        document.getElementById('subtab-admin-guru').classList.add('active');
-        document.getElementById('subtab-admin-siswa').classList.remove('active');
-        document.getElementById('panel-admin-guru').classList.remove('hidden');
-        document.getElementById('panel-admin-siswa').classList.add('hidden');
-      });
-
-      document.getElementById('subtab-admin-siswa').addEventListener('click', () => {
-        document.getElementById('subtab-admin-siswa').classList.add('active');
-        document.getElementById('subtab-admin-guru').classList.remove('active');
-        document.getElementById('panel-admin-siswa').classList.remove('hidden');
-        document.getElementById('panel-admin-guru').classList.add('hidden');
-        renderDaftarSiswaAdmin();
+      ['guru', 'siswa', 'mapel'].forEach((sub) => {
+        document.getElementById(`subtab-admin-${sub}`).addEventListener('click', () => {
+          ['guru', 'siswa', 'mapel'].forEach((x) => {
+            document.getElementById(`subtab-admin-${x}`).classList.remove('active');
+            document.getElementById(`panel-admin-${x}`).classList.add('hidden');
+          });
+          document.getElementById(`subtab-admin-${sub}`).classList.add('active');
+          document.getElementById(`panel-admin-${sub}`).classList.remove('hidden');
+          if (sub === 'siswa') renderDaftarSiswaAdmin();
+          if (sub === 'mapel') renderDaftarMapelAdmin();
+        });
       });
 
       function renderPanelAdmin() {
         renderProfilAdminHeader();
         renderDaftarGuruAdmin();
         renderDaftarSiswaAdmin();
+        renderDaftarMapelAdmin();
+      }
+
+      function renderDaftarMapelAdmin() {
+        const container = document.getElementById('daftar-mapel-per-kelas-admin');
+        if (!container) return;
+        container.innerHTML = '';
+
+        DAFTAR_KELAS.forEach((kelas) => {
+          const list = state.mapelPerKelas[kelas] || [];
+          const box = document.createElement('div');
+          box.className = 'kelas-matrix-group';
+          box.innerHTML = `
+            <div class="kelas-matrix-header">
+              <span class="kelas-matrix-title">📘 Daftar Mata Pelajaran ${kelas} (${list.length} Mapel)</span>
+              <button type="button" class="btn-primary-xs btn-add-mapel-admin">+ Tambah Mapel ${kelas}</button>
+            </div>
+            <div class="list-pills"></div>
+          `;
+          box.querySelector('.btn-add-mapel-admin').addEventListener('click', () => {
+            bukaModalMapelKelas(kelas, -1);
+          });
+
+          const pills = box.querySelector('.list-pills');
+          if (!list.length) {
+            pills.innerHTML = `<span class="subtitle-sm">Belum ada mata pelajaran di ${kelas}.</span>`;
+          } else {
+            list.forEach((m, idx) => {
+              const pill = document.createElement('div');
+              pill.className = 'mapel-pill-card';
+              pill.innerHTML = `
+                <span>${m.ikon} <b>${escapeHtml(m.nama)}</b></span>
+                <button type="button" class="btn-icon-mini edit" title="Edit Mapel">✏️</button>
+                <button type="button" class="btn-icon-mini del" title="Hapus Mapel">🗑️</button>
+              `;
+              pill.querySelector('.edit').addEventListener('click', () => bukaModalMapelKelas(kelas, idx));
+              pill.querySelector('.del').addEventListener('click', () => hapusMapelDiKelas(kelas, idx));
+              pills.appendChild(pill);
+            });
+          }
+          container.appendChild(box);
+        });
       }
 
       function renderDaftarGuruAdmin() {
@@ -1324,7 +1585,6 @@
         document.getElementById('guru-info-display').textContent =
           `NIP/ID: ${guru.nip || '-'} • Diampu: ${ringkasanMapel || 'Belum ada mapel'}`;
 
-        // Populate filter mapel guru
         const filterMapel = document.getElementById('filter-mapel-guru');
         const mapelUnik = [...new Set((guru.assignments || []).map((a) => a.mapel))];
         filterMapel.innerHTML = '<option value="ALL">Semua Mapel Diampu</option>';
@@ -1443,7 +1703,7 @@
       document.getElementById('filter-kelas-guru').addEventListener('change', renderDaftarSoalGuru);
       document.getElementById('filter-mapel-guru').addEventListener('change', renderDaftarSoalGuru);
 
-      // ==================== EDITOR SOAL (GAMBAR, DROPDOWN TAK TERBATAS, URAIAN, PREVIEW) ====================
+      // ==================== EDITOR SOAL ====================
       const modalSoal = document.getElementById('modal-soal');
       const formSoal = document.getElementById('form-soal');
       const selectTipe = document.getElementById('tipe-soal');
@@ -1463,7 +1723,9 @@
           .filter((a) => a.kelas === kelasDipilih)
           .map((a) => a.mapel);
 
-        const sumber = mapelKelasIni.length ? mapelKelasIni : DAFTAR_MAPEL.map((m) => m.nama);
+        const semuaMapelKelas = (state.mapelPerKelas[kelasDipilih] || []).map((m) => m.nama);
+        const sumber = mapelKelasIni.length ? mapelKelasIni : semuaMapelKelas;
+
         selMapel.innerHTML = '';
         sumber.forEach((m) => {
           const opt = document.createElement('option');
@@ -1567,7 +1829,7 @@
           document.getElementById('judul-modal').textContent = '✏️ Edit Soal Misi';
           document.getElementById('soal-kelas').value = soal.kelas || 'Kelas 1';
           perbaruiDropdownMapelFormSoal();
-          document.getElementById('soal-mapel').value = soal.mapel || 'Matematika';
+          document.getElementById('soal-mapel').value = soal.mapel || '';
           selectTipe.value = soal.tipe;
           document.getElementById('pertanyaan').value = soal.pertanyaan || '';
           setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', soal.gambar_soal || '');
@@ -1713,7 +1975,6 @@
         return payload;
       }
 
-      // PREVIEW TAMPILAN SISWA
       document.getElementById('btn-preview-soal').addEventListener('click', () => {
         const draft = rakitPayloadDariForm();
         if (!draft.pertanyaan) {
@@ -1731,6 +1992,10 @@
         const id = document.getElementById('soal-id').value;
         const payload = rakitPayloadDariForm();
 
+        if (!payload.mapel) {
+          alert('Pilih atau tambahkan mata pelajaran untuk kelas ini terlebih dahulu.');
+          return;
+        }
         if ((payload.tipe === 'isian' || payload.tipe === 'uraian') && payload.opsi_tambahan.length === 0) {
           alert('Tambahkan minimal 1 pilihan jawaban terlebih dahulu.');
           return;
@@ -1743,7 +2008,6 @@
         }
         saveState();
 
-        // Sinkron ke Supabase jika terhubung
         const sb = getSupabase();
         if (sb) {
           try {
@@ -1770,9 +2034,6 @@
       });
 
       // ==================== RENDER KARTU SOAL INTERAKTIF SISWA ====================
-      // Ketentuan 11 & 12:
-      // - PG: langsung dieksekusi saat opsi diklik -> ledakan 3 detik penuh (hancur jika benar, warning kerusakan jika salah) -> otomatis lanjut soal berikutnya.
-      // - Isian (Dropdown tak terbatas) & Uraian (Tombol amunisi): dieksekusi setelah siswa menekan tombol "🚀 Tembak & Lanjut" -> ledakan spektakuler 3 detik -> lanjut soal berikutnya.
       function renderKartuInteraktifSiswa(container, soal, nomor, recordJawaban, isPreview, onEksekusiSelesai) {
         const card = document.createElement('div');
         card.className = 'card-panel';
@@ -1843,7 +2104,6 @@
             </select>
           `;
 
-          // Tampilkan thumbnail gambar jika ada opsi dropdown yang bergambar
           const bergambar = items.filter((it) => it.gambar);
           if (bergambar.length > 0) {
             const gal = document.createElement('div');
@@ -1980,14 +2240,13 @@
       // ==================== ALUR UJIAN SISWA ====================
       let soalMisiSiswa = [];
       let indexSoalAktif = 0;
-      let rekamanJawabanSiswa = {}; // { [soalId]: { jawaban, benar } }
+      let rekamanJawabanSiswa = {};
       let pesertaAktif = null;
 
       function renderBriefingSiswa() {
         const kelasDipilih = document.getElementById('siswa-pilih-kelas').value;
         document.getElementById('label-kelas-planet').textContent = kelasDipilih;
 
-        // Populate dropdown siswa sesuai kelas
         const selNama = document.getElementById('siswa-pilih-nama');
         const inpManual = document.getElementById('siswa-nama-manual');
         const siswaKelasIni = state.students.filter((s) => s.kelas === kelasDipilih);
@@ -2011,7 +2270,6 @@
           inpManual.classList.add('hidden');
         }
 
-        // Kumpulkan semua mata pelajaran yang diikutkan oleh guru untuk kelas ini
         const mapelAktifKelasIni = new Set();
         state.teachers.forEach((t) => {
           (t.assignments || []).forEach((a) => {
@@ -2024,7 +2282,9 @@
         grid.innerHTML = '';
         hiddenMapel.value = '';
 
-        const planetList = DAFTAR_MAPEL.filter((m) => mapelAktifKelasIni.has(m.nama));
+        const masterKelasIni = state.mapelPerKelas[kelasDipilih] || [];
+        const planetList = masterKelasIni.filter((m) => mapelAktifKelasIni.has(m.nama));
+
         if (!planetList.length) {
           grid.innerHTML = `<p class="subtitle-sm">Belum ada mata pelajaran yang diaktifkan Ustadz/Guru untuk ${kelasDipilih}.</p>`;
           return;
@@ -2037,7 +2297,7 @@
           if (idx === 0) hiddenMapel.value = m.nama;
 
           card.innerHTML = `
-            <div class="planet-orb" style="background:${m.warna};">${m.ikon}</div>
+            <div class="planet-orb" style="background:${m.warna || WARNA_PLANET_PALETTE[idx % WARNA_PLANET_PALETTE.length]};">${m.ikon}</div>
             <div class="planet-name">${escapeHtml(m.nama)}</div>
             <div class="planet-sub">${kelasDipilih} • ${jmlSoal} Misi</div>
           `;
