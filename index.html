@@ -3,34 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manajemen Bank Soal</title>
+  <title>Space Adventure - Ujian & Bank Soal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <div class="stars-bg"></div>
 
   <main class="container">
-    <h1>Bank Soal Ujian</h1>
-    <button id="btn-tambah-baru">+ Tambah Soal</button>
+    <header class="app-header">
+      <div class="title-group">
+        <span class="badge-tema">🚀 Space Adventure Mission</span>
+        <h1>Ujian & Bank Soal</h1>
+      </div>
+      <nav class="mode-switch">
+        <button id="tab-siswa" class="btn-tab active" type="button">🧑‍🚀 Mode Ujian Siswa</button>
+        <button id="tab-guru" class="btn-tab" type="button">🛠️ Panel Bank Soal Guru</button>
+      </nav>
+    </header>
 
-    <div id="daftar-soal">Memuat data...</div>
+    <!-- ==================== TAMPILAN SISWA ==================== -->
+    <section id="view-siswa">
+      <!-- Langkah 1: Identitas Siswa -->
+      <div id="siswa-mulai-card" class="card-panel">
+        <h2>Siap Meluncur ke Misi Ujian?</h2>
+        <p class="subtitle">Masukkan identitas Anda untuk memulai. Jawaban tersimpan otomatis di perangkat sehingga aman terhadap gangguan jaringan.</p>
+        <form id="form-identitas-siswa">
+          <label for="siswa-nama">Nama Lengkap Siswa</label>
+          <input type="text" id="siswa-nama" placeholder="Contoh: Ahmad Fauzan" required>
+
+          <label for="siswa-kelas">Kelas / Rombel</label>
+          <input type="text" id="siswa-kelas" placeholder="Contoh: Kelas 5A" required>
+
+          <button type="submit" class="btn-primary-rocket">🚀 Mulai Misi Ujian</button>
+        </form>
+      </div>
+
+      <!-- Langkah 2: Lembar Pengerjaan Ujian -->
+      <div id="siswa-ujian-area" class="hidden">
+        <div class="ujian-topbar">
+          <div>
+            <strong id="info-peserta">Peserta: -</strong>
+            <span id="status-autosave" class="badge-save">✓ Tersimpan lokal</span>
+          </div>
+          <button type="button" id="btn-kumpulkan-ujian" class="btn-success">Kumpulkan Jawaban</button>
+        </div>
+        <div id="kontainer-soal-siswa"></div>
+      </div>
+
+      <!-- Langkah 3: Hasil Ujian Siswa -->
+      <div id="siswa-selesai-card" class="card-panel hidden">
+        <h2>🎉 Misi Ujian Selesai!</h2>
+        <p id="pesan-hasil-siswa" class="subtitle"></p>
+        <div id="skor-akhir-box" class="skor-box"></div>
+        <button type="button" id="btn-ujian-ulang" class="btn-secondary">Kembali ke Halaman Awal</button>
+      </div>
+    </section>
+
+    <!-- ==================== TAMPILAN GURU ==================== -->
+    <section id="view-guru" class="hidden">
+      <div class="guru-toolbar">
+        <div class="sub-tabs">
+          <button type="button" id="subtab-soal" class="btn-subtab active">📚 Daftar Soal</button>
+          <button type="button" id="subtab-nilai" class="btn-subtab">📊 Hasil Jawaban Siswa</button>
+        </div>
+        <button id="btn-tambah-baru" class="btn-primary-rocket" type="button">+ Tambah Soal Baru</button>
+      </div>
+
+      <!-- Daftar Soal Guru -->
+      <div id="panel-daftar-soal">
+        <div id="daftar-soal">Memuat daftar soal...</div>
+      </div>
+
+      <!-- Rekap Jawaban Siswa -->
+      <div id="panel-rekap-nilai" class="hidden">
+        <div class="rekap-header">
+          <h3>Rekap Pengumpulan Siswa</h3>
+          <button type="button" id="btn-refresh-nilai" class="btn-secondary">↻ Segarkan Data</button>
+        </div>
+        <div id="daftar-hasil-siswa">Memuat data hasil ujian...</div>
+      </div>
+    </section>
   </main>
 
-  <!-- Modal Form -->
+  <!-- Modal Form Tambah / Edit Soal (PG, Isian, Uraian) -->
   <div id="modal-soal" class="modal hidden">
     <div class="modal-content">
       <h2 id="judul-modal">Tambah Soal</h2>
       <form id="form-soal">
         <input type="hidden" id="soal-id">
 
-        <label>Tipe Soal:</label>
+        <label for="tipe-soal">Tipe Soal:</label>
         <select id="tipe-soal">
           <option value="pg">Pilihan Ganda</option>
           <option value="isian">Isian Singkat</option>
           <option value="uraian">Uraian</option>
         </select>
 
-        <label>Pertanyaan:</label>
-        <textarea id="pertanyaan" rows="3" required></textarea>
+        <label for="pertanyaan">Pertanyaan:</label>
+        <textarea id="pertanyaan" rows="3" placeholder="Tuliskan pertanyaan di sini..." required></textarea>
 
         <div id="area-opsi-pg">
           <input type="text" id="opsi-a" placeholder="Opsi A" required>
@@ -39,12 +110,12 @@
           <input type="text" id="opsi-d" placeholder="Opsi D" required>
         </div>
 
-        <label>Kunci Jawaban:</label>
-        <textarea id="kunci-jawaban" rows="2"></textarea>
+        <label for="kunci-jawaban" id="label-kunci">Kunci Jawaban (Ketik A, B, C, atau D):</label>
+        <textarea id="kunci-jawaban" rows="2" placeholder="Contoh: A (untuk PG) atau jawaban singkat/pedoman uraian..." required></textarea>
 
         <div class="aksi-form">
-          <button type="submit">Simpan</button>
-          <button type="button" id="btn-batal">Batal</button>
+          <button type="button" id="btn-batal" class="btn-secondary">Batal</button>
+          <button type="submit" class="btn-success">Simpan Soal</button>
         </div>
       </form>
     </div>
