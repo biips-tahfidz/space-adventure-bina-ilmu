@@ -952,27 +952,61 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
             <img id="mcImgPrev" class="preview-img" style="display:none">
           </div>
           <div class="form-field">
-            <label>Pilihan Jawaban (Tandai radio button pada opsi yang BENAR)</label>
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <div style="display:flex;align-items:center;gap:10px">
-                <input type="radio" name="mcCorrectRad" value="0" checked>
-                <input type="text" id="mcOptText0" class="form-control" placeholder="Pilihan A">
+            <label>Pilihan Jawaban & Gambar Opsi (Tandai radio button pada opsi yang BENAR)</label>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="radio" name="mcCorrectRad" value="0" checked>
+                  <input type="text" id="mcOptText0" class="form-control" placeholder="Pilihan A">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar A
+                    <input type="file" id="mcOptFile0" accept="image/*" style="display:none" onchange="handleOptionImgPreview(this, 'mcOptImgPrev0')">
+                  </label>
+                </div>
+                <img id="mcOptImgPrev0" class="preview-img" style="display:none;margin-left:26px">
               </div>
-              <div style="display:flex;align-items:center;gap:10px">
-                <input type="radio" name="mcCorrectRad" value="1">
-                <input type="text" id="mcOptText1" class="form-control" placeholder="Pilihan B">
+
+              <div style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="radio" name="mcCorrectRad" value="1">
+                  <input type="text" id="mcOptText1" class="form-control" placeholder="Pilihan B">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar B
+                    <input type="file" id="mcOptFile1" accept="image/*" style="display:none" onchange="handleOptionImgPreview(this, 'mcOptImgPrev1')">
+                  </label>
+                </div>
+                <img id="mcOptImgPrev1" class="preview-img" style="display:none;margin-left:26px">
               </div>
-              <div style="display:flex;align-items:center;gap:10px">
-                <input type="radio" name="mcCorrectRad" value="2">
-                <input type="text" id="mcOptText2" class="form-control" placeholder="Pilihan C">
+
+              <div style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="radio" name="mcCorrectRad" value="2">
+                  <input type="text" id="mcOptText2" class="form-control" placeholder="Pilihan C">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar C
+                    <input type="file" id="mcOptFile2" accept="image/*" style="display:none" onchange="handleOptionImgPreview(this, 'mcOptImgPrev2')">
+                  </label>
+                </div>
+                <img id="mcOptImgPrev2" class="preview-img" style="display:none;margin-left:26px">
               </div>
-              <div style="display:flex;align-items:center;gap:10px">
-                <input type="radio" name="mcCorrectRad" value="3">
-                <input type="text" id="mcOptText3" class="form-control" placeholder="Pilihan D">
+
+              <div style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="radio" name="mcCorrectRad" value="3">
+                  <input type="text" id="mcOptText3" class="form-control" placeholder="Pilihan D">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar D
+                    <input type="file" id="mcOptFile3" accept="image/*" style="display:none" onchange="handleOptionImgPreview(this, 'mcOptImgPrev3')">
+                  </label>
+                </div>
+                <img id="mcOptImgPrev3" class="preview-img" style="display:none;margin-left:26px">
               </div>
             </div>
           </div>
-          <button class="btn btn-primary" onclick="guruSaveMcQuestion()">💾 Simpan Soal Pilihan Ganda</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button type="button" class="btn btn-secondary" onclick="previewDraftMcQuestion()">👁️ Preview Tampilan Siswa</button>
+            <button type="button" class="btn btn-primary" onclick="guruSaveMcQuestion()">💾 Simpan Soal Pilihan Ganda</button>
+          </div>
         </div>
 
         <!-- FORM 2: ISIAN (10 SOAL) -->
@@ -989,33 +1023,64 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
             <img id="fillImgPrev" class="preview-img" style="display:none">
           </div>
           <div class="form-field">
-            <label>Gambar Jawaban (Opsional - untuk jawaban berupa gambar)</label>
+            <label>Gambar Jawaban Kunci (Opsional - untuk jawaban berupa gambar)</label>
             <input type="file" id="fillAnswerFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'fillAnswerImgPrev')">
             <img id="fillAnswerImgPrev" class="preview-img" style="display:none">
           </div>
           <div class="form-field">
-            <label>Pilihan Amunisi Dropdown (Tandai opsi yang BENAR)</label>
-            <div id="fillOptionsContainer" style="display:flex;flex-direction:column;gap:8px">
-              <div class="fill-option-row" style="display:flex;align-items:center;gap:10px">
-                <input type="radio" name="fillCorrectRad" value="0" checked style="width:16px;height:16px;accent-color:var(--accent)">
-                <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 1">
+            <label>Pilihan Amunisi Dropdown & Gambar Tiap Opsi (Tandai opsi yang BENAR)</label>
+            <div id="fillOptionsContainer" style="display:flex;flex-direction:column;gap:10px">
+              <div class="fill-option-row" style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="radio" name="fillCorrectRad" value="0" checked style="width:16px;height:16px;accent-color:var(--accent)">
+                  <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 1">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar
+                    <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+                  </label>
+                </div>
+                <img class="preview-img fill-opt-img-prev" style="display:none;margin-left:26px">
               </div>
-              <div class="fill-option-row" style="display:flex;align-items:center;gap:10px">
-                <input type="radio" name="fillCorrectRad" value="1" style="width:16px;height:16px;accent-color:var(--accent)">
-                <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 2">
+              <div class="fill-option-row" style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="radio" name="fillCorrectRad" value="1" style="width:16px;height:16px;accent-color:var(--accent)">
+                  <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 2">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar
+                    <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+                  </label>
+                </div>
+                <img class="preview-img fill-opt-img-prev" style="display:none;margin-left:26px">
               </div>
-              <div class="fill-option-row" style="display:flex;align-items:center;gap:10px">
-                <input type="radio" name="fillCorrectRad" value="2" style="width:16px;height:16px;accent-color:var(--accent)">
-                <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 3">
+              <div class="fill-option-row" style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="radio" name="fillCorrectRad" value="2" style="width:16px;height:16px;accent-color:var(--accent)">
+                  <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 3">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar
+                    <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+                  </label>
+                </div>
+                <img class="preview-img fill-opt-img-prev" style="display:none;margin-left:26px">
               </div>
-              <div class="fill-option-row" style="display:flex;align-items:center;gap:10px">
-                <input type="radio" name="fillCorrectRad" value="3" style="width:16px;height:16px;accent-color:var(--accent)">
-                <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 4">
+              <div class="fill-option-row" style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="radio" name="fillCorrectRad" value="3" style="width:16px;height:16px;accent-color:var(--accent)">
+                  <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi 4">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar
+                    <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+                  </label>
+                </div>
+                <img class="preview-img fill-opt-img-prev" style="display:none;margin-left:26px">
               </div>
             </div>
             <button type="button" class="btn btn-secondary btn-sm" style="margin-top:10px" onclick="addFillOption()">+ Tambah Pilihan Amunisi</button>
           </div>
-          <button class="btn btn-primary" onclick="guruSaveFillQuestion()">💾 Simpan Soal Isian</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button type="button" class="btn btn-secondary" onclick="previewDraftFillQuestion()">👁️ Preview Tampilan Siswa</button>
+            <button type="button" class="btn btn-primary" onclick="guruSaveFillQuestion()">💾 Simpan Soal Isian</button>
+          </div>
         </div>
 
         <!-- FORM 3: URAIAN (5 SOAL) -->
@@ -1043,26 +1108,54 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
 
           <!-- OPSI AMUNISI TEBING JURANG (TOMBOL-TOMBOL AMUNISI JAWABAN) -->
           <div class="form-field" style="background:rgba(251,191,36,0.08);border:1px dashed rgba(251,191,36,0.3);padding:14px;border-radius:12px;margin-top:12px">
-            <label style="color:#fbbf24;font-weight:700">💎 DAFTAR TOMBOL AMUNISI JAWABAN DI TEBING JURANG:</label>
+            <label style="color:#fbbf24;font-weight:700">💎 DAFTAR TOMBOL AMUNISI JAWABAN DI TEBING JURANG (BISA DISERTAI GAMBAR):</label>
             <p style="font-size:11px;color:#cbd5e1;margin-bottom:10px">
               Masukkan pilihan amunisi yang akan muncul di tebing jurang. <strong>Centang kotak (☑️)</strong> pada amunisi yang merupakan <strong>jawaban BENAR</strong> (bisa lebih dari satu).
             </p>
-            <div id="essayOptionsContainer" style="display:flex;flex-direction:column;gap:8px">
-              <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
-                <input type="checkbox" class="essay-opt-correct" checked style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
-                <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Jawaban 1 (Misal: Oksigen & Atmosfer)">
+            <div id="essayOptionsContainer" style="display:flex;flex-direction:column;gap:10px">
+              <div class="essay-option-row" style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="checkbox" class="essay-opt-correct" checked style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+                  <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Jawaban 1 (Misal: Oksigen & Atmosfer)">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar
+                    <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+                  </label>
+                </div>
+                <img class="preview-img essay-opt-img-prev" style="display:none;margin-left:28px">
               </div>
-              <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
-                <input type="checkbox" class="essay-opt-correct" checked style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
-                <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Jawaban 2 (Misal: Gravitasi Bumi)">
+              <div class="essay-option-row" style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="checkbox" class="essay-opt-correct" checked style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+                  <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Jawaban 2 (Misal: Gravitasi Bumi)">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar
+                    <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+                  </label>
+                </div>
+                <img class="preview-img essay-opt-img-prev" style="display:none;margin-left:28px">
               </div>
-              <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
-                <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
-                <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pengecoh 3 (Misal: Gas Beracun)">
+              <div class="essay-option-row" style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+                  <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pengecoh 3 (Misal: Gas Beracun)">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar
+                    <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+                  </label>
+                </div>
+                <img class="preview-img essay-opt-img-prev" style="display:none;margin-left:28px">
               </div>
-              <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
-                <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
-                <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pengecoh 4 (Misal: Radiasi Kosmik)">
+              <div class="essay-option-row" style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+                  <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pengecoh 4 (Misal: Radiasi Kosmik)">
+                  <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+                    🖼️ Gambar
+                    <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+                  </label>
+                </div>
+                <img class="preview-img essay-opt-img-prev" style="display:none;margin-left:28px">
               </div>
             </div>
             <button type="button" class="btn btn-secondary btn-sm" style="margin-top:10px" onclick="addEssayOption()">+ Tambah Tombol Amunisi</button>
@@ -1072,7 +1165,10 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
             <label>Petunjuk Tambahan di Tebing (Opsional)</label>
             <input type="text" id="essayInputCliffHint" class="form-control" placeholder="Contoh petunjuk: 'Ambil amunisi yang berkaitan dengan syarat kehidupan'">
           </div>
-          <button class="btn btn-primary" onclick="guruSaveEssayQuestion()">💾 Simpan Soal Uraian</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button type="button" class="btn btn-secondary" onclick="previewDraftEssayQuestion()">👁️ Preview Tampilan Siswa</button>
+            <button type="button" class="btn btn-primary" onclick="guruSaveEssayQuestion()">💾 Simpan Soal Uraian</button>
+          </div>
         </div>
       </div>
 
@@ -1260,7 +1356,7 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
      MODAL: EDIT SOAL UJIAN (PG, ISIAN, URAIAN)
      ============================================================================== -->
 <div class="app-modal-overlay" id="editQuestionModal">
-  <div class="app-modal-box" style="max-width:650px;max-height:85vh;overflow-y:auto">
+  <div class="app-modal-box" style="max-width:680px;max-height:88vh;overflow-y:auto">
     <div class="app-modal-header">
       <h3 id="editQModalTitle">✏️ Edit Soal Ujian</h3>
       <button class="btn-close-modal" onclick="closeEditQuestionModal()">✕</button>
@@ -1277,30 +1373,70 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
       <label>Gambar / Ilustrasi Soal (Opsional)</label>
       <input type="file" id="editQFileInput" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'editQImgPrev')">
       <img id="editQImgPrev" class="preview-img" style="display:none;margin-top:6px;max-height:120px">
-      <button type="button" id="editQRemoveImgBtn" class="btn btn-danger btn-sm" style="display:none;margin-top:4px" onclick="removeEditQImage()">Hapus Gambar</button>
+      <button type="button" id="editQRemoveImgBtn" class="btn btn-danger btn-sm" style="display:none;margin-top:4px" onclick="removeEditQImage()">Hapus Gambar Soal</button>
     </div>
 
     <!-- AREA EDIT KHUSUS PG -->
     <div id="editQSectionMc" style="display:none">
       <label style="font-size:12px;color:#94a3b8;font-weight:600;margin-bottom:6px;display:block">
-        Pilihan Jawaban (Tandai radio button pada opsi yang BENAR):
+        Pilihan Jawaban & Gambar Opsi (Tandai radio button pada opsi yang BENAR):
       </label>
       <div style="display:flex;flex-direction:column;gap:8px" id="editMcOptionsWrap">
-        <div style="display:flex;align-items:center;gap:10px">
-          <input type="radio" name="editMcCorrectRad" value="0" style="width:16px;height:16px;accent-color:var(--accent)">
-          <input type="text" id="editMcOptText0" class="form-control" placeholder="Pilihan A">
+        <div style="background:rgba(0,0,0,0.25);padding:8px;border-radius:8px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <input type="radio" name="editMcCorrectRad" value="0" style="width:16px;height:16px;accent-color:var(--accent)">
+            <input type="text" id="editMcOptText0" class="form-control" placeholder="Pilihan A">
+            <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+              🖼️ Gambar
+              <input type="file" accept="image/*" style="display:none" onchange="handleOptionImgPreview(this, 'editMcOptImgPrev0')">
+            </label>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-left:26px">
+            <img id="editMcOptImgPrev0" class="preview-img" style="display:none;max-height:80px">
+            <button type="button" class="btn btn-danger btn-sm" style="padding:2px 6px;font-size:11px" onclick="clearOptImgById('editMcOptImgPrev0')">Hapus Img</button>
+          </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <input type="radio" name="editMcCorrectRad" value="1" style="width:16px;height:16px;accent-color:var(--accent)">
-          <input type="text" id="editMcOptText1" class="form-control" placeholder="Pilihan B">
+        <div style="background:rgba(0,0,0,0.25);padding:8px;border-radius:8px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <input type="radio" name="editMcCorrectRad" value="1" style="width:16px;height:16px;accent-color:var(--accent)">
+            <input type="text" id="editMcOptText1" class="form-control" placeholder="Pilihan B">
+            <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+              🖼️ Gambar
+              <input type="file" accept="image/*" style="display:none" onchange="handleOptionImgPreview(this, 'editMcOptImgPrev1')">
+            </label>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-left:26px">
+            <img id="editMcOptImgPrev1" class="preview-img" style="display:none;max-height:80px">
+            <button type="button" class="btn btn-danger btn-sm" style="padding:2px 6px;font-size:11px" onclick="clearOptImgById('editMcOptImgPrev1')">Hapus Img</button>
+          </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <input type="radio" name="editMcCorrectRad" value="2" style="width:16px;height:16px;accent-color:var(--accent)">
-          <input type="text" id="editMcOptText2" class="form-control" placeholder="Pilihan C">
+        <div style="background:rgba(0,0,0,0.25);padding:8px;border-radius:8px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <input type="radio" name="editMcCorrectRad" value="2" style="width:16px;height:16px;accent-color:var(--accent)">
+            <input type="text" id="editMcOptText2" class="form-control" placeholder="Pilihan C">
+            <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+              🖼️ Gambar
+              <input type="file" accept="image/*" style="display:none" onchange="handleOptionImgPreview(this, 'editMcOptImgPrev2')">
+            </label>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-left:26px">
+            <img id="editMcOptImgPrev2" class="preview-img" style="display:none;max-height:80px">
+            <button type="button" class="btn btn-danger btn-sm" style="padding:2px 6px;font-size:11px" onclick="clearOptImgById('editMcOptImgPrev2')">Hapus Img</button>
+          </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <input type="radio" name="editMcCorrectRad" value="3" style="width:16px;height:16px;accent-color:var(--accent)">
-          <input type="text" id="editMcOptText3" class="form-control" placeholder="Pilihan D">
+        <div style="background:rgba(0,0,0,0.25);padding:8px;border-radius:8px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <input type="radio" name="editMcCorrectRad" value="3" style="width:16px;height:16px;accent-color:var(--accent)">
+            <input type="text" id="editMcOptText3" class="form-control" placeholder="Pilihan D">
+            <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+              🖼️ Gambar
+              <input type="file" accept="image/*" style="display:none" onchange="handleOptionImgPreview(this, 'editMcOptImgPrev3')">
+            </label>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-left:26px">
+            <img id="editMcOptImgPrev3" class="preview-img" style="display:none;max-height:80px">
+            <button type="button" class="btn btn-danger btn-sm" style="padding:2px 6px;font-size:11px" onclick="clearOptImgById('editMcOptImgPrev3')">Hapus Img</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1308,7 +1444,7 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
     <!-- AREA EDIT KHUSUS ISIAN -->
     <div id="editQSectionFill" style="display:none">
       <label style="font-size:12px;color:#94a3b8;font-weight:600;margin-bottom:6px;display:block">
-        Pilihan Amunisi Rudal Dropdown (Tandai opsi yang BENAR):
+        Pilihan Amunisi Rudal Dropdown & Gambar Opsi (Tandai opsi yang BENAR):
       </label>
       <div id="editFillOptionsContainer" style="display:flex;flex-direction:column;gap:8px"></div>
       <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="addEditFillOptionRow()">+ Tambah Pilihan Amunisi</button>
@@ -1334,9 +1470,10 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
       </div>
     </div>
 
-    <div style="display:flex;gap:10px;margin-top:20px">
-      <button class="btn btn-primary" onclick="saveEditedQuestion()">💾 Simpan Perubahan Soal</button>
-      <button class="btn btn-secondary" onclick="closeEditQuestionModal()">Batal</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+      <button type="button" class="btn btn-secondary" onclick="previewEditedQuestion()">👁️ Preview Tampilan Siswa</button>
+      <button type="button" class="btn btn-primary" onclick="saveEditedQuestion()">💾 Simpan Perubahan Soal</button>
+      <button type="button" class="btn btn-secondary" onclick="closeEditQuestionModal()">Batal</button>
     </div>
   </div>
 </div>
@@ -2428,16 +2565,294 @@ function handleMcOptImg(input, idx) {
 // Dynamic fill option management
 let fillOptionCounter = 4; // already have 0-3
 
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+async function handleOptionImgPreview(input, previewId) {
+  const file = input.files && input.files[0];
+  const imgEl = document.getElementById(previewId);
+  if (!imgEl) return;
+  if (!file) {
+    imgEl.style.display = 'none';
+    imgEl.src = '';
+    return;
+  }
+  try {
+    const compressed = await compressImageFile(file, 500, 500, 0.72);
+    imgEl.src = compressed;
+    imgEl.style.display = 'block';
+  } catch (e) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      imgEl.src = ev.target.result;
+      imgEl.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+async function handleRowOptionImg(input) {
+  const file = input.files && input.files[0];
+  const row = input.closest('.fill-option-row, .essay-option-row, .edit-fill-option-row, .edit-essay-option-row');
+  const imgEl = row ? row.querySelector('.preview-img') : null;
+  if (!imgEl) return;
+  if (!file) {
+    imgEl.style.display = 'none';
+    imgEl.src = '';
+    return;
+  }
+  try {
+    const compressed = await compressImageFile(file, 500, 500, 0.72);
+    imgEl.src = compressed;
+    imgEl.style.display = 'block';
+  } catch (e) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      imgEl.src = ev.target.result;
+      imgEl.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function clearOptImgById(imgId) {
+  const el = document.getElementById(imgId);
+  if (el) {
+    el.src = '';
+    el.style.display = 'none';
+  }
+}
+
+function clearRowOptImg(btn) {
+  const row = btn.closest('.fill-option-row, .essay-option-row, .edit-fill-option-row, .edit-essay-option-row');
+  const imgEl = row ? row.querySelector('.preview-img') : null;
+  if (imgEl) {
+    imgEl.src = '';
+    imgEl.style.display = 'none';
+  }
+}
+
+function previewDraftMcQuestion() {
+  const text = document.getElementById('mcInputText').value.trim() || '(Belum ada teks pertanyaan)';
+  const imgEl = document.getElementById('mcImgPrev');
+  const image_url = (imgEl && imgEl.style.display !== 'none' && imgEl.src) ? imgEl.src : null;
+  const opts = [0, 1, 2, 3].map(i => document.getElementById('mcOptText' + i).value.trim() || `Opsi ${['A','B','C','D'][i]}`);
+  const optImgs = [0, 1, 2, 3].map(i => {
+    const el = document.getElementById('mcOptImgPrev' + i);
+    return (el && el.style.display !== 'none' && el.src) ? el.src : null;
+  });
+  openStudentPreviewModal({ type: 'mc', text, image_url, options: opts, option_images: optImgs });
+}
+
+function previewDraftFillQuestion() {
+  const text = document.getElementById('fillInputText').value.trim() || '(Belum ada teks soal isian)';
+  const imgEl = document.getElementById('fillImgPrev');
+  const image_url = (imgEl && imgEl.style.display !== 'none' && imgEl.src) ? imgEl.src : null;
+  const rows = document.querySelectorAll('#fillOptionsContainer .fill-option-row');
+  const opts = [];
+  const optImgs = [];
+  rows.forEach(row => {
+    const txt = row.querySelector('.fill-opt-text')?.value.trim();
+    const img = row.querySelector('.preview-img');
+    const hasImg = img && img.style.display !== 'none' && img.src;
+    if (txt || hasImg) {
+      opts.push(txt || '(Opsi Gambar)');
+      optImgs.push(hasImg ? img.src : null);
+    }
+  });
+  openStudentPreviewModal({
+    type: 'fill',
+    text,
+    image_url,
+    options: opts.length ? opts : ['Amunisi 1', 'Amunisi 2'],
+    option_images: optImgs
+  });
+}
+
+function previewDraftEssayQuestion() {
+  const text = document.getElementById('essayInputText').value.trim() || '(Belum ada teks soal uraian)';
+  const imgEl = document.getElementById('essayImgPrev');
+  const image_url = (imgEl && imgEl.style.display !== 'none' && imgEl.src) ? imgEl.src : null;
+  const rows = document.querySelectorAll('#essayOptionsContainer .essay-option-row');
+  const opts = [];
+  const optImgs = [];
+  rows.forEach(row => {
+    const txt = row.querySelector('.essay-opt-text')?.value.trim();
+    const img = row.querySelector('.preview-img');
+    const hasImg = img && img.style.display !== 'none' && img.src;
+    if (txt || hasImg) {
+      opts.push(txt || '(Amunisi Gambar)');
+      optImgs.push(hasImg ? img.src : null);
+    }
+  });
+  openStudentPreviewModal({
+    type: 'essay',
+    text,
+    image_url,
+    options: opts.length ? opts : ['Amunisi 1', 'Amunisi 2'],
+    option_images: optImgs
+  });
+}
+
+function previewEditedQuestion() {
+  const qtype = document.getElementById('editQType').value;
+  const text = document.getElementById('editQText').value.trim() || '(Belum ada teks pertanyaan)';
+  const imgEl = document.getElementById('editQImgPrev');
+  const image_url = (imgEl && imgEl.style.display !== 'none' && imgEl.src) ? imgEl.src : null;
+
+  if (qtype === 'mc') {
+    const opts = [0, 1, 2, 3].map(i => document.getElementById('editMcOptText' + i)?.value.trim() || `Opsi ${['A','B','C','D'][i]}`);
+    const optImgs = [0, 1, 2, 3].map(i => {
+      const el = document.getElementById('editMcOptImgPrev' + i);
+      return (el && el.style.display !== 'none' && el.src) ? el.src : null;
+    });
+    openStudentPreviewModal({ type: 'mc', text, image_url, options: opts, option_images: optImgs });
+  } else if (qtype === 'fill') {
+    const rows = document.querySelectorAll('#editFillOptionsContainer .edit-fill-option-row');
+    const opts = [];
+    const optImgs = [];
+    rows.forEach(row => {
+      const txt = row.querySelector('.edit-fill-opt-text')?.value.trim();
+      const img = row.querySelector('.preview-img');
+      const hasImg = img && img.style.display !== 'none' && img.src;
+      if (txt || hasImg) {
+        opts.push(txt || '(Opsi Gambar)');
+        optImgs.push(hasImg ? img.src : null);
+      }
+    });
+    openStudentPreviewModal({ type: 'fill', text, image_url, options: opts, option_images: optImgs });
+  } else if (qtype === 'essay') {
+    const rows = document.querySelectorAll('#editEssayOptionsContainer .edit-essay-option-row');
+    const opts = [];
+    const optImgs = [];
+    rows.forEach(row => {
+      const txt = row.querySelector('.edit-essay-opt-text')?.value.trim();
+      const img = row.querySelector('.preview-img');
+      const hasImg = img && img.style.display !== 'none' && img.src;
+      if (txt || hasImg) {
+        opts.push(txt || '(Amunisi Gambar)');
+        optImgs.push(hasImg ? img.src : null);
+      }
+    });
+    openStudentPreviewModal({ type: 'essay', text, image_url, options: opts, option_images: optImgs });
+  }
+}
+
+let previewFillOptImgsCache = [];
+function onPreviewFillSelectChange(sel) {
+  const prev = document.getElementById('previewFillOptImg');
+  if (!prev) return;
+  const idx = sel.value;
+  if (idx !== '' && previewFillOptImgsCache[parseInt(idx)]) {
+    prev.src = previewFillOptImgsCache[parseInt(idx)];
+    prev.style.display = 'block';
+  } else {
+    prev.style.display = 'none';
+  }
+}
+
+function openStudentPreviewModal(q) {
+  const overlay = document.getElementById('flightDialog');
+  const modal = document.getElementById('flightModalContent');
+  const labels = ['A', 'B', 'C', 'D'];
+  previewFillOptImgsCache = q.option_images || [];
+
+  let bodyHtml = `
+    <div style="background:rgba(0,240,255,0.12);border:1px dashed #00f0ff;color:#00f0ff;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;margin-bottom:12px">
+      👁️ MODE PREVIEW TAMPILAN SISWA (Koreksi sebelum disimpan)
+    </div>
+  `;
+
+  if (q.type === 'mc') {
+    bodyHtml += `
+      <div class="modal-phase-tag phase-mc">RINTANGAN #1 • PILIHAN GANDA (2 POIN)</div>
+      <div class="q-body-text">${escapeHtml(q.text)}</div>
+      ${q.image_url ? `<img src="${q.image_url}" class="q-body-img">` : ''}
+      <div class="mc-grid">
+    `;
+    q.options.forEach((opt, idx) => {
+      const optImg = (q.option_images && q.option_images[idx]) ? q.option_images[idx] : null;
+      bodyHtml += `
+        <div class="mc-choice-btn" onclick="this.parentElement.querySelectorAll('.mc-choice-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected')" style="flex-direction:column;align-items:flex-start">
+          <div style="display:flex;align-items:center;gap:10px;width:100%">
+            <span class="mc-badge">${labels[idx] || idx + 1}</span>
+            <span>${escapeHtml(opt)}</span>
+          </div>
+          ${optImg ? `<img src="${optImg}" style="max-height:95px;max-width:100%;border-radius:8px;margin-top:8px;border:1px solid rgba(255,255,255,0.2)">` : ''}
+        </div>
+      `;
+    });
+    bodyHtml += `</div>`;
+  } else if (q.type === 'fill') {
+    bodyHtml += `
+      <div class="modal-phase-tag phase-fill">KAPAL MUSUH #1 • ISIAN RUDAL (3 POIN)</div>
+      <div class="q-body-text">${escapeHtml(q.text)}</div>
+      ${q.image_url ? `<img src="${q.image_url}" class="q-body-img">` : ''}
+      <div class="missile-ammo-dock">
+        <div class="ammo-title">🚀 PILIH AMUNISI RUDAL TAKTIS:</div>
+        <select class="missile-select" onchange="onPreviewFillSelectChange(this)">
+          <option value="">-- Buka Wadah Amunisi --</option>
+          ${q.options.map((opt, idx) => `<option value="${idx}">🚀 Rudal Bay #${idx + 1}: ${escapeHtml(opt)}</option>`).join('')}
+        </select>
+        <img id="previewFillOptImg" style="display:none;max-height:110px;border-radius:8px;margin-top:10px;border:1px solid rgba(245,158,11,0.5)">
+      </div>
+    `;
+  } else if (q.type === 'essay') {
+    bodyHtml += `
+      <div class="modal-phase-tag phase-essay">CANYON BOSS #1 • URAIAN TEBING JURANG (8 POIN)</div>
+      <div class="q-body-text">${escapeHtml(q.text)}</div>
+      ${q.image_url ? `<img src="${q.image_url}" class="q-body-img">` : ''}
+      <div class="canyon-cliff-box" style="margin-top:14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.3);padding:14px;border-radius:12px">
+        <div style="font-size:12px;font-weight:700;color:#fbbf24">📜 AMUNISI TEBING JURANG:</div>
+        <div class="cliff-scroll-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+          ${q.options.map((ammo, idx) => {
+            const optImg = (q.option_images && q.option_images[idx]) ? q.option_images[idx] : null;
+            return `
+              <div class="cliff-rune-pill" style="flex-direction:column;align-items:flex-start;padding:8px 12px;border-radius:8px;border:1px solid #fbbf24;background:rgba(251,191,36,0.15);color:#fff">
+                <span>💎 ${escapeHtml(ammo)}</span>
+                ${optImg ? `<img src="${optImg}" style="max-height:80px;border-radius:6px;margin-top:6px">` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  bodyHtml += `
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button type="button" class="btn btn-secondary" style="width:100%;justify-content:center" onclick="document.getElementById('flightDialog').classList.remove('active')">✕ Tutup Preview & Lanjut Edit</button>
+    </div>
+  `;
+
+  modal.innerHTML = bodyHtml;
+  overlay.classList.add('active');
+}
+
 function addFillOption() {
   const container = document.getElementById('fillOptionsContainer');
   const idx = fillOptionCounter++;
   const row = document.createElement('div');
   row.className = 'fill-option-row';
-  row.style.cssText = 'display:flex;align-items:center;gap:10px';
+  row.style.cssText = 'background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)';
   row.innerHTML = `
-    <input type="radio" name="fillCorrectRad" value="${idx}" style="width:16px;height:16px;accent-color:var(--accent)">
-    <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi ${idx + 1}">
-    <button type="button" class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:16px;line-height:1" onclick="removeFillOption(this)" title="Hapus pilihan">×</button>
+    <div style="display:flex;align-items:center;gap:10px">
+      <input type="radio" name="fillCorrectRad" value="${idx}" style="width:16px;height:16px;accent-color:var(--accent)">
+      <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi ${idx + 1}">
+      <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+        🖼️ Gambar
+        <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+      </label>
+      <button type="button" class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:16px;line-height:1" onclick="removeFillOption(this)" title="Hapus pilihan">×</button>
+    </div>
+    <img class="preview-img fill-opt-img-prev" style="display:none;margin-left:26px">
   `;
   container.appendChild(row);
 }
@@ -2445,11 +2860,10 @@ function addFillOption() {
 function removeFillOption(btn) {
   const row = btn.closest('.fill-option-row');
   if (row) row.remove();
-  // Re-index radio values
   const rows = document.querySelectorAll('#fillOptionsContainer .fill-option-row');
   rows.forEach((r, i) => {
-    const radio = r.querySelector('input[type="radio"]');
-    if (radio) radio.value = i;
+    const rad = r.querySelector('input[type="radio"]');
+    if (rad) rad.value = i;
   });
 }
 
@@ -2460,16 +2874,22 @@ function resetFillOptions() {
   for (let i = 0; i < 4; i++) {
     const row = document.createElement('div');
     row.className = 'fill-option-row';
-    row.style.cssText = 'display:flex;align-items:center;gap:10px';
+    row.style.cssText = 'background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)';
     row.innerHTML = `
-      <input type="radio" name="fillCorrectRad" value="${i}" ${i === 0 ? 'checked' : ''} style="width:16px;height:16px;accent-color:var(--accent)">
-      <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi ${i + 1}">
+      <div style="display:flex;align-items:center;gap:10px">
+        <input type="radio" name="fillCorrectRad" value="${i}" ${i === 0 ? 'checked' : ''} style="width:16px;height:16px;accent-color:var(--accent)">
+        <input type="text" class="form-control fill-opt-text" placeholder="Pilihan Amunisi ${i + 1}">
+        <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+          🖼️ Gambar
+          <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+        </label>
+      </div>
+      <img class="preview-img fill-opt-img-prev" style="display:none;margin-left:26px">
     `;
     container.appendChild(row);
   }
 }
 
-// Dynamic Essay Option (Amunisi Uraian Tebing Jurang)
 let essayOptionCounter = 4;
 
 function addEssayOption() {
@@ -2477,11 +2897,18 @@ function addEssayOption() {
   const idx = essayOptionCounter++;
   const row = document.createElement('div');
   row.className = 'essay-option-row';
-  row.style.cssText = 'display:flex;align-items:center;gap:10px';
+  row.style.cssText = 'background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)';
   row.innerHTML = `
-    <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
-    <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pilihan ${idx + 1}">
-    <button type="button" class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:16px;line-height:1" onclick="removeEssayOption(this)" title="Hapus pilihan">×</button>
+    <div style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+      <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pilihan ${idx + 1}">
+      <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+        🖼️ Gambar
+        <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+      </label>
+      <button type="button" class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:16px;line-height:1" onclick="removeEssayOption(this)" title="Hapus pilihan">×</button>
+    </div>
+    <img class="preview-img essay-opt-img-prev" style="display:none;margin-left:28px">
   `;
   container.appendChild(row);
 }
@@ -2495,24 +2922,25 @@ function resetEssayOptions() {
   const container = document.getElementById('essayOptionsContainer');
   if (!container) return;
   essayOptionCounter = 4;
-  container.innerHTML = `
-    <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
-      <input type="checkbox" class="essay-opt-correct" checked style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
-      <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Jawaban 1">
+  const placeholders = [
+    'Amunisi Jawaban 1 (Misal: Oksigen & Atmosfer)',
+    'Amunisi Jawaban 2 (Misal: Gravitasi Bumi)',
+    'Amunisi Pengecoh 3 (Misal: Gas Beracun)',
+    'Amunisi Pengecoh 4 (Misal: Radiasi Kosmik)'
+  ];
+  container.innerHTML = placeholders.map((ph, i) => `
+    <div class="essay-option-row" style="background:rgba(0,0,0,0.25);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <input type="checkbox" class="essay-opt-correct" ${i < 2 ? 'checked' : ''} style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+        <input type="text" class="form-control essay-opt-text" placeholder="${ph}">
+        <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+          🖼️ Gambar
+          <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+        </label>
+      </div>
+      <img class="preview-img essay-opt-img-prev" style="display:none;margin-left:28px">
     </div>
-    <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
-      <input type="checkbox" class="essay-opt-correct" checked style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
-      <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Jawaban 2">
-    </div>
-    <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
-      <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
-      <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pengecoh 3">
-    </div>
-    <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
-      <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
-      <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pengecoh 4">
-    </div>
-  `;
+  `).join('');
 }
 
 async function guruSaveMcQuestion() {
@@ -2524,8 +2952,16 @@ async function guruSaveMcQuestion() {
   const text = document.getElementById('mcInputText').value.trim();
   if (!text) { showToast('Tuliskan pertanyaan!', 'error'); return; }
 
-  const opts = [0, 1, 2, 3].map(i => document.getElementById('mcOptText' + i).value.trim());
-  if (opts.some(o => !o)) { showToast('Lengkapi keempat pilihan jawaban!', 'error'); return; }
+  const option_images = [0, 1, 2, 3].map(i => {
+    const el = document.getElementById('mcOptImgPrev' + i);
+    return (el && el.style.display !== 'none' && el.src) ? el.src : null;
+  });
+
+  const opts = [0, 1, 2, 3].map(i => {
+    const txt = document.getElementById('mcOptText' + i).value.trim();
+    return txt || (option_images[i] ? `Pilihan ${['A','B','C','D'][i]}` : '');
+  });
+  if (opts.some(o => !o)) { showToast('Lengkapi keempat pilihan jawaban (teks atau gambar)!', 'error'); return; }
 
   const correctRad = document.querySelector('input[name="mcCorrectRad"]:checked');
   const correct = correctRad ? parseInt(correctRad.value) : 0;
@@ -2539,6 +2975,7 @@ async function guruSaveMcQuestion() {
     text,
     image_url,
     options: opts,
+    option_images,
     correct,
     created_by: currentUser.username,
     created_at: new Date().toISOString()
@@ -2553,7 +2990,13 @@ async function guruSaveMcQuestion() {
 
   // Reset Form
   document.getElementById('mcInputText').value = '';
-  [0, 1, 2, 3].forEach(i => document.getElementById('mcOptText' + i).value = '');
+  [0, 1, 2, 3].forEach(i => {
+    document.getElementById('mcOptText' + i).value = '';
+    const f = document.getElementById('mcOptFile' + i);
+    if (f) f.value = '';
+    const p = document.getElementById('mcOptImgPrev' + i);
+    if (p) { p.style.display = 'none'; p.src = ''; }
+  });
   document.getElementById('mcInputFile').value = '';
   imgEl.style.display = 'none';
 
@@ -2571,17 +3014,28 @@ async function guruSaveFillQuestion() {
   const text = document.getElementById('fillInputText').value.trim();
   if (!text) { showToast('Tuliskan pertanyaan isian!', 'error'); return; }
 
-  // Collect ALL option texts from dynamic rows
-  const optInputs = document.querySelectorAll('#fillOptionsContainer .fill-opt-text');
-  const opts = Array.from(optInputs).map(inp => inp.value.trim()).filter(o => o);
+  const rows = document.querySelectorAll('#fillOptionsContainer .fill-option-row');
+  const opts = [];
+  const option_images = [];
+  let correct = 0;
+
+  rows.forEach((row, idx) => {
+    const txt = row.querySelector('.fill-opt-text')?.value.trim();
+    const img = row.querySelector('.preview-img');
+    const hasImg = img && img.style.display !== 'none' && img.src;
+    const rad = row.querySelector('input[type="radio"]');
+    if (txt || hasImg) {
+      if (rad && rad.checked) correct = opts.length;
+      opts.push(txt || `Amunisi ${idx + 1}`);
+      option_images.push(hasImg ? img.src : null);
+    }
+  });
+
   if (opts.length < 2) { showToast('Minimal buat 2 pilihan amunisi!', 'error'); return; }
 
-  const correctRad = document.querySelector('input[name="fillCorrectRad"]:checked');
-  const correct = correctRad ? parseInt(correctRad.value) : 0;
   const imgEl = document.getElementById('fillImgPrev');
   const image_url = (imgEl && imgEl.style.display !== 'none') ? imgEl.src : null;
 
-  // Answer image
   const ansImgEl = document.getElementById('fillAnswerImgPrev');
   const answer_image_url = (ansImgEl && ansImgEl.style.display !== 'none') ? ansImgEl.src : null;
 
@@ -2593,6 +3047,7 @@ async function guruSaveFillQuestion() {
     image_url,
     answer_image_url,
     options: opts,
+    option_images,
     correct,
     created_by: currentUser.username,
     created_at: new Date().toISOString()
@@ -2605,7 +3060,6 @@ async function guruSaveFillQuestion() {
     if (r.error) console.warn('Supabase insert fill error:', r.error);
   }
 
-  // Reset Form
   document.getElementById('fillInputText').value = '';
   document.getElementById('fillInputFile').value = '';
   imgEl.style.display = 'none';
@@ -2628,19 +3082,23 @@ async function guruSaveEssayQuestion() {
   const answer = document.getElementById('essayInputAnswer').value.trim();
   const cliff_hint = document.getElementById('essayInputCliffHint').value.trim();
 
-  // Kumpulkan daftar opsi amunisi uraian tebing jurang
   const optRows = document.querySelectorAll('#essayOptionsContainer .essay-option-row');
   const essayOptions = [];
+  const option_images = [];
   const correctOptions = [];
 
-  optRows.forEach(row => {
+  optRows.forEach((row, idx) => {
     const txtInp = row.querySelector('.essay-opt-text');
     const chk = row.querySelector('.essay-opt-correct');
+    const img = row.querySelector('.preview-img');
+    const hasImg = img && img.style.display !== 'none' && img.src;
     const val = txtInp ? txtInp.value.trim() : '';
-    if (val) {
-      essayOptions.push(val);
+    if (val || hasImg) {
+      const labelVal = val || `Amunisi Gambar ${idx + 1}`;
+      essayOptions.push(labelVal);
+      option_images.push(hasImg ? img.src : null);
       if (chk && chk.checked) {
-        correctOptions.push(val);
+        correctOptions.push(labelVal);
       }
     }
   });
@@ -2658,7 +3116,6 @@ async function guruSaveEssayQuestion() {
   const imgEl = document.getElementById('essayImgPrev');
   const image_url = (imgEl && imgEl.style.display !== 'none') ? imgEl.src : null;
 
-  // Answer image
   const ansImgEl = document.getElementById('essayAnswerImgPrev');
   const answer_image_url = (ansImgEl && ansImgEl.style.display !== 'none') ? ansImgEl.src : null;
 
@@ -2670,8 +3127,9 @@ async function guruSaveEssayQuestion() {
     image_url,
     answer: answer || correctOptions.join(', '),
     answer_image_url,
-    options: essayOptions, // Semua opsi tombol amunisi di tebing
-    correct_options: correctOptions, // Amunisi yang benar
+    options: essayOptions,
+    option_images,
+    correct_options: correctOptions,
     cliff_hint: cliff_hint || 'Pilih amunisi yang tepat dari tebing jurang!',
     created_by: currentUser.username,
     created_at: new Date().toISOString()
@@ -2684,7 +3142,6 @@ async function guruSaveEssayQuestion() {
     if (r.error) console.warn('Supabase insert essay error:', r.error);
   }
 
-  // Reset Form
   document.getElementById('essayInputText').value = '';
   document.getElementById('essayInputAnswer').value = '';
   document.getElementById('essayInputCliffHint').value = '';
@@ -2719,17 +3176,18 @@ function guruRenderMyQuestions() {
     html += `<div class="glass-card">`;
     html += `<h3>${title} - Total: ${list.length}</h3>`;
     list.forEach((q, idx) => {
+      const hasOptImgs = q.option_images && q.option_images.some(Boolean);
       html += `
         <div style="background:rgba(0,0,0,0.3);padding:12px;border-radius:10px;margin-bottom:8px;position:relative">
           <div style="position:absolute;top:10px;right:10px;display:flex;gap:6px">
-            <button class="btn btn-secondary btn-sm" style="padding:4px 10px;font-size:12px" onclick="openEditQuestionModal('${q.id}')">✏️ Edit</button>
-            <button class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:12px" onclick="guruDeleteQuestion('${q.id}')">🗑️ Hapus</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="padding:4px 10px;font-size:12px" onclick="openEditQuestionModal('${q.id}')">✏️ Edit</button>
+            <button type="button" class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:12px" onclick="guruDeleteQuestion('${q.id}')">🗑️ Hapus</button>
           </div>
-          <div style="font-weight:700;color:#fff;margin-bottom:4px;padding-right:140px">${idx + 1}. ${q.text}</div>
+          <div style="font-weight:700;color:#fff;margin-bottom:4px;padding-right:140px">${idx + 1}. ${escapeHtml(q.text)}</div>
           ${q.image_url ? `<img src="${q.image_url}" class="preview-img" style="display:block;margin-bottom:6px">` : ''}
-          ${q.options ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong style="color:#34d399">${q.options[q.correct] || '-'}</strong> (Opsi: ${q.options.join(', ')})</div>` : ''}
-          ${q.answer ? `<div style="font-size:12px;color:#94a3b8">Kunci Uraian: <strong style="color:#34d399">${q.answer}</strong></div>` : ''}
-          ${q.cliff_hint ? `<div style="font-size:11px;color:#fbbf24">📜 Petunjuk Tebing: ${q.cliff_hint}</div>` : ''}
+          ${q.options ? `<div style="font-size:12px;color:#94a3b8">Kunci: <strong style="color:#34d399">${escapeHtml(q.type === 'essay' ? (q.correct_options || []).join(', ') : (q.options[q.correct] || '-'))}</strong> (Opsi: ${q.options.map(escapeHtml).join(', ')}) ${hasOptImgs ? '🖼️' : ''}</div>` : ''}
+          ${q.answer ? `<div style="font-size:12px;color:#94a3b8">Kunci Uraian: <strong style="color:#34d399">${escapeHtml(q.answer)}</strong></div>` : ''}
+          ${q.cliff_hint ? `<div style="font-size:11px;color:#fbbf24">📜 Petunjuk Tebing: ${escapeHtml(q.cliff_hint)}</div>` : ''}
         </div>
       `;
     });
@@ -2777,7 +3235,6 @@ function openEditQuestionModal(qid) {
   document.getElementById('editQType').value = q.type;
   document.getElementById('editQText').value = q.text || '';
 
-  // Gambar
   const imgPrev = document.getElementById('editQImgPrev');
   const rmImgBtn = document.getElementById('editQRemoveImgBtn');
   document.getElementById('editQFileInput').value = '';
@@ -2791,7 +3248,6 @@ function openEditQuestionModal(qid) {
     rmImgBtn.style.display = 'none';
   }
 
-  // Tampilkan form sesuai tipe soal
   const secMc = document.getElementById('editQSectionMc');
   const secFill = document.getElementById('editQSectionFill');
   const secEssay = document.getElementById('editQSectionEssay');
@@ -2800,6 +3256,7 @@ function openEditQuestionModal(qid) {
   secEssay.style.display = 'none';
 
   const modalTitle = document.getElementById('editQModalTitle');
+  const optImgs = Array.isArray(q.option_images) ? q.option_images : [];
 
   if (q.type === 'mc') {
     modalTitle.textContent = '✏️ Edit Soal: Pilihan Ganda';
@@ -2808,6 +3265,16 @@ function openEditQuestionModal(qid) {
     for (let i = 0; i < 4; i++) {
       const el = document.getElementById('editMcOptText' + i);
       if (el) el.value = opts[i] || '';
+      const imgEl = document.getElementById('editMcOptImgPrev' + i);
+      if (imgEl) {
+        if (optImgs[i]) {
+          imgEl.src = optImgs[i];
+          imgEl.style.display = 'block';
+        } else {
+          imgEl.src = '';
+          imgEl.style.display = 'none';
+        }
+      }
     }
     const rad = document.querySelector(`input[name="editMcCorrectRad"][value="${q.correct || 0}"]`);
     if (rad) rad.checked = true;
@@ -2823,11 +3290,22 @@ function openEditQuestionModal(qid) {
     opts.forEach((opt, idx) => {
       const row = document.createElement('div');
       row.className = 'edit-fill-option-row';
-      row.style.cssText = 'display:flex;align-items:center;gap:10px';
+      row.style.cssText = 'background:rgba(0,0,0,0.25);padding:8px;border-radius:8px';
+      const oImg = optImgs[idx] || '';
       row.innerHTML = `
-        <input type="radio" name="editFillCorrectRad" value="${idx}" ${idx === (q.correct || 0) ? 'checked' : ''} style="width:16px;height:16px;accent-color:var(--accent)">
-        <input type="text" class="form-control edit-fill-opt-text" value="${escapeHtml(opt)}" placeholder="Pilihan Amunisi ${idx + 1}">
-        <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditFillRow(this)">×</button>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="radio" name="editFillCorrectRad" value="${idx}" ${idx === (q.correct || 0) ? 'checked' : ''} style="width:16px;height:16px;accent-color:var(--accent)">
+          <input type="text" class="form-control edit-fill-opt-text" value="${escapeHtml(opt)}" placeholder="Pilihan Amunisi ${idx + 1}">
+          <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+            🖼️ Gambar
+            <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+          </label>
+          <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditFillRow(this)">×</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-left:26px">
+          <img class="preview-img" src="${oImg}" style="display:${oImg ? 'block' : 'none'};max-height:80px">
+          ${oImg ? '<button type="button" class="btn btn-danger btn-sm" style="padding:2px 6px;font-size:11px" onclick="clearRowOptImg(this)">Hapus Img</button>' : ''}
+        </div>
       `;
       container.appendChild(row);
     });
@@ -2853,11 +3331,22 @@ function openEditQuestionModal(qid) {
       const isChecked = correctOpts.includes(opt) || idx === 0;
       const row = document.createElement('div');
       row.className = 'edit-essay-option-row';
-      row.style.cssText = 'display:flex;align-items:center;gap:10px';
+      row.style.cssText = 'background:rgba(0,0,0,0.25);padding:8px;border-radius:8px';
+      const oImg = optImgs[idx] || '';
       row.innerHTML = `
-        <input type="checkbox" class="edit-essay-opt-correct" ${isChecked ? 'checked' : ''} style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika jawaban BENAR">
-        <input type="text" class="form-control edit-essay-opt-text" value="${escapeHtml(opt)}" placeholder="Amunisi Jawaban ${idx + 1}">
-        <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditEssayRow(this)">×</button>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="checkbox" class="edit-essay-opt-correct" ${isChecked ? 'checked' : ''} style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika jawaban BENAR">
+          <input type="text" class="form-control edit-essay-opt-text" value="${escapeHtml(opt)}" placeholder="Amunisi Jawaban ${idx + 1}">
+          <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+            🖼️ Gambar
+            <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+          </label>
+          <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditEssayRow(this)">×</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-left:28px">
+          <img class="preview-img" src="${oImg}" style="display:${oImg ? 'block' : 'none'};max-height:80px">
+          ${oImg ? '<button type="button" class="btn btn-danger btn-sm" style="padding:2px 6px;font-size:11px" onclick="clearRowOptImg(this)">Hapus Img</button>' : ''}
+        </div>
       `;
       container.appendChild(row);
     });
@@ -2883,11 +3372,20 @@ function addEditFillOptionRow() {
   const idx = editFillOptCounter++;
   const row = document.createElement('div');
   row.className = 'edit-fill-option-row';
-  row.style.cssText = 'display:flex;align-items:center;gap:10px';
+  row.style.cssText = 'background:rgba(0,0,0,0.25);padding:8px;border-radius:8px';
   row.innerHTML = `
-    <input type="radio" name="editFillCorrectRad" value="${idx}" style="width:16px;height:16px;accent-color:var(--accent)">
-    <input type="text" class="form-control edit-fill-opt-text" placeholder="Pilihan Amunisi ${idx + 1}">
-    <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditFillRow(this)">×</button>
+    <div style="display:flex;align-items:center;gap:10px">
+      <input type="radio" name="editFillCorrectRad" value="${idx}" style="width:16px;height:16px;accent-color:var(--accent)">
+      <input type="text" class="form-control edit-fill-opt-text" placeholder="Pilihan Amunisi ${idx + 1}">
+      <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+        🖼️ Gambar
+        <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+      </label>
+      <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditFillRow(this)">×</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-left:26px">
+      <img class="preview-img" style="display:none;max-height:80px">
+    </div>
   `;
   container.appendChild(row);
 }
@@ -2907,11 +3405,20 @@ function addEditEssayOptionRow() {
   const idx = editEssayOptCounter++;
   const row = document.createElement('div');
   row.className = 'edit-essay-option-row';
-  row.style.cssText = 'display:flex;align-items:center;gap:10px';
+  row.style.cssText = 'background:rgba(0,0,0,0.25);padding:8px;border-radius:8px';
   row.innerHTML = `
-    <input type="checkbox" class="edit-essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika jawaban BENAR">
-    <input type="text" class="form-control edit-essay-opt-text" placeholder="Amunisi Pilihan ${idx + 1}">
-    <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditEssayRow(this)">×</button>
+    <div style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" class="edit-essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika jawaban BENAR">
+      <input type="text" class="form-control edit-essay-opt-text" placeholder="Amunisi Pilihan ${idx + 1}">
+      <label class="btn btn-secondary btn-sm" style="cursor:pointer;white-space:nowrap;margin:0">
+        🖼️ Gambar
+        <input type="file" accept="image/*" style="display:none" onchange="handleRowOptionImg(this)">
+      </label>
+      <button type="button" class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:14px" onclick="removeEditEssayRow(this)">×</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-left:28px">
+      <img class="preview-img" style="display:none;max-height:80px">
+    </div>
   `;
   container.appendChild(row);
 }
@@ -2941,7 +3448,6 @@ async function saveEditedQuestion() {
   const qObj = data.questions[qIndex];
   qObj.text = text;
 
-  // Gambar
   const imgPrev = document.getElementById('editQImgPrev');
   if (imgPrev && imgPrev.style.display !== 'none' && imgPrev.src) {
     qObj.image_url = imgPrev.src;
@@ -2950,9 +3456,14 @@ async function saveEditedQuestion() {
   }
 
   if (qtype === 'mc') {
+    const option_images = [0, 1, 2, 3].map(i => {
+      const el = document.getElementById('editMcOptImgPrev' + i);
+      return (el && el.style.display !== 'none' && el.src) ? el.src : null;
+    });
     const opts = [0, 1, 2, 3].map(i => {
       const el = document.getElementById('editMcOptText' + i);
-      return el ? el.value.trim() : '';
+      const val = el ? el.value.trim() : '';
+      return val || (option_images[i] ? `Pilihan ${['A','B','C','D'][i]}` : '');
     });
     if (opts.some(o => !o)) {
       showToast('Lengkapi keempat pilihan jawaban A, B, C, D!', 'error');
@@ -2960,33 +3471,52 @@ async function saveEditedQuestion() {
     }
     const rad = document.querySelector('input[name="editMcCorrectRad"]:checked');
     qObj.options = opts;
+    qObj.option_images = option_images;
     qObj.correct = rad ? parseInt(rad.value) : 0;
 
   } else if (qtype === 'fill') {
-    const optInps = document.querySelectorAll('#editFillOptionsContainer .edit-fill-opt-text');
-    const opts = Array.from(optInps).map(inp => inp.value.trim()).filter(Boolean);
+    const rows = document.querySelectorAll('#editFillOptionsContainer .edit-fill-option-row');
+    const opts = [];
+    const option_images = [];
+    let correct = 0;
+    rows.forEach((row, idx) => {
+      const txt = row.querySelector('.edit-fill-opt-text')?.value.trim();
+      const img = row.querySelector('.preview-img');
+      const hasImg = img && img.style.display !== 'none' && img.src;
+      const rad = row.querySelector('input[type="radio"]');
+      if (txt || hasImg) {
+        if (rad && rad.checked) correct = opts.length;
+        opts.push(txt || `Amunisi ${idx + 1}`);
+        option_images.push(hasImg ? img.src : null);
+      }
+    });
     if (opts.length < 2) {
       showToast('Minimal buat 2 pilihan amunisi rudal!', 'error');
       return;
     }
-    const rad = document.querySelector('input[name="editFillCorrectRad"]:checked');
     qObj.options = opts;
-    qObj.correct = rad ? parseInt(rad.value) : 0;
+    qObj.option_images = option_images;
+    qObj.correct = correct;
 
   } else if (qtype === 'essay') {
     const answer = document.getElementById('editQEssayAnswer').value.trim();
     const cliffHint = document.getElementById('editQCliffHint').value.trim();
     const optRows = document.querySelectorAll('#editEssayOptionsContainer .edit-essay-option-row');
     const essayOpts = [];
+    const option_images = [];
     const correctOpts = [];
 
-    optRows.forEach(row => {
+    optRows.forEach((row, idx) => {
       const txt = row.querySelector('.edit-essay-opt-text');
       const chk = row.querySelector('.edit-essay-opt-correct');
+      const img = row.querySelector('.preview-img');
+      const hasImg = img && img.style.display !== 'none' && img.src;
       const val = txt ? txt.value.trim() : '';
-      if (val) {
-        essayOpts.push(val);
-        if (chk && chk.checked) correctOpts.push(val);
+      if (val || hasImg) {
+        const labelVal = val || `Amunisi Gambar ${idx + 1}`;
+        essayOpts.push(labelVal);
+        option_images.push(hasImg ? img.src : null);
+        if (chk && chk.checked) correctOpts.push(labelVal);
       }
     });
 
@@ -3002,14 +3532,13 @@ async function saveEditedQuestion() {
     qObj.answer = answer || correctOpts.join(', ');
     qObj.cliff_hint = cliffHint || 'Ambil amunisi yang tepat dari tebing jurang!';
     qObj.options = essayOpts;
+    qObj.option_images = option_images;
     qObj.correct_options = correctOpts;
   }
 
-  // Simpan ke local data
   data.questions[qIndex] = qObj;
   saveLocalData(data);
 
-  // Update ke Supabase Cloud
   if (supabaseClient) {
     try {
       const { error } = await supabaseClient.from('questions').upsert([qObj]);
@@ -3022,7 +3551,6 @@ async function saveEditedQuestion() {
   closeEditQuestionModal();
   showToast('Perubahan soal berhasil disimpan! 🎉', 'success');
 
-  // Refresh tampilan
   if (document.getElementById('dashGuruScreen').classList.contains('active')) {
     guruUpdateCounters();
     guruRenderMyQuestions();
@@ -3102,27 +3630,18 @@ function renderGalaxyPlanets() {
   grid.innerHTML = '';
 
   const studentUser = (currentUser.username || '').toLowerCase();
-  const studentKelas = String(currentUser.kelas || '');
   const permittedPlanets = [];
 
   data.mapel.forEach(m => {
     const rawAllowed = data.akses[m.id] || [];
     const allowed = rawAllowed.map(x => String(x).toLowerCase());
 
-    // Diizinkan jika:
-    // 1. Username siswa secara eksplisit ada di data akses guru
-    // 2. ATAU jika kelas mapel sama dengan kelas siswa (fallback otomatis agar siswa baru langsung dapat mengakses planet kelasnya)
-    // 3. ATAU jika belum ada daftar akses yang di-setting sama sekali untuk mapel tersebut
-    const isExplicitlyAllowed = allowed.includes(studentUser);
-    const isClassMatch = studentKelas && String(m.kelas || '') === studentKelas;
-    const isDefaultOpen = (rawAllowed.length === 0);
-
-    if (isExplicitlyAllowed || isClassMatch || isDefaultOpen) {
+    // Hanya tampilkan planet jika siswa secara eksplisit dicentang oleh ustadz/guru pengampu
+    if (allowed.includes(studentUser)) {
       const qs = data.questions.filter(q => q.mapel_id === m.id);
       const mcC = qs.filter(q => q.type === 'mc').length;
       const fillC = qs.filter(q => q.type === 'fill').length;
       const essayC = qs.filter(q => q.type === 'essay').length;
-      // Syarat siap ujian: 15 MC, 10 Fill, 5 Essay
       const isReady = (mcC >= 15 && fillC >= 10 && essayC >= 5);
       permittedPlanets.push({ ...m, isReady, mcC, fillC, essayC });
     }
@@ -3132,15 +3651,15 @@ function renderGalaxyPlanets() {
     grid.innerHTML = `
       <div class="glass-card" style="max-width:560px;margin:20px auto;padding:30px;text-align:center">
         <div style="font-size:52px;margin-bottom:12px;animation:floatRocket 2.5s infinite alternate">📡</div>
-        <h3 style="color:#fbbf24;font-size:20px;margin-bottom:8px">Belum Ada Planet Terdaftar Untukmu</h3>
+        <h3 style="color:#fbbf24;font-size:20px;margin-bottom:8px">Belum Ada Planet yang Diaktifkan Ustadz</h3>
         <p style="color:#94a3b8;font-size:14px;line-height:1.6;margin-bottom:15px">
-          Akun siswa <strong>${currentUser.nama}</strong> (${currentUser.username}) belum diberikan akses ke planet mata pelajaran ujian.
+          Akun siswa <strong>${escapeHtml(currentUser.nama)}</strong> (${escapeHtml(currentUser.username)}) belum dicentang pada daftar akses planet mata pelajaran.
         </p>
         <div style="background:rgba(0,0,0,0.3);padding:12px;border-radius:10px;border:1px dashed rgba(255,255,255,0.15);font-size:12px;color:#cbd5e1;text-align:left">
-          💡 <strong>Solusi untuk Guru / Kepala Sekolah:</strong><br>
+          💡 <strong>Catatan untuk Ustadz / Guru Pengampu:</strong><br>
           1. Masuk sebagai <strong>Guru Pengampu</strong> atau <strong>Kepala Sekolah</strong>.<br>
           2. Masuk ke menu <strong>🔑 Akses Siswa Planet</strong>.<br>
-          3. Centang nama siswa <strong>${currentUser.nama}</strong> lalu klik <strong>💾 Simpan Hak Akses Siswa</strong>.
+          3. Centang nama siswa <strong>${escapeHtml(currentUser.nama)}</strong> lalu klik <strong>💾 Simpan Hak Akses Siswa</strong>.
         </div>
       </div>
     `;
@@ -3156,7 +3675,7 @@ function renderGalaxyPlanets() {
            box-shadow: 0 0 35px ${p.warna}88, inset -15px -15px 25px rgba(0,0,0,0.6)">
         <div class="planet-ring" style="border-color:${p.warna}88"></div>
       </div>
-      <div class="planet-name">${p.nama}</div>
+      <div class="planet-name">${escapeHtml(p.nama)}</div>
       <div class="planet-meta ${p.isReady ? 'ready' : 'incomplete'}">
         ${p.isReady ? '🚀 Siap Ujian' : `⚠️ Belum Lengkap (${p.mcC}/15 PG, ${p.fillC}/10 Isian, ${p.essayC}/5 Uraian)`}
       </div>
@@ -3768,19 +4287,24 @@ function renderMcQuestionCard(q) {
   const overlay = document.getElementById('flightDialog');
   const modal = document.getElementById('flightModalContent');
   const num = gameState.qIndex + 1;
+  const optImgs = Array.isArray(q.option_images) ? q.option_images : [];
 
   let html = `
     <div class="modal-phase-tag phase-mc">RINTANGAN #${num} • PILIHAN GANDA (2 POIN)</div>
-    <div class="q-body-text">${q.text}</div>
+    <div class="q-body-text">${escapeHtml(q.text)}</div>
     ${q.image_url ? `<img src="${q.image_url}" class="q-body-img">` : ''}
     <div class="mc-grid">
   `;
   const labels = ['A', 'B', 'C', 'D'];
   q.options.forEach((opt, idx) => {
+    const oImg = optImgs[idx] || null;
     html += `
-      <div class="mc-choice-btn" data-idx="${idx}" onclick="selectMcOption(this, ${idx})">
-        <span class="mc-badge">${labels[idx]}</span>
-        <span>${opt}</span>
+      <div class="mc-choice-btn" data-idx="${idx}" onclick="selectMcOption(this, ${idx})" style="flex-direction:column;align-items:flex-start">
+        <div style="display:flex;align-items:center;gap:10px;width:100%">
+          <span class="mc-badge">${labels[idx]}</span>
+          <span>${escapeHtml(opt)}</span>
+        </div>
+        ${oImg ? `<img src="${oImg}" style="max-height:95px;max-width:100%;border-radius:8px;margin-top:8px;border:1px solid rgba(255,255,255,0.2)">` : ''}
       </div>
     `;
   });
@@ -3819,14 +4343,13 @@ function submitMcAnswer(correctIdx) {
       triggerExplosion(gameCanvas.width * 0.68, gameCanvas.height * 0.38);
       gameState.score += 2;
       gameState.mcScore += 2;
-      gameState.warpSpeed = 7; // Warp speed rush forward
+      gameState.warpSpeed = 7;
       showToast('Bagus! Rintangan hancur (+2 Poin) 💥', 'success');
       updateGameHUD();
     }, 250);
   } else {
-    // Evasive Maneuver
     sound.playEvasion();
-    gameState.cockpitTargetRoll = -0.18; // Roll left
+    gameState.cockpitTargetRoll = -0.18;
     gameState.shakeAmount = 25;
     showToast('Jawaban salah! Pesawat bermanuver menghindar (+0 Poin)', 'error');
     setTimeout(() => { gameState.cockpitTargetRoll = 0; }, 700);
@@ -3841,26 +4364,41 @@ function submitMcAnswer(correctIdx) {
   }, 1600);
 }
 
+let activeFillOptImages = [];
+function onExamFillSelectChange(sel) {
+  const prev = document.getElementById('examFillOptPreviewImg');
+  if (!prev) return;
+  const idx = sel.value;
+  if (idx !== '' && activeFillOptImages[parseInt(idx)]) {
+    prev.src = activeFillOptImages[parseInt(idx)];
+    prev.style.display = 'block';
+  } else {
+    prev.style.display = 'none';
+  }
+}
+
 function renderFillQuestionCard(q) {
   const overlay = document.getElementById('flightDialog');
   const modal = document.getElementById('flightModalContent');
   const num = gameState.qIndex - 15 + 1;
+  activeFillOptImages = Array.isArray(q.option_images) ? q.option_images : [];
 
   let html = `
     <div class="modal-phase-tag phase-fill">KAPAL MUSUH #${num} • ISIAN RUDAL (3 POIN)</div>
-    <div class="q-body-text">${q.text}</div>
+    <div class="q-body-text">${escapeHtml(q.text)}</div>
     ${q.image_url ? `<img src="${q.image_url}" class="q-body-img">` : ''}
 
     <div class="missile-ammo-dock">
       <div class="ammo-title">🚀 PILIH AMUNISI RUDAL TAKTIS:</div>
-      <select id="missileDropdownAnswer" class="missile-select">
+      <select id="missileDropdownAnswer" class="missile-select" onchange="onExamFillSelectChange(this)">
         <option value="">-- Buka Wadah Amunisi --</option>
   `;
   q.options.forEach((opt, idx) => {
-    html += `<option value="${idx}">🚀 Rudal Bay #${idx + 1}: ${opt}</option>`;
+    html += `<option value="${idx}">🚀 Rudal Bay #${idx + 1}: ${escapeHtml(opt)}</option>`;
   });
   html += `
       </select>
+      <img id="examFillOptPreviewImg" style="display:none;max-height:110px;border-radius:8px;margin-top:10px;border:1px solid rgba(245,158,11,0.5)">
     </div>
     <button class="btn-fire-action" onclick="submitFillAnswer(${q.correct})">🚀 TEMBAKKAN RUDAL KE TARGET!</button>
   `;
@@ -3891,9 +4429,8 @@ function submitFillAnswer(correctIdx) {
       updateGameHUD();
     }, 400);
   } else {
-    // Evasive Maneuver
     sound.playEvasion();
-    gameState.cockpitTargetRoll = 0.18; // Roll right
+    gameState.cockpitTargetRoll = 0.18;
     gameState.shakeAmount = 25;
     showToast('Rudal meleset! Pesawat bermanuver darurat (+0 Poin)', 'error');
     setTimeout(() => { gameState.cockpitTargetRoll = 0; }, 700);
@@ -3907,7 +4444,6 @@ function submitFillAnswer(correctIdx) {
   }, 1600);
 }
 
-// Array amunisi yang saat ini dipilih siswa untuk soal uraian
 let currentEssaySelectedAmmo = [];
 
 function renderEssayQuestionCard(q) {
@@ -3915,8 +4451,8 @@ function renderEssayQuestionCard(q) {
   const modal = document.getElementById('flightModalContent');
   const num = gameState.qIndex - 25 + 1;
   currentEssaySelectedAmmo = [];
+  const optImgs = Array.isArray(q.option_images) ? q.option_images : [];
 
-  // Ambil daftar amunisi tebing dari q.options atau fallback
   let ammoList = [];
   if (q.options && Array.isArray(q.options) && q.options.length > 0) {
     ammoList = q.options;
@@ -3929,7 +4465,7 @@ function renderEssayQuestionCard(q) {
 
   let html = `
     <div class="modal-phase-tag phase-essay">CANYON BOSS #${num} • URAIAN TEBING JURANG (8 POIN)</div>
-    <div class="q-body-text">${q.text}</div>
+    <div class="q-body-text">${escapeHtml(q.text)}</div>
     ${q.image_url ? `<img src="${q.image_url}" class="q-body-img">` : ''}
 
     <div class="canyon-cliff-box" style="margin-top:14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.3);padding:14px;border-radius:12px">
@@ -3943,10 +4479,14 @@ function renderEssayQuestionCard(q) {
   `;
 
   ammoList.forEach((ammo, idx) => {
+    const oImg = optImgs[idx] || null;
     html += `
-      <button type="button" class="cliff-rune-pill ammo-btn-${idx}" onclick="toggleEssayAmmo(this, '${escapeHtml(ammo)}')" style="cursor:pointer;padding:8px 14px;border-radius:8px;border:1px solid #fbbf24;background:rgba(251,191,36,0.15);color:#fff;font-size:12px;display:flex;align-items:center;gap:6px;transition:all 0.2s">
-        <span>💎 ${ammo}</span>
-        <span class="ammo-action-tag" style="font-size:10px;color:#fbbf24;font-weight:700">+ Ambil</span>
+      <button type="button" class="cliff-rune-pill ammo-btn-${idx}" data-ammo="${escapeHtml(ammo)}" onclick="toggleEssayAmmo(this)" style="cursor:pointer;padding:8px 14px;border-radius:8px;border:1px solid #fbbf24;background:rgba(251,191,36,0.15);color:#fff;font-size:12px;display:flex;flex-direction:column;align-items:flex-start;gap:6px;transition:all 0.2s">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span>💎 ${escapeHtml(ammo)}</span>
+          <span class="ammo-action-tag" style="font-size:10px;color:#fbbf24;font-weight:700">+ Ambil</span>
+        </div>
+        ${oImg ? `<img src="${oImg}" style="max-height:75px;border-radius:6px;border:1px solid rgba(255,255,255,0.2)">` : ''}
       </button>
     `;
   });
@@ -3973,26 +4513,24 @@ function renderEssayQuestionCard(q) {
   overlay.classList.add('active');
 }
 
-function toggleEssayAmmo(btnEl, ammoText) {
+function toggleEssayAmmo(btnEl) {
+  const ammoText = btnEl.getAttribute('data-ammo') || '';
   sound.playLaser();
   const idx = currentEssaySelectedAmmo.indexOf(ammoText);
   const tag = btnEl.querySelector('.ammo-action-tag');
 
   if (idx === -1) {
-    // Tambahkan amunisi
     currentEssaySelectedAmmo.push(ammoText);
     btnEl.style.background = 'rgba(16, 185, 129, 0.35)';
     btnEl.style.borderColor = '#34d399';
     if (tag) { tag.textContent = '✓ Terpasang'; tag.style.color = '#34d399'; }
   } else {
-    // Lepas amunisi
     currentEssaySelectedAmmo.splice(idx, 1);
     btnEl.style.background = 'rgba(251, 191, 36, 0.15)';
     btnEl.style.borderColor = '#fbbf24';
     if (tag) { tag.textContent = '+ Ambil'; tag.style.color = '#fbbf24'; }
   }
 
-  // Update container amunisi yang terpasang
   renderSelectedAmmoSlots();
 }
 
@@ -4009,7 +4547,7 @@ function renderSelectedAmmoSlots() {
   currentEssaySelectedAmmo.forEach((ammo, i) => {
     const pill = document.createElement('div');
     pill.style.cssText = 'background:rgba(16,185,129,0.2);border:1px solid #10b981;color:#34d399;font-size:11px;padding:3px 10px;border-radius:12px;display:flex;align-items:center;gap:5px;font-weight:600';
-    pill.innerHTML = `<span>🚀 Amunisi #${i + 1}: ${ammo}</span>`;
+    pill.innerHTML = `<span>🚀 Amunisi #${i + 1}: ${escapeHtml(ammo)}</span>`;
     container.appendChild(pill);
   });
 }
