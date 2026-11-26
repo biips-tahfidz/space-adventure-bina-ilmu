@@ -22,12 +22,24 @@
     #space-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
     .container {
       position: relative; z-index: 2; max-width: 1060px; margin: 0 auto;
-      background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(10px);
+      background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px);
       border: 1px solid rgba(99, 102, 241, 0.35); padding: 22px 26px;
       border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
       transition: opacity 0.25s ease;
     }
     body.exploding .container { opacity: 0.08; pointer-events: none; }
+
+    /* OVERLAY PERINGATAN KUNCI LAYAR UJIAN */
+    .lock-overlay-alert {
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(127, 29, 29, 0.96); backdrop-filter: blur(8px);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; padding: 24px;
+    }
+    .lock-overlay-card {
+      background: #0f172a; border: 2px solid #ef4444; border-radius: 20px;
+      padding: 28px; max-width: 480px; box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+    }
 
     /* STAGE LEDAKAN 3 DETIK PENUH TANPA TERTUTUP SOAL */
     .explosion-stage {
@@ -92,7 +104,7 @@
       80% { transform: translate(9px, 5px); }
     }
 
-    /* HEADER & ROLE SWITCHER */
+    /* HEADER & STATUS DB */
     .app-header {
       display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
       gap: 14px; padding-bottom: 16px; margin-bottom: 20px;
@@ -102,11 +114,34 @@
       display: inline-block; background: linear-gradient(90deg, #6366f1, #ec4899);
       color: #fff; font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; margin-bottom: 5px;
     }
+    .db-status-pill {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700;
+      padding: 4px 11px; border-radius: 999px; background: rgba(15, 23, 42, 0.85);
+      border: 1px solid #334155; color: #94a3b8; cursor: pointer;
+    }
+    .db-status-pill.online { border-color: #10b981; color: #34d399; background: rgba(16, 185, 129, 0.14); }
+    .db-status-pill.syncing { border-color: #f59e0b; color: #fbbf24; }
     h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; color: #ffffff; }
-    h1 { font-size: 1.65rem; }
-    .mode-switch { display: flex; gap: 6px; background: rgba(2, 6, 23, 0.8); padding: 6px; border-radius: 12px; flex-wrap: wrap; }
-    .btn-tab { background: transparent; color: #94a3b8; padding: 8px 13px; border-radius: 8px; font-weight: 600; font-size: 0.86rem; }
-    .btn-tab.active { background: linear-gradient(135deg, #3b82f6, #6366f1); color: #ffffff; }
+    h1 { font-size: 1.6rem; }
+
+    /* LOGIN PORTAL 3 ROLE */
+    .login-portal-wrapper { max-width: 780px; margin: 10px auto; }
+    .role-selector-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px; margin: 16px 0 20px;
+    }
+    .role-card-btn {
+      background: rgba(15, 23, 42, 0.92); border: 2px solid #334155; border-radius: 16px;
+      padding: 18px 14px; text-align: center; cursor: pointer; transition: all 0.2s ease; color: #f8fafc;
+    }
+    .role-card-btn:hover { border-color: #38bdf8; transform: translateY(-3px); }
+    .role-card-btn.selected {
+      border-color: #facc15; background: linear-gradient(145deg, rgba(59, 130, 246, 0.22), rgba(139, 92, 246, 0.22));
+      box-shadow: 0 0 24px rgba(250, 204, 21, 0.25);
+    }
+    .role-icon-big { font-size: 2.3rem; display: block; margin-bottom: 8px; }
+    .role-title { font-family: 'Fredoka', sans-serif; font-size: 1.08rem; color: #fff; }
+    .role-desc { font-size: 0.78rem; color: #94a3b8; margin-top: 4px; }
 
     button {
       cursor: pointer; border: none; border-radius: 10px; padding: 9px 15px;
@@ -125,7 +160,7 @@
     .btn-danger-xs { background: #ef4444; color: #fff; padding: 4px 9px; font-size: 0.76rem; }
 
     .card-panel {
-      background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(99, 102, 241, 0.28);
+      background: rgba(30, 41, 59, 0.72); border: 1px solid rgba(99, 102, 241, 0.28);
       border-radius: 16px; padding: 20px; margin-bottom: 16px;
     }
     .subtitle { color: #cbd5e1; margin: 5px 0 14px; font-size: 0.9rem; }
@@ -140,12 +175,10 @@
     }
     select:focus, textarea:focus, input:focus { border-color: #38bdf8; }
 
-    /* SUB-TABS */
     .sub-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
     .btn-subtab { background: #0f172a; color: #94a3b8; border: 1px solid #334155; }
     .btn-subtab.active { color: #38bdf8; border-color: #38bdf8; background: rgba(56, 189, 248, 0.1); }
 
-    /* BADGES & TAGS */
     .badge-tag {
       display: inline-block; background: rgba(99, 102, 241, 0.25); color: #a5b4fc;
       padding: 3px 9px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; margin-right: 5px; margin-top: 3px;
@@ -194,7 +227,6 @@
     .btn-icon-mini:hover { border-color: #38bdf8; color: #fff; }
     .btn-icon-mini.del:hover { border-color: #ef4444; background: #ef4444; color: #fff; }
 
-    /* KARTU DATA */
     .item-card {
       background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(99, 102, 241, 0.32);
       border-radius: 14px; padding: 15px 18px; margin-bottom: 12px;
@@ -208,8 +240,8 @@
 
     /* LOCK SCREEN BAR & ARENA SISWA */
     .lock-banner {
-      background: linear-gradient(90deg, rgba(220, 38, 38, 0.25), rgba(245, 158, 11, 0.22));
-      border: 1px solid #ef4444; color: #fecaca; padding: 9px 14px; border-radius: 10px;
+      background: linear-gradient(90deg, rgba(220, 38, 38, 0.3), rgba(245, 158, 11, 0.25));
+      border: 1px solid #ef4444; color: #fecaca; padding: 10px 14px; border-radius: 10px;
       font-size: 0.82rem; font-weight: 600; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
     }
     .ujian-topbar {
@@ -227,7 +259,6 @@
     .btn-ammo-pg.selected-correct { border-color: #10b981; background: rgba(16, 185, 129, 0.22); }
     .btn-ammo-pg.selected-wrong { border-color: #ef4444; background: rgba(239, 68, 68, 0.22); }
 
-    /* DROPDOWN ISIAN SISWA */
     .isian-dropdown-box {
       background: #0f172a; border: 2px solid #38bdf8; border-radius: 12px; padding: 14px; margin-top: 12px;
     }
@@ -236,7 +267,6 @@
       background: #1e293b; border: 1px solid #475569; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; text-align: center;
     }
 
-    /* URAIAN AMUNISI SISWA */
     .uraian-target-box {
       background: #020617; border: 2px dashed #38bdf8; border-radius: 12px; padding: 13px;
       min-height: 72px; margin: 10px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
@@ -292,10 +322,28 @@
       display: inline-flex; align-items: center; gap: 8px; background: #1e293b;
       border: 1px solid #475569; padding: 7px 11px; border-radius: 10px; margin: 4px 6px 4px 0; font-size: 0.85rem;
     }
+    pre.sql-box {
+      background: #020617; border: 1px solid #334155; color: #38bdf8; padding: 10px;
+      border-radius: 8px; font-size: 0.76rem; overflow-x: auto; margin-top: 8px; user-select: all;
+    }
   </style>
 </head>
 <body>
   <canvas id="space-canvas"></canvas>
+
+  <!-- OVERLAY PERINGATAN SAAT SISWA MENCOBA KELUAR DARI SOAL -->
+  <div id="lock-overlay-alert" class="lock-overlay-alert hidden">
+    <div class="lock-overlay-card">
+      <div style="font-size:3rem;margin-bottom:8px;">🚨🔒</div>
+      <h2 style="color:#fca5a5;">LAYAR UJIAN TERKUNCI OTOMATIS!</h2>
+      <p id="lock-overlay-msg" style="color:#e2e8f0;margin:12px 0;font-size:0.95rem;line-height:1.5;">
+        Sistem mendeteksi Anda keluar dari layar penuh atau berpindah tab saat mengerjakan soal.
+      </p>
+      <button id="btn-kembali-kunci-layar" type="button" class="btn-primary-rocket" style="width:100%;padding:12px;">
+        🔒 Kembali ke Layar Penuh &amp; Lanjutkan Soal
+      </button>
+    </div>
+  </div>
 
   <!-- EFEK LEDAKAN PENUH 3 DETIK TANPA TERTUTUP SOAL -->
   <div id="explosion-stage" class="explosion-stage hidden" aria-hidden="true">
@@ -310,27 +358,57 @@
   <div class="container">
     <header class="app-header">
       <div class="brand-area">
-        <span class="badge-tema" id="header-nama-sekolah">🚀 SD Bina Ilmu Blora — Space CBT</span>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;">
+          <span class="badge-tema" style="margin-bottom:0;" id="header-nama-sekolah">🚀 SD Bina Ilmu Blora — Space CBT</span>
+          <button type="button" id="btn-db-status" class="db-status-pill" title="Klik untuk cek & sinkronisasi database">
+            🟡 Menghubungkan Database...
+          </button>
+        </div>
         <h1>Arena Ujian &amp; Manajemen Sekolah</h1>
       </div>
-      <nav class="mode-switch" id="main-nav-switch">
-        <button id="tab-siswa" type="button" class="btn-tab active">🧑‍🚀 Arena Siswa</button>
-        <button id="tab-guru" type="button" class="btn-tab">👨‍🏫 Panel Ustadz / Guru</button>
-        <button id="tab-admin" type="button" class="btn-tab">🏫 Panel Kepala Sekolah</button>
-      </nav>
+
+      <!-- INFO SESI LOGIN AKTIF & TOMBOL GANTI ROLE / LOGOUT -->
+      <div id="session-bar" class="hidden" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div style="text-align:right;">
+          <div id="session-user-name" style="font-weight:700;font-size:0.9rem;color:#fff;">-</div>
+          <div id="session-user-role" style="font-size:0.75rem;color:#38bdf8;">Role: -</div>
+        </div>
+        <button id="btn-logout-role" type="button" class="btn-secondary">🚪 Ganti Role / Keluar</button>
+      </div>
     </header>
 
-    <!-- ==================== 1. ARENA MISI SISWA ==================== -->
-    <main id="view-siswa">
-      <div id="siswa-mulai-card" class="card-panel">
-        <h2>🚀 Briefing Misi Astronaut (Kelas 1 – 6)</h2>
-        <p class="subtitle">Pilih jenjang kelas Anda, pilih nama Anda, lalu pilih planet mata pelajaran yang diujikan oleh Ustadz/Guru.</p>
+    <!-- ==================== 0. GERBANG LOGIN BERBASIS 3 ROLE ==================== -->
+    <section id="view-login" class="login-portal-wrapper">
+      <div class="card-panel">
+        <div style="text-align:center;">
+          <h2>🔐 Portal Masuk Sistem Sekolah &amp; CBT</h2>
+          <p class="subtitle">Silakan pilih peran (Role) Anda untuk masuk ke ruang kerja yang sesuai.</p>
+        </div>
 
-        <form id="form-identitas-siswa">
+        <div class="role-selector-grid">
+          <div class="role-card-btn selected" data-role="murid">
+            <span class="role-icon-big">🧑‍🚀</span>
+            <div class="role-title">Murid / Siswa</div>
+            <div class="role-desc">Masuk ke Arena Misi Planet &amp; Ujian Terkunci</div>
+          </div>
+          <div class="role-card-btn" data-role="guru">
+            <span class="role-icon-big">👨‍🏫</span>
+            <div class="role-title">Ustadz / Guru</div>
+            <div class="role-desc">Kelola Bank Soal, Mapel Diampu &amp; Rekap Nilai</div>
+          </div>
+          <div class="role-card-btn" data-role="admin">
+            <span class="role-icon-big">🏫</span>
+            <div class="role-title">Admin / Kepala Sekolah</div>
+            <div class="role-desc">Kelola Profil Sekolah, Guru, Siswa &amp; Database</div>
+          </div>
+        </div>
+
+        <!-- FORM LOGIN MURID -->
+        <form id="form-login-murid">
           <div class="grid-2">
             <div>
-              <label for="siswa-pilih-kelas">Jenjang Kelas</label>
-              <select id="siswa-pilih-kelas" required>
+              <label for="login-murid-kelas">Pilih Jenjang Kelas</label>
+              <select id="login-murid-kelas" required>
                 <option value="Kelas 1">Kelas 1</option>
                 <option value="Kelas 2">Kelas 2</option>
                 <option value="Kelas 3">Kelas 3</option>
@@ -340,25 +418,76 @@
               </select>
             </div>
             <div>
-              <label for="siswa-pilih-nama">Pilih Nama Siswa Terdaftar</label>
-              <select id="siswa-pilih-nama"></select>
-              <input type="text" id="siswa-nama-manual" class="hidden" placeholder="Ketik nama lengkap siswa..." style="margin-top:6px;" />
+              <label for="login-murid-nama">Pilih Nama Murid Terdaftar</label>
+              <select id="login-murid-nama"></select>
+              <input type="text" id="login-murid-manual" class="hidden" placeholder="Ketik nama lengkap murid..." style="margin-top:6px;" />
             </div>
           </div>
+          <button type="submit" class="btn-primary-rocket" style="width:100%;margin-top:16px;padding:12px;">
+            🚀 Masuk sebagai Murid
+          </button>
+        </form>
 
+        <!-- FORM LOGIN GURU -->
+        <form id="form-login-guru" class="hidden">
+          <div class="grid-2">
+            <div>
+              <label for="login-guru-akun">Pilih Nama Ustadz / Guru</label>
+              <select id="login-guru-akun" required></select>
+            </div>
+            <div>
+              <label for="login-guru-pin">PIN Akses Guru <span class="subtitle-sm">(Default: <b>1234</b>)</span></label>
+              <input type="password" id="login-guru-pin" placeholder="Masukkan PIN Guru..." required />
+            </div>
+          </div>
+          <button type="submit" class="btn-primary-rocket" style="width:100%;margin-top:16px;padding:12px;">
+            👨‍🏫 Masuk ke Panel Ustadz / Guru
+          </button>
+        </form>
+
+        <!-- FORM LOGIN ADMIN -->
+        <form id="form-login-admin" class="hidden">
+          <div>
+            <label for="login-admin-pin">PIN Administrator / Kepala Sekolah <span class="subtitle-sm">(Default: <b>admin123</b>)</span></label>
+            <input type="password" id="login-admin-pin" placeholder="Masukkan PIN Kepala Sekolah..." required />
+          </div>
+          <button type="submit" class="btn-warning" style="width:100%;margin-top:16px;padding:12px;">
+            🏫 Masuk ke Panel Kepala Sekolah / Admin
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== 1. ARENA MISI SISWA ==================== -->
+    <main id="view-siswa" class="hidden">
+      <div id="siswa-mulai-card" class="card-panel">
+        <div class="flex-between">
+          <div>
+            <h2>🚀 Briefing Misi Astronaut (<span id="briefing-nama-murid">-</span>)</h2>
+            <p class="subtitle">Pilih planet mata pelajaran yang diujikan. Layar akan <b>terkunci otomatis</b> begitu Anda masuk ke soal.</p>
+          </div>
+          <span id="briefing-kelas-badge" class="badge-tag badge-kelas" style="font-size:0.9rem;padding:6px 12px;">Kelas 1</span>
+        </div>
+
+        <form id="form-mulai-misi">
           <label>Pilih Planet Mata Pelajaran (<span id="label-kelas-planet">Kelas 1</span>):</label>
           <div id="grid-planet-mapel" class="planet-grid"></div>
           <input type="hidden" id="siswa-mapel-terpilih" required />
 
-          <button type="submit" class="btn-primary-rocket">🔒 Kunci Layar &amp; Meluncur ke Misi</button>
+          <button type="submit" class="btn-primary-rocket" style="width:100%;padding:13px;font-size:0.98rem;">
+            🔒 Masuk ke Soal &amp; Aktifkan Kunci Layar Otomatis
+          </button>
         </form>
       </div>
 
       <!-- AREA UJIAN TERKUNCI -->
       <div id="siswa-ujian-area" class="hidden">
         <div class="lock-banner">
-          <span>🔒 <b>MODE UJIAN TERKUNCI:</b> Layar terkunci hingga seluruh misi selesai. Jangan keluar atau berpindah tab!</span>
-          <span id="lock-warning-count" class="badge-tag badge-warn">Pelanggaran Keluar: 0</span>
+          <span>🔒 <b>MODE KUNCI LAYAR AKTIF:</b> Layar dikunci otomatis sampai seluruh soal selesai!</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span id="lock-warning-count" class="badge-tag badge-warn">Pelanggaran Keluar: 0</span>
+            <button type="button" id="btn-paksa-fullscreen" class="btn-warning-xs">🖥️ Layar Penuh</button>
+          </div>
         </div>
 
         <div class="ujian-topbar">
@@ -385,7 +514,7 @@
         <h2>🎉 Misi Planet Selesai &amp; Kunci Layar Dibuka!</h2>
         <p id="pesan-hasil-siswa" class="subtitle"></p>
         <div id="skor-akhir-box" class="skor-box"></div>
-        <button id="btn-ujian-ulang" type="button" class="btn-primary-rocket">Kembali ke Pangkalan Utama</button>
+        <button id="btn-ujian-ulang" type="button" class="btn-primary-rocket">Kembali ke Pangkalan Planet</button>
       </div>
     </main>
 
@@ -398,8 +527,7 @@
           <p id="guru-info-display" class="subtitle-sm">NIP/ID: -</p>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <select id="pilih-akun-guru" style="width:auto;min-width:200px;"></select>
-          <button id="btn-edit-profil-guru" type="button" class="btn-warning">✏️ Edit Profil &amp; Mapel Saya</button>
+          <button id="btn-edit-profil-guru" type="button" class="btn-warning">✏️ Edit Profil, PIN &amp; Mapel Saya</button>
         </div>
       </div>
 
@@ -431,12 +559,12 @@
         <div id="daftar-soal"></div>
       </div>
 
-      <!-- SUB-PANEL B: CHECKBOX MAPEL LINTAS KELAS + TAMBAH/EDIT/HAPUS MAPEL PER KELAS -->
+      <!-- SUB-PANEL B: CHECKBOX MAPEL LINTAS KELAS -->
       <div id="panel-guru-mapel" class="card-panel hidden">
         <div class="flex-between" style="margin-bottom:12px;">
           <div>
             <h3>Centang &amp; Kelola Mata Pelajaran per Kelas (Kelas 1 – 6)</h3>
-            <p class="subtitle-sm">Anda dapat mencentang mapel yang diajar, menambah mapel baru di setiap kelas, maupun mengedit/menghapus mapel.</p>
+            <p class="subtitle-sm">Semua perubahan mapel otomatis disimpan ke Database &amp; Cache.</p>
           </div>
           <button id="btn-simpan-mapel-guru" type="button" class="btn-success">💾 Simpan Pilihan Mapel</button>
         </div>
@@ -447,7 +575,7 @@
       <div id="panel-guru-nilai" class="card-panel hidden">
         <div class="flex-between" style="margin-bottom:12px;">
           <h3>Rekap Hasil Ujian Siswa</h3>
-          <button id="btn-refresh-nilai" type="button" class="btn-secondary">🔄 Segarkan</button>
+          <button id="btn-refresh-nilai" type="button" class="btn-secondary">🔄 Tarik Data Terbaru dari Database</button>
         </div>
         <div id="daftar-hasil-siswa"></div>
       </div>
@@ -459,12 +587,13 @@
         <div>
           <span class="badge-tag badge-warn">🏫 Administrator / Kepala Sekolah</span>
           <h3 id="admin-nama-display" style="margin-top:4px;">Kepala Sekolah SD Bina Ilmu Blora</h3>
-          <p id="admin-sekolah-display" class="subtitle-sm">NPSN / Alamat: Blora, Jawa Tengah</p>
+          <p id="admin-sekolah-display" class="subtitle-sm">Blora, Jawa Tengah</p>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button id="btn-export-data" type="button" class="btn-success">⬇️ Backup Data (JSON)</button>
-          <label class="btn-secondary" style="margin:0;cursor:pointer;display:inline-flex;align-items:center;">⬆️ Restore Data<input type="file" id="inp-import-data" accept=".json" hidden /></label>
-          <button id="btn-edit-profil-admin" type="button" class="btn-warning">✏️ Edit Profil Kepala Sekolah</button>
+          <button id="btn-sync-cache-to-db" type="button" class="btn-primary-rocket">☁️ Amankan Cache ke Database</button>
+          <button id="btn-export-data" type="button" class="btn-success">⬇️ Backup JSON</button>
+          <label class="btn-secondary" style="margin:0;cursor:pointer;display:inline-flex;align-items:center;">⬆️ Restore<input type="file" id="inp-import-data" accept=".json" hidden /></label>
+          <button id="btn-edit-profil-admin" type="button" class="btn-warning">✏️ Edit Profil &amp; PIN Admin</button>
         </div>
       </div>
 
@@ -472,6 +601,7 @@
         <button id="subtab-admin-guru" type="button" class="btn-subtab active">👨‍🏫 Kelola Ustadz / Guru</button>
         <button id="subtab-admin-siswa" type="button" class="btn-subtab">🧑‍🎓 Kelola Siswa &amp; Kelas (1–6)</button>
         <button id="subtab-admin-mapel" type="button" class="btn-subtab">🪐 Kelola Daftar Mapel per Kelas</button>
+        <button id="subtab-admin-db" type="button" class="btn-subtab">🗄️ Status &amp; Migrasi Database</button>
       </div>
 
       <!-- KELOLA GURU -->
@@ -479,7 +609,7 @@
         <div class="flex-between" style="margin-bottom:12px;">
           <div>
             <h3>Daftar Ustadz / Guru &amp; Mapel Ampuan</h3>
-            <p class="subtitle-sm">Tambahkan guru baru, atur mata pelajaran lintas kelas yang diampu, atau edit profil guru.</p>
+            <p class="subtitle-sm">Tambahkan guru baru, atur PIN login guru, dan mapel lintas kelas yang diampu.</p>
           </div>
           <button id="btn-tambah-guru" type="button" class="btn-primary-rocket">+ Tambah Guru Baru</button>
         </div>
@@ -514,10 +644,32 @@
         <div class="flex-between" style="margin-bottom:12px;">
           <div>
             <h3>Master Mata Pelajaran per Jenjang Kelas (Kelas 1 – 6)</h3>
-            <p class="subtitle-sm">Tambah mata pelajaran baru khusus di setiap kelas, edit nama/ikon mapel, atau hapus mapel yang tidak digunakan.</p>
+            <p class="subtitle-sm">Tambah mata pelajaran baru khusus di setiap kelas, edit nama/ikon mapel, atau hapus mapel.</p>
           </div>
         </div>
         <div id="daftar-mapel-per-kelas-admin"></div>
+      </div>
+
+      <!-- STATUS & MIGRASI DATABASE SUPABASE -->
+      <div id="panel-admin-db" class="card-panel hidden">
+        <h3>🗄️ Sinkronisasi &amp; Pengamanan Data ke Database Supabase</h3>
+        <p class="subtitle-sm" id="db-detail-info">Memeriksa koneksi Supabase...</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;">
+          <button type="button" id="btn-force-push-db" class="btn-primary-rocket">⬆️ Unggah Seluruh Data Cache ke Database Sekarang</button>
+          <button type="button" id="btn-force-pull-db" class="btn-secondary">⬇️ Tarik Data Terbaru dari Database</button>
+        </div>
+        <div class="section-box">
+          <p style="font-size:0.84rem;color:#cbd5e1;">
+            <b>Catatan Teknis Database:</b> Aplikasi ini otomatis menyimpan seluruh data (Profil Sekolah, Guru, Siswa, Mapel, Bank Soal, dan Nilai) ke tabel <code>school_kv_store</code>, <code>soal</code>, dan <code>hasil_ujian</code> di Supabase Anda. Jika tabel <code>school_kv_store</code> belum dibuat di SQL Editor Supabase, jalankan perintah SQL berikut sekali saja:
+          </p>
+          <pre class="sql-box">CREATE TABLE IF NOT EXISTS public.school_kv_store (
+  key TEXT PRIMARY KEY,
+  data JSONB NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE public.school_kv_store ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL USING (true) WITH CHECK (true);</pre>
+        </div>
       </div>
     </main>
   </div>
@@ -572,21 +724,29 @@
   <div id="modal-profil-admin" class="modal hidden">
     <div class="modal-content" style="max-width:520px;">
       <div class="modal-header-bar">
-        <h3>🏫 Edit Profil Kepala Sekolah / Admin</h3>
+        <h3>🏫 Edit Profil &amp; PIN Kepala Sekolah</h3>
         <button type="button" class="btn-close-icon" data-close="modal-profil-admin">✕</button>
       </div>
       <form id="form-profil-admin">
         <label for="inp-admin-nama">Nama Kepala Sekolah / Admin</label>
         <input type="text" id="inp-admin-nama" required />
-        <label for="inp-admin-nip">NIP / NUPTK</label>
-        <input type="text" id="inp-admin-nip" placeholder="Opsional" />
+        <div class="grid-2">
+          <div>
+            <label for="inp-admin-nip">NIP / NUPTK</label>
+            <input type="text" id="inp-admin-nip" placeholder="Opsional" />
+          </div>
+          <div>
+            <label for="inp-admin-pin">PIN Login Admin</label>
+            <input type="text" id="inp-admin-pin" required placeholder="Minimal 4 karakter" />
+          </div>
+        </div>
         <label for="inp-admin-sekolah">Nama Satuan Pendidikan</label>
         <input type="text" id="inp-admin-sekolah" required />
         <label for="inp-admin-alamat">Alamat / Kota</label>
         <input type="text" id="inp-admin-alamat" />
         <div class="aksi-form-between">
           <button type="button" class="btn-secondary" data-close="modal-profil-admin">Batal</button>
-          <button type="submit" class="btn-success">💾 Simpan Profil</button>
+          <button type="submit" class="btn-success">💾 Simpan Profil ke Database</button>
         </div>
       </form>
     </div>
@@ -601,7 +761,7 @@
       </div>
       <form id="form-guru">
         <input type="hidden" id="guru-edit-id" />
-        <div class="grid-2">
+        <div class="grid-3">
           <div>
             <label for="inp-guru-nama">Nama Lengkap Ustadz / Guru</label>
             <input type="text" id="inp-guru-nama" required placeholder="Contoh: Ustadz Ahmad, S.Pd" />
@@ -610,12 +770,16 @@
             <label for="inp-guru-nip">NIP / Kode Guru</label>
             <input type="text" id="inp-guru-nip" placeholder="Contoh: GR-01" />
           </div>
+          <div>
+            <label for="inp-guru-pin">PIN Login Guru</label>
+            <input type="text" id="inp-guru-pin" required placeholder="Contoh: 1234" />
+          </div>
         </div>
         <label>Pilih Mata Pelajaran &amp; Kelas yang Diampu (Bisa Lintas Kelas):</label>
         <div id="modal-guru-matrix" style="max-height:320px;overflow-y:auto;margin-top:6px;"></div>
         <div class="aksi-form-between">
           <button type="button" class="btn-secondary" data-close="modal-guru">Batal</button>
-          <button type="submit" class="btn-success">💾 Simpan Data Guru</button>
+          <button type="submit" class="btn-success">💾 Simpan Data Guru ke Database</button>
         </div>
       </form>
     </div>
@@ -646,7 +810,7 @@
         </select>
         <div class="aksi-form-between">
           <button type="button" class="btn-secondary" data-close="modal-siswa">Batal</button>
-          <button type="submit" class="btn-success">💾 Simpan Siswa</button>
+          <button type="submit" class="btn-success">💾 Simpan Siswa ke Database</button>
         </div>
       </form>
     </div>
@@ -785,7 +949,7 @@
           <button type="button" id="btn-preview-soal" class="btn-warning">👁️ Preview Tampilan Siswa</button>
           <div style="display:flex;gap:8px;">
             <button type="button" class="btn-secondary" data-close="modal-soal">Batal</button>
-            <button type="submit" id="btn-simpan-soal" class="btn-primary-rocket">💾 Simpan Soal</button>
+            <button type="submit" id="btn-simpan-soal" class="btn-primary-rocket">💾 Simpan Soal ke Database</button>
           </div>
         </div>
       </form>
@@ -828,7 +992,7 @@
         'linear-gradient(135deg, #3b82f6, #1d4ed8)',
         'linear-gradient(135deg, #8b5cf6, #6d28d9)',
         'linear-gradient(135deg, #14b8a6, #0f766e)',
-        'linear-gradient(135deg, #ec4899, #be185d)',
+        'linear-gradient(135deg, #ec4899, #be18d9)',
         'linear-gradient(135deg, #eab308, #a16207)',
         'linear-gradient(135deg, #06b6d4, #0e7490)',
         'linear-gradient(135deg, #ef4444, #b91c1c)',
@@ -860,13 +1024,15 @@
       }
 
       const STORAGE_KEY = 'space_cbt_master_data_permanen';
-      const LEGACY_KEYS = ['space_cbt_school_state_v4', 'space_cbt_school_state_v3', 'space_cbt_school_state_v2', 'space_cbt_school_state_v1'];
+      const LEGACY_KEYS = ['space_cbt_backup_cadangan', 'space_cbt_school_state_v4', 'space_cbt_school_state_v3', 'space_cbt_school_state_v2', 'space_cbt_school_state_v1'];
+      const DB_STATE_ROW_KEY = 'bina_ilmu_school_master_v1';
 
-      // State Default Sekolah (hanya dipakai jika belum ada data tersimpan sama sekali)
       let state = {
+        updatedAt: 0,
         adminProfile: {
           nama: 'Kepala Sekolah SD Bina Ilmu Blora',
           nip: 'KS-001',
+          pin: 'admin123',
           sekolah: 'SD Bina Ilmu Blora',
           alamat: 'Blora, Jawa Tengah',
         },
@@ -876,6 +1042,7 @@
             id: 'guru_1',
             nama: 'Ustadz Pengampu Utama',
             nip: 'GR-001',
+            pin: '1234',
             assignments: [
               { kelas: 'Kelas 1', mapel: 'Matematika' },
               { kelas: 'Kelas 1', mapel: 'PAI / Tahfidz' },
@@ -894,10 +1061,16 @@
         hasilList: [],
       };
 
-      function gabungkanDataAman(saved) {
+      // Sesi Login Aktif
+      let currentSession = null; // { role: 'murid'|'guru'|'admin', nama, kelas?, guruId? }
+
+      function gabungkanDataAman(saved, timpaPenuh = false) {
         if (!saved || typeof saved !== 'object') return;
+        if (saved.updatedAt) state.updatedAt = Math.max(state.updatedAt || 0, saved.updatedAt);
+
         if (saved.adminProfile && typeof saved.adminProfile === 'object') {
           state.adminProfile = { ...state.adminProfile, ...saved.adminProfile };
+          if (!state.adminProfile.pin) state.adminProfile.pin = 'admin123';
         }
         if (saved.mapelPerKelas && typeof saved.mapelPerKelas === 'object') {
           DAFTAR_KELAS.forEach((k) => {
@@ -907,23 +1080,40 @@
           });
         }
         if (Array.isArray(saved.teachers) && saved.teachers.length > 0) {
-          state.teachers = saved.teachers;
+          state.teachers = saved.teachers.map((t) => ({ ...t, pin: t.pin || '1234' }));
         }
-        if (saved.activeGuruId) {
-          state.activeGuruId = saved.activeGuruId;
-        }
+        if (saved.activeGuruId) state.activeGuruId = saved.activeGuruId;
+
         if (Array.isArray(saved.students)) {
-          state.students = saved.students;
+          if (timpaPenuh) {
+            state.students = saved.students;
+          } else {
+            const mapSis = new Map(state.students.map((s) => [s.id, s]));
+            saved.students.forEach((s) => mapSis.set(s.id, s));
+            state.students = Array.from(mapSis.values());
+          }
         }
         if (Array.isArray(saved.soalList)) {
-          state.soalList = saved.soalList;
+          if (timpaPenuh) {
+            state.soalList = saved.soalList;
+          } else {
+            const mapSoal = new Map(state.soalList.map((s) => [String(s.id), s]));
+            saved.soalList.forEach((s) => mapSoal.set(String(s.id), s));
+            state.soalList = Array.from(mapSoal.values());
+          }
         }
         if (Array.isArray(saved.hasilList)) {
-          state.hasilList = saved.hasilList;
+          if (timpaPenuh) {
+            state.hasilList = saved.hasilList;
+          } else {
+            const mapHasil = new Map(state.hasilList.map((h) => [String(h.id), h]));
+            saved.hasilList.forEach((h) => mapHasil.set(String(h.id), h));
+            state.hasilList = Array.from(mapHasil.values());
+          }
         }
       }
 
-      function loadState() {
+      function loadStateFromCache() {
         try {
           let raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) {
@@ -936,13 +1126,13 @@
             }
           }
           if (raw) {
-            gabungkanDataAman(JSON.parse(raw));
-            saveState(); // Langsung amankan ke key permanen
+            gabungkanDataAman(JSON.parse(raw), true);
+            simpanKeCacheLokal();
           }
         } catch (_) {}
       }
 
-      function saveState() {
+      function simpanKeCacheLokal() {
         try {
           const serialized = JSON.stringify(state);
           localStorage.setItem(STORAGE_KEY, serialized);
@@ -954,6 +1144,151 @@
         if (window.__SB_CLIENT__ && typeof window.__SB_CLIENT__.from === 'function') return window.__SB_CLIENT__;
         if (window.supabaseClient && typeof window.supabaseClient.from === 'function') return window.supabaseClient;
         return null;
+      }
+
+      function setDbBadge(status, text) {
+        const el = document.getElementById('btn-db-status');
+        const info = document.getElementById('db-detail-info');
+        if (el) {
+          el.classList.remove('online', 'syncing');
+          if (status === 'online') el.classList.add('online');
+          if (status === 'syncing') el.classList.add('syncing');
+          el.textContent = text;
+        }
+        if (info) info.textContent = text;
+      }
+
+      // ==================== SINKRONISASI DATABASE SUPABASE ====================
+      async function pushStateKeDatabase(tampilkanAlert = false) {
+        const sb = getSupabase();
+        if (!sb) {
+          setDbBadge('offline', '🟡 Cache Lokal (Supabase belum aktif)');
+          if (tampilkanAlert) alert('Koneksi Supabase belum terdeteksi. Pastikan konfigurasi di js/supabase.js aktif.');
+          return false;
+        }
+
+        setDbBadge('syncing', '🔄 Menyimpan ke Database...');
+        try {
+          // 1. Simpan master state lengkap ke tabel school_kv_store
+          const { error: kvErr } = await sb
+            .from('school_kv_store')
+            .upsert({ key: DB_STATE_ROW_KEY, data: state, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+
+          // 2. Amankan juga bank soal ke tabel 'soal' bawaan agar terjamin di 2 tempat
+          if (state.soalList.length > 0) {
+            const { data: existingSoal } = await sb.from('soal').select('id, pertanyaan, mapel');
+            const existingSet = new Set((existingSoal || []).map((r) => `${r.mapel}::${r.pertanyaan}`));
+
+            const soalBaruUntukInsert = state.soalList
+              .filter((s) => !existingSet.has(`${s.mapel} (${s.kelas})::${s.pertanyaan}`))
+              .map((s) => ({
+                mapel: `${s.mapel} (${s.kelas})`,
+                tipe: s.tipe,
+                pertanyaan: s.pertanyaan,
+                gambar_soal: s.gambar_soal || null,
+                opsi_a: s.opsi_a || null,
+                gambar_a: s.gambar_a || null,
+                opsi_b: s.opsi_b || null,
+                gambar_b: s.gambar_b || null,
+                opsi_c: s.opsi_c || null,
+                gambar_c: s.gambar_c || null,
+                opsi_d: s.opsi_d || null,
+                gambar_d: s.gambar_d || null,
+                opsi_tambahan: s.opsi_tambahan || [],
+                kunci: s.kunci || '',
+              }));
+
+            if (soalBaruUntukInsert.length > 0) {
+              await sb.from('soal').insert(soalBaruUntukInsert);
+            }
+          }
+
+          if (kvErr) {
+            setDbBadge('syncing', '⚠️ Tabel KV belum dibuat (Soal tersimpan di tabel soal)');
+            if (tampilkanAlert) {
+              alert('⚠️ Data soal sudah diamankan ke tabel `soal`, namun tabel `school_kv_store` belum dibuat di Supabase.
+Buka Panel Admin -> Tab Status Database untuk menyalin skrip SQL-nya.');
+            }
+            return false;
+          }
+
+          setDbBadge('online', '🟢 Tersimpan di Database Supabase');
+          if (tampilkanAlert) {
+            alert('✅ SELURUH DATA BERHASIL DIAMANKAN KE DATABASE SUPABASE!
+(Profil Sekolah, Guru, Siswa, Mapel, Bank Soal, dan Rekap Nilai)');
+          }
+          return true;
+        } catch (err) {
+          setDbBadge('offline', '🟡 Gagal Sync DB (Tersimpan di Cache)');
+          return false;
+        }
+      }
+
+      async function sinkronisasiAwalDatabase() {
+        const sb = getSupabase();
+        if (!sb) {
+          setDbBadge('offline', '🟡 Mode Cache Lokal');
+          return;
+        }
+
+        setDbBadge('syncing', '🔄 Sinkronisasi Database...');
+        try {
+          const hasLocalData = Boolean(localStorage.getItem(STORAGE_KEY) || LEGACY_KEYS.some((k) => localStorage.getItem(k)));
+
+          // Tarik data master dari school_kv_store
+          const { data: kvRow, error: kvErr } = await sb
+            .from('school_kv_store')
+            .select('data')
+            .eq('key', DB_STATE_ROW_KEY)
+            .maybeSingle();
+
+          if (!kvErr && kvRow && kvRow.data) {
+            const dbData = kvRow.data;
+            // Jika cache lokal lebih baru atau memiliki data tambahan yang belum masuk DB, gabungkan lalu push!
+            if (hasLocalData && (state.updatedAt || 0) >= (dbData.updatedAt || 0)) {
+              gabungkanDataAman(dbData, false);
+              simpanKeCacheLokal();
+              await pushStateKeDatabase(false);
+            } else {
+              gabungkanDataAman(dbData, true);
+              simpanKeCacheLokal();
+              setDbBadge('online', '🟢 Tersinkron dengan Database');
+            }
+          } else {
+            // Database masih kosong -> segera amankan data cache lokal ke database!
+            await pushStateKeDatabase(false);
+          }
+
+          // Tarik juga nilai ujian dari tabel hasil_ujian jika ada yang baru
+          const { data: dbHasil } = await sb.from('hasil_ujian').select('*').order('created_at', { ascending: false }).limit(200);
+          if (Array.isArray(dbHasil) && dbHasil.length > 0) {
+            const existingKeys = new Set(state.hasilList.map((h) => `${h.nama_siswa}::${h.mapel}::${h.skor_otomatis}`));
+            dbHasil.forEach((r) => {
+              const key = `${r.nama_siswa}::${r.mapel}::${r.skor_otomatis}`;
+              if (!existingKeys.has(key)) {
+                state.hasilList.push({
+                  id: 'db_' + (r.id || Date.now() + Math.random()),
+                  nama_siswa: r.nama_siswa,
+                  kelas: r.kelas || 'Kelas 1',
+                  mapel: r.mapel,
+                  skor_otomatis: r.skor_otomatis,
+                  created_at: r.created_at || new Date().toISOString(),
+                });
+              }
+            });
+            simpanKeCacheLokal();
+          }
+
+          refreshSemuaTampilan();
+        } catch (_) {
+          setDbBadge('offline', '🟡 Mode Cache Lokal');
+        }
+      }
+
+      async function saveState() {
+        state.updatedAt = Date.now();
+        simpanKeCacheLokal();
+        await pushStateKeDatabase(false);
       }
 
       function escapeHtml(str) {
@@ -1125,31 +1460,77 @@
         return null;
       }
 
-      // ==================== SISTEM KUNCI LAYAR UJIAN SISWA ====================
+      // ==================== KUNCI LAYAR OTOMATIS SAAT MASUK SOAL ====================
       let ujianSedangTerkunci = false;
       let pelanggaranKeluar = 0;
 
-      function aktifkanKunciLayarUjian() {
-        ujianSedangTerkunci = true;
-        pelanggaranKeluar = 0;
-        document.getElementById('lock-warning-count').textContent = 'Pelanggaran Keluar: 0';
-        document.getElementById('main-nav-switch').classList.add('hidden');
+      function mintaMasukFullscreen() {
         try {
-          if (document.documentElement.requestFullscreen) {
-            document.documentElement.requestFullscreen().catch(() => {});
+          const el = document.documentElement;
+          if (!document.fullscreenElement) {
+            if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
           }
         } catch (_) {}
       }
 
-      function nonaktifkanKunciLayarUjian() {
+      function aktifkanKunciLayarOtomatis() {
+        ujianSedangTerkunci = true;
+        pelanggaranKeluar = 0;
+        document.getElementById('lock-warning-count').textContent = 'Pelanggaran Keluar: 0';
+        document.getElementById('session-bar').classList.add('hidden');
+        document.getElementById('btn-db-status').classList.add('hidden');
+
+        // 1. Langsung masuk Fullscreen otomatis saat masuk ke soal
+        mintaMasukFullscreen();
+
+        // 2. Kunci tombol Back browser dengan history trap
+        try {
+          window.history.pushState({ lockedExam: true }, '', window.location.href);
+        } catch (_) {}
+      }
+
+      function nonaktifkanKunciLayarOtomatis() {
         ujianSedangTerkunci = false;
-        document.getElementById('main-nav-switch').classList.remove('hidden');
+        document.getElementById('lock-overlay-alert').classList.add('hidden');
+        document.getElementById('session-bar').classList.remove('hidden');
+        document.getElementById('btn-db-status').classList.remove('hidden');
         try {
           if (document.fullscreenElement && document.exitFullscreen) {
             document.exitFullscreen().catch(() => {});
           }
         } catch (_) {}
       }
+
+      function catatPelanggaranKunciLayar(alasan) {
+        if (!ujianSedangTerkunci) return;
+        pelanggaranKeluar++;
+        document.getElementById('lock-warning-count').textContent = `Pelanggaran Keluar: ${pelanggaranKeluar}`;
+        document.getElementById('lock-overlay-msg').textContent =
+          `${alasan} (Total pelanggaran tercatat: ${pelanggaranKeluar}x). Klik tombol di bawah untuk kembali mengunci layar penuh.`;
+        document.getElementById('lock-overlay-alert').classList.remove('hidden');
+      }
+
+      document.getElementById('btn-kembali-kunci-layar').addEventListener('click', () => {
+        document.getElementById('lock-overlay-alert').classList.add('hidden');
+        mintaMasukFullscreen();
+      });
+
+      document.getElementById('btn-paksa-fullscreen').addEventListener('click', mintaMasukFullscreen);
+
+      // Pastikan setiap klik pada area soal otomatis mengaktifkan kembali fullscreen jika sempat keluar
+      document.addEventListener('click', () => {
+        if (ujianSedangTerkunci && !document.fullscreenElement && document.getElementById('lock-overlay-alert').classList.contains('hidden')) {
+          mintaMasukFullscreen();
+        }
+      });
+
+      window.addEventListener('popstate', () => {
+        if (ujianSedangTerkunci) {
+          try { window.history.pushState({ lockedExam: true }, '', window.location.href); } catch (_) {}
+          catatPelanggaranKunciLayar('Tombol Kembali (Back) browser diblokir selama ujian berlangsung!');
+        }
+      });
 
       window.addEventListener('beforeunload', (e) => {
         if (ujianSedangTerkunci) {
@@ -1160,47 +1541,168 @@
 
       document.addEventListener('visibilitychange', () => {
         if (ujianSedangTerkunci && document.hidden) {
-          pelanggaranKeluar++;
-          document.getElementById('lock-warning-count').textContent = `Pelanggaran Keluar: ${pelanggaranKeluar}`;
-          alert(`⚠️ PERINGATAN KEAMANAN UJIAN!\nLayar ujian sedang dikunci. Dilarang keluar atau membuka tab lain sebelum misi selesai! (Catatan pelanggaran: ${pelanggaranKeluar}x)`);
+          catatPelanggaranKunciLayar('Anda terdeteksi meninggalkan tab atau membuka aplikasi lain saat ujian berlangsung!');
         }
       });
 
       document.addEventListener('fullscreenchange', () => {
         if (ujianSedangTerkunci && !document.fullscreenElement) {
-          pelanggaranKeluar++;
-          document.getElementById('lock-warning-count').textContent = `Pelanggaran Keluar: ${pelanggaranKeluar}`;
+          catatPelanggaranKunciLayar('Anda keluar dari mode Layar Penuh (Fullscreen) saat mengerjakan soal!');
         }
       });
 
-      // ==================== NAVIGASI UTAMA & MODAL CLOSE ====================
+      document.addEventListener('contextmenu', (e) => {
+        if (ujianSedangTerkunci) e.preventDefault();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (!ujianSedangTerkunci) return;
+        if (e.key === 'F12' || (e.ctrlKey && ['c', 'v', 'u', 's', 'p', 'a', 't', 'w'].includes(e.key.toLowerCase())) || (e.altKey && e.key === 'Tab')) {
+          e.preventDefault();
+        }
+      });
+
+      // ==================== PORTAL LOGIN & MANAJEMEN SESI ROLE ====================
+      let selectedLoginRole = 'murid';
+
+      function populateFormLoginOptions() {
+        // Isi dropdown siswa sesuai kelas di form login murid
+        const kelas = document.getElementById('login-murid-kelas').value;
+        const selMurid = document.getElementById('login-murid-nama');
+        const inpManual = document.getElementById('login-murid-manual');
+        const listSiswa = state.students.filter((s) => s.kelas === kelas);
+
+        selMurid.innerHTML = '';
+        listSiswa.forEach((s) => {
+          const opt = document.createElement('option');
+          opt.value = s.nama;
+          opt.textContent = `${s.nama} ${s.nis ? `(NIS: ${s.nis})` : ''}`;
+          selMurid.appendChild(opt);
+        });
+        const optManual = document.createElement('option');
+        optManual.value = '__MANUAL__';
+        optManual.textContent = '+ Ketik Nama Siswa Manual...';
+        selMurid.appendChild(optManual);
+
+        if (listSiswa.length === 0) {
+          selMurid.value = '__MANUAL__';
+          inpManual.classList.remove('hidden');
+        } else {
+          inpManual.classList.add('hidden');
+        }
+
+        // Isi dropdown akun guru di form login guru
+        const selGuru = document.getElementById('login-guru-akun');
+        selGuru.innerHTML = '';
+        state.teachers.forEach((g) => {
+          const opt = document.createElement('option');
+          opt.value = g.id;
+          opt.textContent = `👨‍🏫 ${g.nama} (${g.nip || 'Guru'})`;
+          selGuru.appendChild(opt);
+        });
+      }
+
+      document.querySelectorAll('.role-card-btn').forEach((card) => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.role-card-btn').forEach((c) => c.classList.remove('selected'));
+          card.classList.add('selected');
+          selectedLoginRole = card.dataset.role;
+
+          document.getElementById('form-login-murid').classList.toggle('hidden', selectedLoginRole !== 'murid');
+          document.getElementById('form-login-guru').classList.toggle('hidden', selectedLoginRole !== 'guru');
+          document.getElementById('form-login-admin').classList.toggle('hidden', selectedLoginRole !== 'admin');
+        });
+      });
+
+      document.getElementById('login-murid-kelas').addEventListener('change', populateFormLoginOptions);
+      document.getElementById('login-murid-nama').addEventListener('change', (e) => {
+        document.getElementById('login-murid-manual').classList.toggle('hidden', e.target.value !== '__MANUAL__');
+      });
+
+      function masukKeSesiRole(sessionObj) {
+        currentSession = sessionObj;
+        document.getElementById('view-login').classList.add('hidden');
+        document.getElementById('session-bar').classList.remove('hidden');
+        document.getElementById('session-user-name').textContent = sessionObj.nama;
+
+        ['view-siswa', 'view-guru', 'view-admin'].forEach((id) => document.getElementById(id).classList.add('hidden'));
+
+        if (sessionObj.role === 'murid') {
+          document.getElementById('session-user-role').textContent = `Role: Murid (${sessionObj.kelas})`;
+          document.getElementById('view-siswa').classList.remove('hidden');
+          document.getElementById('siswa-mulai-card').classList.remove('hidden');
+          document.getElementById('siswa-ujian-area').classList.add('hidden');
+          document.getElementById('siswa-selesai-card').classList.add('hidden');
+          renderBriefingSiswa();
+        } else if (sessionObj.role === 'guru') {
+          state.activeGuruId = sessionObj.guruId;
+          document.getElementById('session-user-role').textContent = 'Role: Ustadz / Guru';
+          document.getElementById('view-guru').classList.remove('hidden');
+          renderPanelGuru();
+        } else if (sessionObj.role === 'admin') {
+          document.getElementById('session-user-role').textContent = 'Role: Admin / Kepala Sekolah';
+          document.getElementById('view-admin').classList.remove('hidden');
+          renderPanelAdmin();
+        }
+      }
+
+      document.getElementById('form-login-murid').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const kelas = document.getElementById('login-murid-kelas').value;
+        const sel = document.getElementById('login-murid-nama').value;
+        const nama = sel === '__MANUAL__' ? document.getElementById('login-murid-manual').value.trim() : sel;
+        if (!nama) {
+          alert('Silakan pilih atau ketik nama murid terlebih dahulu.');
+          return;
+        }
+        masukKeSesiRole({ role: 'murid', nama, kelas });
+      });
+
+      document.getElementById('form-login-guru').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const guruId = document.getElementById('login-guru-akun').value;
+        const pinInput = document.getElementById('login-guru-pin').value.trim();
+        const guru = state.teachers.find((t) => t.id === guruId);
+        if (!guru) return;
+        if (pinInput !== (guru.pin || '1234')) {
+          alert('❌ PIN Guru salah! (Default PIN guru adalah 1234 kecuali sudah diubah oleh Admin/Guru).');
+          return;
+        }
+        document.getElementById('login-guru-pin').value = '';
+        masukKeSesiRole({ role: 'guru', nama: guru.nama, guruId: guru.id });
+      });
+
+      document.getElementById('form-login-admin').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const pinInput = document.getElementById('login-admin-pin').value.trim();
+        if (pinInput !== (state.adminProfile.pin || 'admin123')) {
+          alert('❌ PIN Kepala Sekolah / Admin salah! (Default PIN adalah admin123).');
+          return;
+        }
+        document.getElementById('login-admin-pin').value = '';
+        masukKeSesiRole({ role: 'admin', nama: state.adminProfile.nama });
+      });
+
+      document.getElementById('btn-logout-role').addEventListener('click', () => {
+        if (ujianSedangTerkunci) {
+          alert('🔒 Layar terkunci selama ujian berlangsung!');
+          return;
+        }
+        currentSession = null;
+        ['view-siswa', 'view-guru', 'view-admin'].forEach((id) => document.getElementById(id).classList.add('hidden'));
+        document.getElementById('session-bar').classList.add('hidden');
+        document.getElementById('view-login').classList.remove('hidden');
+        populateFormLoginOptions();
+      });
+
+      // ==================== MODAL CLOSE ====================
       document.querySelectorAll('[data-close]').forEach((btn) => {
         btn.addEventListener('click', () => {
           document.getElementById(btn.dataset.close).classList.add('hidden');
         });
       });
 
-      function switchMainView(target) {
-        if (ujianSedangTerkunci) {
-          alert('🔒 Layar terkunci selama ujian berlangsung!');
-          return;
-        }
-        ['tab-siswa', 'tab-guru', 'tab-admin'].forEach((id) => document.getElementById(id).classList.remove('active'));
-        ['view-siswa', 'view-guru', 'view-admin'].forEach((id) => document.getElementById(id).classList.add('hidden'));
-
-        document.getElementById(`tab-${target}`).classList.add('active');
-        document.getElementById(`view-${target}`).classList.remove('hidden');
-
-        if (target === 'siswa') renderBriefingSiswa();
-        if (target === 'guru') renderPanelGuru();
-        if (target === 'admin') renderPanelAdmin();
-      }
-
-      document.getElementById('tab-siswa').addEventListener('click', () => switchMainView('siswa'));
-      document.getElementById('tab-guru').addEventListener('click', () => switchMainView('guru'));
-      document.getElementById('tab-admin').addEventListener('click', () => switchMainView('admin'));
-
-      // ==================== CRUD MATA PELAJARAN PER KELAS (TAMBAH / EDIT / HAPUS) ====================
+      // ==================== CRUD MATA PELAJARAN PER KELAS ====================
       function bukaModalMapelKelas(kelas, indexEdit = -1) {
         const modalEl = document.getElementById('modal-mapel-kelas');
         if (!modalEl) return;
@@ -1218,25 +1720,24 @@
           document.getElementById('inp-mapel-ikon').value = '🪐';
           document.getElementById('inp-mapel-nama').value = '';
         }
-        document.getElementById('modal-mapel-kelas').classList.remove('hidden');
+        modalEl.classList.remove('hidden');
       }
 
-      function hapusMapelDiKelas(kelas, indexHapus) {
+      async function hapusMapelDiKelas(kelas, indexHapus) {
         const list = state.mapelPerKelas[kelas] || [];
         const target = list[indexHapus];
         if (!target) return;
         if (!confirm(`Hapus mata pelajaran "${target.nama}" dari ${kelas}?`)) return;
 
         list.splice(indexHapus, 1);
-        // Bersihkan assignment guru untuk mapel yang dihapus di kelas ini
         state.teachers.forEach((t) => {
           t.assignments = (t.assignments || []).filter((a) => !(a.kelas === kelas && a.mapel === target.nama));
         });
-        saveState();
-        refreshSemuaTampilanMapel();
+        await saveState();
+        refreshSemuaTampilan();
       }
 
-      document.getElementById('form-mapel-kelas').addEventListener('submit', (e) => {
+      document.getElementById('form-mapel-kelas').addEventListener('submit', async (e) => {
         e.preventDefault();
         const kelas = document.getElementById('mapel-kelas-target').value;
         const indexEdit = parseInt(document.getElementById('mapel-edit-index').value, 10);
@@ -1254,8 +1755,6 @@
         if (indexEdit >= 0 && list[indexEdit]) {
           const namaLama = list[indexEdit].nama;
           list[indexEdit] = { ...list[indexEdit], nama: namaBaru, ikon };
-
-          // Sinkronkan nama mapel di assignment guru dan soal yang sudah ada di kelas tersebut
           state.teachers.forEach((t) => {
             t.assignments = (t.assignments || []).map((a) =>
               a.kelas === kelas && a.mapel === namaLama ? { ...a, mapel: namaBaru } : a
@@ -1270,23 +1769,25 @@
         }
 
         state.mapelPerKelas[kelas] = list;
-        saveState();
+        await saveState();
         document.getElementById('modal-mapel-kelas').classList.add('hidden');
-        refreshSemuaTampilanMapel();
-        alert(`✅ Mata pelajaran "${namaBaru}" (${kelas}) berhasil disimpan!`);
+        refreshSemuaTampilan();
+        alert(`✅ Mata pelajaran "${namaBaru}" (${kelas}) berhasil disimpan ke Database!`);
       });
 
-      function refreshSemuaTampilanMapel() {
-        renderPanelGuru();
-        renderPanelAdmin();
-        renderBriefingSiswa();
+      function refreshSemuaTampilan() {
+        renderProfilAdminHeader();
+        populateFormLoginOptions();
+        if (currentSession?.role === 'guru') renderPanelGuru();
+        if (currentSession?.role === 'admin') renderPanelAdmin();
+        if (currentSession?.role === 'murid') renderBriefingSiswa();
         if (!document.getElementById('modal-guru').classList.contains('hidden')) {
           const curChecked = ambilAssignmentsDariMatrix(document.getElementById('modal-guru-matrix'), 'modal_guru_assign');
           renderMatrixCheckboxes(document.getElementById('modal-guru-matrix'), curChecked, 'modal_guru_assign');
         }
       }
 
-      // ==================== HELPER MATRIX MAPEL LINTAS KELAS (DENGAN TOMBOL + MAPEL, EDIT & HAPUS) ====================
+      // ==================== MATRIX MAPEL LINTAS KELAS ====================
       function renderMatrixCheckboxes(containerEl, selectedAssignments, inputName) {
         containerEl.innerHTML = '';
         DAFTAR_KELAS.forEach((kelas) => {
@@ -1334,7 +1835,6 @@
               grid.appendChild(itemDiv);
             });
           }
-
           containerEl.appendChild(group);
         });
       }
@@ -1358,28 +1858,33 @@
       document.getElementById('btn-edit-profil-admin').addEventListener('click', () => {
         document.getElementById('inp-admin-nama').value = state.adminProfile.nama;
         document.getElementById('inp-admin-nip').value = state.adminProfile.nip || '';
+        document.getElementById('inp-admin-pin').value = state.adminProfile.pin || 'admin123';
         document.getElementById('inp-admin-sekolah').value = state.adminProfile.sekolah;
         document.getElementById('inp-admin-alamat').value = state.adminProfile.alamat || '';
         document.getElementById('modal-profil-admin').classList.remove('hidden');
       });
 
-      document.getElementById('form-profil-admin').addEventListener('submit', (e) => {
+      document.getElementById('form-profil-admin').addEventListener('submit', async (e) => {
         e.preventDefault();
         state.adminProfile = {
           nama: document.getElementById('inp-admin-nama').value.trim(),
           nip: document.getElementById('inp-admin-nip').value.trim(),
+          pin: document.getElementById('inp-admin-pin').value.trim() || 'admin123',
           sekolah: document.getElementById('inp-admin-sekolah').value.trim(),
           alamat: document.getElementById('inp-admin-alamat').value.trim(),
         };
-        saveState();
+        await saveState();
         renderProfilAdminHeader();
+        if (currentSession?.role === 'admin') {
+          document.getElementById('session-user-name').textContent = state.adminProfile.nama;
+        }
         document.getElementById('modal-profil-admin').classList.add('hidden');
-        alert('✅ Profil Kepala Sekolah / Admin berhasil diperbarui!');
+        alert('✅ Profil & PIN Kepala Sekolah berhasil disimpan ke Database!');
       });
 
-      ['guru', 'siswa', 'mapel'].forEach((sub) => {
+      ['guru', 'siswa', 'mapel', 'db'].forEach((sub) => {
         document.getElementById(`subtab-admin-${sub}`).addEventListener('click', () => {
-          ['guru', 'siswa', 'mapel'].forEach((x) => {
+          ['guru', 'siswa', 'mapel', 'db'].forEach((x) => {
             document.getElementById(`subtab-admin-${x}`).classList.remove('active');
             document.getElementById(`panel-admin-${x}`).classList.add('hidden');
           });
@@ -1455,7 +1960,7 @@
             <div class="item-header">
               <div>
                 <strong>👨‍🏫 ${escapeHtml(g.nama)}</strong>
-                <span class="subtitle-sm" style="margin-left:8px;">NIP/ID: ${escapeHtml(g.nip || '-')}</span>
+                <span class="subtitle-sm" style="margin-left:8px;">NIP: ${escapeHtml(g.nip || '-')} • PIN Login: <b>${escapeHtml(g.pin || '1234')}</b></span>
               </div>
               <div>
                 <button type="button" class="btn-warning btn-edit-guru" style="padding:5px 11px;font-size:0.8rem;">✏️ Edit Guru &amp; Mapel</button>
@@ -1467,12 +1972,13 @@
           div.querySelector('.btn-edit-guru').addEventListener('click', () => bukaModalGuru(g));
           const delBtn = div.querySelector('.btn-del-guru');
           if (delBtn) {
-            delBtn.addEventListener('click', () => {
+            delBtn.addEventListener('click', async () => {
               if (!confirm(`Hapus guru ${g.nama}?`)) return;
               state.teachers = state.teachers.filter((t) => t.id !== g.id);
               if (state.activeGuruId === g.id) state.activeGuruId = state.teachers[0].id;
-              saveState();
+              await saveState();
               renderDaftarGuruAdmin();
+              populateFormLoginOptions();
             });
           }
           box.appendChild(div);
@@ -1481,9 +1987,10 @@
 
       function bukaModalGuru(guru = null) {
         document.getElementById('guru-edit-id').value = guru ? guru.id : '';
-        document.getElementById('judul-modal-guru').textContent = guru ? '✏️ Edit Profil Guru & Mapel Diampu' : '➕ Tambah Ustadz / Guru Baru';
+        document.getElementById('judul-modal-guru').textContent = guru ? '✏️ Edit Profil Guru, PIN & Mapel Diampu' : '➕ Tambah Ustadz / Guru Baru';
         document.getElementById('inp-guru-nama').value = guru ? guru.nama : '';
         document.getElementById('inp-guru-nip').value = guru ? (guru.nip || '') : '';
+        document.getElementById('inp-guru-pin').value = guru ? (guru.pin || '1234') : '1234';
         renderMatrixCheckboxes(
           document.getElementById('modal-guru-matrix'),
           guru ? (guru.assignments || []) : [],
@@ -1494,26 +2001,28 @@
 
       document.getElementById('btn-tambah-guru').addEventListener('click', () => bukaModalGuru(null));
 
-      document.getElementById('form-guru').addEventListener('submit', (e) => {
+      document.getElementById('form-guru').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('guru-edit-id').value;
         const nama = document.getElementById('inp-guru-nama').value.trim();
         const nip = document.getElementById('inp-guru-nip').value.trim();
+        const pin = document.getElementById('inp-guru-pin').value.trim() || '1234';
         const assignments = ambilAssignmentsDariMatrix(document.getElementById('modal-guru-matrix'), 'modal_guru_assign');
 
         if (id) {
-          state.teachers = state.teachers.map((t) => (t.id === id ? { ...t, nama, nip, assignments } : t));
+          state.teachers = state.teachers.map((t) => (t.id === id ? { ...t, nama, nip, pin, assignments } : t));
         } else {
           const newId = 'guru_' + Date.now();
-          state.teachers.push({ id: newId, nama, nip, assignments });
+          state.teachers.push({ id: newId, nama, nip, pin, assignments });
           state.activeGuruId = newId;
         }
-        saveState();
+        await saveState();
         document.getElementById('modal-guru').classList.add('hidden');
-        renderDaftarGuruAdmin();
-        renderPanelGuru();
-        renderBriefingSiswa();
-        alert('✅ Data Guru & Mata Pelajaran berhasil disimpan!');
+        if (currentSession?.role === 'guru' && currentSession.guruId === id) {
+          document.getElementById('session-user-name').textContent = nama;
+        }
+        refreshSemuaTampilan();
+        alert('✅ Data Guru, PIN & Mata Pelajaran berhasil disimpan ke Database!');
       });
 
       // KELOLA SISWA ADMIN
@@ -1543,7 +2052,7 @@
               </div>
               <div style="display:flex;gap:6px;flex-wrap:wrap;">
                 <button type="button" class="btn-warning btn-edit-sis" style="padding:5px 10px;font-size:0.78rem;">✏️ Pindah / Edit</button>
-                ${s.kelas ? '<button type="button" class="btn-secondary-xs btn-kick-sis">🚪 Keluarkan dari Kelas</button>' : ''}
+                ${s.kelas ? '<button type="button" class="btn-secondary-xs btn-kick-sis">🚪 Keluarkan</button>' : ''}
                 <button type="button" class="btn-danger-xs btn-del-sis">🗑️ Hapus</button>
               </div>
             </div>
@@ -1551,18 +2060,20 @@
           div.querySelector('.btn-edit-sis').addEventListener('click', () => bukaModalSiswa(s));
           const kickBtn = div.querySelector('.btn-kick-sis');
           if (kickBtn) {
-            kickBtn.addEventListener('click', () => {
+            kickBtn.addEventListener('click', async () => {
               if (!confirm(`Keluarkan ${s.nama} dari ${s.kelas}?`)) return;
               state.students = state.students.map((st) => (st.id === s.id ? { ...st, kelas: '' } : st));
-              saveState();
+              await saveState();
               renderDaftarSiswaAdmin();
+              populateFormLoginOptions();
             });
           }
-          div.querySelector('.btn-del-sis').addEventListener('click', () => {
+          div.querySelector('.btn-del-sis').addEventListener('click', async () => {
             if (!confirm(`Hapus permanen siswa ${s.nama}?`)) return;
             state.students = state.students.filter((st) => st.id !== s.id);
-            saveState();
+            await saveState();
             renderDaftarSiswaAdmin();
+            populateFormLoginOptions();
           });
           box.appendChild(div);
         });
@@ -1581,7 +2092,7 @@
 
       document.getElementById('btn-tambah-siswa').addEventListener('click', () => bukaModalSiswa(null));
 
-      document.getElementById('form-siswa').addEventListener('submit', (e) => {
+      document.getElementById('form-siswa').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('siswa-edit-id').value;
         const nama = document.getElementById('inp-siswa-nama').value.trim();
@@ -1593,11 +2104,11 @@
         } else {
           state.students.push({ id: 'sis_' + Date.now(), nama, nis, kelas });
         }
-        saveState();
+        await saveState();
         document.getElementById('modal-siswa').classList.add('hidden');
         renderDaftarSiswaAdmin();
-        renderBriefingSiswa();
-        alert('✅ Data Siswa berhasil disimpan!');
+        populateFormLoginOptions();
+        alert('✅ Data Siswa berhasil disimpan ke Database!');
       });
 
       // ==================== PANEL GURU / USTADZ ====================
@@ -1606,16 +2117,6 @@
       }
 
       function renderPanelGuru() {
-        const selAkun = document.getElementById('pilih-akun-guru');
-        selAkun.innerHTML = '';
-        state.teachers.forEach((t) => {
-          const opt = document.createElement('option');
-          opt.value = t.id;
-          opt.textContent = `👨‍🏫 ${t.nama}`;
-          if (t.id === state.activeGuruId) opt.selected = true;
-          selAkun.appendChild(opt);
-        });
-
         const guru = getGuruAktif();
         if (!guru) return;
 
@@ -1642,12 +2143,6 @@
         renderDaftarSoalGuru();
       }
 
-      document.getElementById('pilih-akun-guru').addEventListener('change', (e) => {
-        state.activeGuruId = e.target.value;
-        saveState();
-        renderPanelGuru();
-      });
-
       document.getElementById('btn-edit-profil-guru').addEventListener('click', () => {
         const guru = getGuruAktif();
         if (guru) bukaModalGuru(guru);
@@ -1665,15 +2160,14 @@
         });
       });
 
-      document.getElementById('btn-simpan-mapel-guru').addEventListener('click', () => {
+      document.getElementById('btn-simpan-mapel-guru').addEventListener('click', async () => {
         const guru = getGuruAktif();
         if (!guru) return;
         const assignments = ambilAssignmentsDariMatrix(document.getElementById('matrix-mapel-guru'), 'guru_panel_assign');
         state.teachers = state.teachers.map((t) => (t.id === guru.id ? { ...t, assignments } : t));
-        saveState();
+        await saveState();
         renderPanelGuru();
-        renderBriefingSiswa();
-        alert('✅ Pilihan mata pelajaran & kelas berhasil disimpan! Planet siswa otomatis diperbarui.');
+        alert('✅ Pilihan mata pelajaran & kelas berhasil disimpan ke Database!');
       });
 
       function renderDaftarSoalGuru() {
@@ -1728,7 +2222,7 @@
           div.querySelector('.btn-del-soal').addEventListener('click', async () => {
             if (!confirm('Hapus soal ini?')) return;
             state.soalList = state.soalList.filter((item) => item.id !== soal.id);
-            saveState();
+            await saveState();
             const sb = getSupabase();
             if (sb && !String(soal.id).startsWith('local_')) {
               try { await sb.from('soal').delete().eq('id', soal.id); } catch (_) {}
@@ -2045,31 +2539,11 @@
         } else {
           state.soalList.push({ id: 'local_' + Date.now(), ...payload });
         }
-        saveState();
-
-        const sb = getSupabase();
-        if (sb) {
-          try {
-            const dbPayload = {
-              mapel: `${payload.mapel} (${payload.kelas})`,
-              tipe: payload.tipe,
-              pertanyaan: payload.pertanyaan,
-              gambar_soal: payload.gambar_soal,
-              opsi_a: payload.opsi_a, gambar_a: payload.gambar_a,
-              opsi_b: payload.opsi_b, gambar_b: payload.gambar_b,
-              opsi_c: payload.opsi_c, gambar_c: payload.gambar_c,
-              opsi_d: payload.opsi_d, gambar_d: payload.gambar_d,
-              opsi_tambahan: payload.opsi_tambahan,
-              kunci: payload.kunci,
-            };
-            await sb.from('soal').insert([dbPayload]);
-          } catch (_) {}
-        }
+        await saveState();
 
         modalSoal.classList.add('hidden');
         renderDaftarSoalGuru();
-        renderBriefingSiswa();
-        alert('✅ Soal berhasil disimpan!');
+        alert('✅ Soal berhasil disimpan ke Database!');
       });
 
       // ==================== RENDER KARTU SOAL INTERAKTIF SISWA ====================
@@ -2283,31 +2757,12 @@
       let pesertaAktif = null;
 
       function renderBriefingSiswa() {
-        const kelasDipilih = document.getElementById('siswa-pilih-kelas').value;
+        const kelasDipilih = currentSession?.kelas || 'Kelas 1';
+        const namaMurid = currentSession?.nama || 'Astronaut';
+
+        document.getElementById('briefing-nama-murid').textContent = namaMurid;
+        document.getElementById('briefing-kelas-badge').textContent = `📘 ${kelasDipilih}`;
         document.getElementById('label-kelas-planet').textContent = kelasDipilih;
-
-        const selNama = document.getElementById('siswa-pilih-nama');
-        const inpManual = document.getElementById('siswa-nama-manual');
-        const siswaKelasIni = state.students.filter((s) => s.kelas === kelasDipilih);
-
-        selNama.innerHTML = '';
-        siswaKelasIni.forEach((s) => {
-          const opt = document.createElement('option');
-          opt.value = s.nama;
-          opt.textContent = `${s.nama} ${s.nis ? `(NIS: ${s.nis})` : ''}`;
-          selNama.appendChild(opt);
-        });
-        const optManual = document.createElement('option');
-        optManual.value = '__MANUAL__';
-        optManual.textContent = '+ Ketik Nama Manual...';
-        selNama.appendChild(optManual);
-
-        if (siswaKelasIni.length === 0) {
-          selNama.value = '__MANUAL__';
-          inpManual.classList.remove('hidden');
-        } else {
-          inpManual.classList.add('hidden');
-        }
 
         const mapelAktifKelasIni = new Set();
         state.teachers.forEach((t) => {
@@ -2349,24 +2804,12 @@
         });
       }
 
-      document.getElementById('siswa-pilih-kelas').addEventListener('change', renderBriefingSiswa);
-      document.getElementById('siswa-pilih-nama').addEventListener('change', (e) => {
-        document.getElementById('siswa-nama-manual').classList.toggle('hidden', e.target.value !== '__MANUAL__');
-      });
-
-      document.getElementById('form-identitas-siswa').addEventListener('submit', (e) => {
+      document.getElementById('form-mulai-misi').addEventListener('submit', (e) => {
         e.preventDefault();
-        const kelas = document.getElementById('siswa-pilih-kelas').value;
-        const selNama = document.getElementById('siswa-pilih-nama').value;
-        const nama = selNama === '__MANUAL__'
-          ? document.getElementById('siswa-nama-manual').value.trim()
-          : selNama;
+        const kelas = currentSession?.kelas || 'Kelas 1';
+        const nama = currentSession?.nama || 'Astronaut';
         const mapel = document.getElementById('siswa-mapel-terpilih').value;
 
-        if (!nama) {
-          alert('Silakan pilih atau ketik nama siswa terlebih dahulu.');
-          return;
-        }
         if (!mapel) {
           alert('Pilih planet mata pelajaran terlebih dahulu.');
           return;
@@ -2382,7 +2825,9 @@
         rekamanJawabanSiswa = {};
         indexSoalAktif = 0;
 
-        aktifkanKunciLayarUjian();
+        // LANGSUNG AKTIFKAN KUNCI LAYAR OTOMATIS SAAT MASUK KE SOAL
+        aktifkanKunciLayarOtomatis();
+
         document.getElementById('siswa-mulai-card').classList.add('hidden');
         document.getElementById('siswa-ujian-area').classList.remove('hidden');
         document.getElementById('info-peserta').textContent = `🧑‍🚀 ${nama} (${kelas})`;
@@ -2467,7 +2912,7 @@
           created_at: new Date().toISOString(),
         };
         state.hasilList.unshift(hasilBaru);
-        saveState();
+        await saveState();
 
         const sb = getSupabase();
         if (sb) {
@@ -2482,11 +2927,11 @@
           } catch (_) {}
         }
 
-        nonaktifkanKunciLayarUjian();
+        nonaktifkanKunciLayarOtomatis();
         document.getElementById('siswa-ujian-area').classList.add('hidden');
         document.getElementById('siswa-selesai-card').classList.remove('hidden');
         document.getElementById('pesan-hasil-siswa').textContent =
-          `Astronaut ${pesertaAktif.nama} (${pesertaAktif.kelas}) telah menyelesaikan Planet ${pesertaAktif.mapel}.`;
+          `Astronaut ${pesertaAktif.nama} (${pesertaAktif.kelas}) telah menyelesaikan Planet ${pesertaAktif.mapel}. Nilai otomatis tersimpan ke Database.`;
         document.getElementById('skor-akhir-box').textContent =
           `Skor Akhir: ${skor} (${benar} dari ${soalMisiSiswa.length} Misi Tepat) • Pelanggaran Keluar: ${pelanggaranKeluar}x`;
       }
@@ -2524,7 +2969,19 @@
         });
       }
 
-      document.getElementById('btn-refresh-nilai').addEventListener('click', renderRekapNilaiGuru);
+      document.getElementById('btn-refresh-nilai').addEventListener('click', async () => {
+        await sinkronisasiAwalDatabase();
+        renderRekapNilaiGuru();
+      });
+
+      // ==================== BACKUP, RESTORE & SINKRONISASI MANUAL ====================
+      document.getElementById('btn-sync-cache-to-db').addEventListener('click', () => pushStateKeDatabase(true));
+      document.getElementById('btn-force-push-db').addEventListener('click', () => pushStateKeDatabase(true));
+      document.getElementById('btn-force-pull-db').addEventListener('click', async () => {
+        await sinkronisasiAwalDatabase();
+        alert('✅ Data terbaru berhasil ditarik dari Database Supabase!');
+      });
+      document.getElementById('btn-db-status').addEventListener('click', () => pushStateKeDatabase(true));
 
       document.getElementById('btn-export-data').addEventListener('click', () => {
         const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
@@ -2540,15 +2997,13 @@
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = (ev) => {
+        reader.onload = async (ev) => {
           try {
             const imported = JSON.parse(ev.target.result);
-            gabungkanDataAman(imported);
-            saveState();
-            renderPanelAdmin();
-            renderPanelGuru();
-            renderBriefingSiswa();
-            alert('✅ Data sekolah berhasil dipulihkan dari file backup!');
+            gabungkanDataAman(imported, true);
+            await saveState();
+            refreshSemuaTampilan();
+            alert('✅ Data sekolah berhasil dipulihkan dan diamankan ke Database!');
           } catch (_) {
             alert('❌ File JSON backup tidak valid.');
           }
@@ -2557,11 +3012,19 @@
         e.target.value = '';
       });
 
-      // ==================== STARTUP ====================
-      loadState();
+      // ==================== STARTUP & EVENT SUPABASE ====================
+      loadStateFromCache();
       initSpaceCanvas();
       renderProfilAdminHeader();
-      renderBriefingSiswa();
+      populateFormLoginOptions();
+
+      window.addEventListener('sb-ready', () => {
+        sinkronisasiAwalDatabase();
+      });
+      // Cek juga jika sb sudah siap sebelum listener terpasang
+      setTimeout(() => {
+        if (getSupabase()) sinkronisasiAwalDatabase();
+      }, 600);
     })();
   </script>
 </body>
