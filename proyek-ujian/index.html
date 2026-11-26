@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manajemen Bank Soal</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <main class="container">
+    <h1>Bank Soal Ujian</h1>
+    <button id="btn-tambah-baru">+ Tambah Soal</button>
+
+    <div id="daftar-soal">Memuat data...</div>
+  </main>
+
+  <!-- Modal Form -->
+  <div id="modal-soal" class="modal hidden">
+    <div class="modal-content">
+      <h2 id="judul-modal">Tambah Soal</h2>
+      <form id="form-soal">
+        <input type="hidden" id="soal-id">
+
+        <label>Tipe Soal:</label>
+        <select id="tipe-soal">
+          <option value="pg">Pilihan Ganda</option>
+          <option value="isian">Isian Singkat</option>
+          <option value="uraian">Uraian</option>
+        </select>
+
+        <label>Pertanyaan:</label>
+        <textarea id="pertanyaan" rows="3" required></textarea>
+
+        <div id="area-opsi-pg">
+          <input type="text" id="opsi-a" placeholder="Opsi A" required>
+          <input type="text" id="opsi-b" placeholder="Opsi B" required>
+          <input type="text" id="opsi-c" placeholder="Opsi C" required>
+          <input type="text" id="opsi-d" placeholder="Opsi D" required>
+        </div>
+
+        <label>Kunci Jawaban:</label>
+        <textarea id="kunci-jawaban" rows="2"></textarea>
+
+        <div class="aksi-form">
+          <button type="submit">Simpan</button>
+          <button type="button" id="btn-batal">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
