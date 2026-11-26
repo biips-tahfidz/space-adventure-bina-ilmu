@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Arena Ujian & Bank Soal - Space Adventure Bina Ilmu</title>
+  <title>Space Adventure CBT & Manajemen Sekolah - Bina Ilmu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -15,377 +15,596 @@
       min-height: 100vh;
       background: radial-gradient(circle at top right, #1e1b4b, #0f172a 60%, #020617);
       color: #f8fafc;
-      padding: 20px 14px;
+      padding: 18px 12px;
       position: relative;
       overflow-x: hidden;
     }
     #space-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
     .container {
-      position: relative; z-index: 2; max-width: 960px; margin: 0 auto;
-      background: rgba(15, 23, 42, 0.86); backdrop-filter: blur(10px);
-      border: 1px solid rgba(99, 102, 241, 0.35); padding: 24px 28px;
-      border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
-      transition: opacity 0.3s ease;
+      position: relative; z-index: 2; max-width: 1040px; margin: 0 auto;
+      background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(10px);
+      border: 1px solid rgba(99, 102, 241, 0.35); padding: 22px 26px;
+      border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      transition: opacity 0.25s ease;
     }
-    body.exploding .container { opacity: 0.1; pointer-events: none; }
+    body.exploding .container { opacity: 0.08; pointer-events: none; }
 
-    /* STAGE LEDAKAN 3 DETIK */
+    /* STAGE LEDAKAN 3 DETIK PENUH TANPA TERTUTUP SOAL */
     .explosion-stage {
       position: fixed; inset: 0; z-index: 9999;
-      display: flex; justify-content: center; align-items: center; pointer-events: none;
-      background: radial-gradient(circle, rgba(251, 146, 60, 0.25) 0%, rgba(2, 6, 23, 0.7) 75%);
-      animation: screenShake 0.45s ease-in-out 3;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      pointer-events: none;
+      animation: screenShake 0.45s ease-in-out 4;
+    }
+    .explosion-stage.success-blast {
+      background: radial-gradient(circle, rgba(251, 146, 60, 0.32) 0%, rgba(2, 6, 23, 0.82) 75%);
+    }
+    .explosion-stage.damage-blast {
+      background: radial-gradient(circle, rgba(220, 38, 38, 0.45) 0%, rgba(15, 2, 2, 0.88) 75%);
     }
     .explosion-core { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .fireball {
-      width: 190px; height: 190px; border-radius: 50%;
+      width: 200px; height: 200px; border-radius: 50%;
       background: radial-gradient(circle, #ffffff 0%, #fef08a 25%, #f97316 55%, #dc2626 80%, transparent 100%);
-      box-shadow: 0 0 80px 35px rgba(249, 115, 22, 0.85), 0 0 140px 60px rgba(220, 38, 38, 0.6);
+      box-shadow: 0 0 90px 40px rgba(249, 115, 22, 0.9), 0 0 150px 70px rgba(220, 38, 38, 0.65);
       animation: fireballPulse 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+    .damage-blast .fireball {
+      background: radial-gradient(circle, #fecaca 0%, #ef4444 35%, #991b1b 70%, transparent 100%);
+      box-shadow: 0 0 90px 40px rgba(239, 68, 68, 0.95);
+    }
     .shockwave {
-      position: absolute; width: 120px; height: 120px; border-radius: 50%;
-      border: 6px solid rgba(253, 224, 71, 0.9);
+      position: absolute; width: 130px; height: 130px; border-radius: 50%;
+      border: 6px solid rgba(253, 224, 71, 0.95);
       animation: shockwaveExpand 2.8s ease-out forwards;
     }
     .explosion-caption {
-      margin-top: 24px; font-family: 'Fredoka', sans-serif; font-size: 2rem; font-weight: 700;
-      color: #fef08a; text-shadow: 0 4px 20px rgba(239, 68, 68, 0.95); letter-spacing: 1px;
+      margin-top: 26px; font-family: 'Fredoka', sans-serif; font-size: 2rem; font-weight: 700;
+      color: #fef08a; text-shadow: 0 4px 20px rgba(0, 0, 0, 0.95); text-align: center; padding: 0 16px;
       animation: captionZoom 3s ease forwards;
+    }
+    .explosion-subcaption {
+      margin-top: 8px; font-size: 1.05rem; font-weight: 600; color: #f8fafc;
+      background: rgba(15, 23, 42, 0.85); padding: 8px 18px; border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25); text-align: center; max-width: 90vw;
     }
     @keyframes fireballPulse {
       0% { transform: scale(0.1); opacity: 1; }
-      20% { transform: scale(1.45); opacity: 1; }
-      75% { transform: scale(1.15); opacity: 0.95; }
-      100% { transform: scale(1.8); opacity: 0; }
+      20% { transform: scale(1.5); opacity: 1; }
+      75% { transform: scale(1.2); opacity: 0.95; }
+      100% { transform: scale(1.85); opacity: 0; }
     }
     @keyframes shockwaveExpand {
       0% { transform: scale(0.2); opacity: 1; }
-      100% { transform: scale(4.2); opacity: 0; }
+      100% { transform: scale(4.4); opacity: 0; }
     }
     @keyframes captionZoom {
       0% { transform: scale(0.5); opacity: 0; }
-      15% { transform: scale(1.15); opacity: 1; }
+      15% { transform: scale(1.1); opacity: 1; }
       85% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(0.95); opacity: 0; }
     }
     @keyframes screenShake {
       0%, 100% { transform: translate(0, 0); }
-      20% { transform: translate(-10px, 6px); }
-      40% { transform: translate(10px, -6px); }
-      60% { transform: translate(-8px, -4px); }
-      80% { transform: translate(8px, 4px); }
+      20% { transform: translate(-12px, 7px); }
+      40% { transform: translate(12px, -7px); }
+      60% { transform: translate(-9px, -5px); }
+      80% { transform: translate(9px, 5px); }
     }
 
-    /* HEADER & NAV */
+    /* HEADER & ROLE SWITCHER */
     .app-header {
       display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-      gap: 14px; padding-bottom: 18px; margin-bottom: 22px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      gap: 14px; padding-bottom: 16px; margin-bottom: 20px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.22);
     }
     .badge-tema {
       display: inline-block; background: linear-gradient(90deg, #6366f1, #ec4899);
-      color: #fff; font-size: 0.76rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; margin-bottom: 5px;
+      color: #fff; font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; margin-bottom: 5px;
     }
-    h1, h2, h3 { font-family: 'Fredoka', sans-serif; color: #ffffff; }
-    h1 { font-size: 1.75rem; }
-    .mode-switch { display: flex; gap: 6px; background: rgba(2, 6, 23, 0.75); padding: 6px; border-radius: 12px; }
-    .btn-tab { background: transparent; color: #94a3b8; padding: 8px 14px; border-radius: 8px; font-weight: 600; }
+    h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; color: #ffffff; }
+    h1 { font-size: 1.65rem; }
+    .mode-switch { display: flex; gap: 6px; background: rgba(2, 6, 23, 0.8); padding: 6px; border-radius: 12px; flex-wrap: wrap; }
+    .btn-tab { background: transparent; color: #94a3b8; padding: 8px 13px; border-radius: 8px; font-weight: 600; font-size: 0.86rem; }
     .btn-tab.active { background: linear-gradient(135deg, #3b82f6, #6366f1); color: #ffffff; }
 
     button {
-      cursor: pointer; border: none; border-radius: 10px; padding: 10px 16px;
-      font-size: 0.9rem; font-weight: 700; transition: transform 0.15s ease, opacity 0.2s;
+      cursor: pointer; border: none; border-radius: 10px; padding: 9px 15px;
+      font-size: 0.88rem; font-weight: 700; transition: transform 0.15s ease, opacity 0.2s;
     }
     button:hover:not(:disabled) { transform: translateY(-2px); }
-    button:disabled { opacity: 0.55; cursor: not-allowed; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-primary-rocket { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; }
     .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
     .btn-secondary { background: #475569; color: #fff; }
     .btn-warning { background: #f59e0b; color: #0f172a; }
-    .btn-primary-xs { background: #3b82f6; color: #fff; padding: 6px 12px; font-size: 0.8rem; }
-    .btn-secondary-xs { background: #475569; color: #fff; padding: 6px 10px; font-size: 0.8rem; }
-    .btn-danger-xs { background: #ef4444; color: #fff; padding: 4px 10px; font-size: 0.78rem; }
+    .btn-danger { background: #ef4444; color: #fff; }
+    .btn-primary-xs { background: #3b82f6; color: #fff; padding: 6px 11px; font-size: 0.79rem; }
+    .btn-secondary-xs { background: #475569; color: #fff; padding: 6px 10px; font-size: 0.79rem; }
+    .btn-danger-xs { background: #ef4444; color: #fff; padding: 4px 9px; font-size: 0.76rem; }
 
     .card-panel {
-      background: rgba(30, 41, 59, 0.68); border: 1px solid rgba(99, 102, 241, 0.28);
-      border-radius: 16px; padding: 22px; margin-bottom: 18px;
+      background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(99, 102, 241, 0.28);
+      border-radius: 16px; padding: 20px; margin-bottom: 16px;
     }
-    .subtitle { color: #cbd5e1; margin: 6px 0 16px; font-size: 0.92rem; }
-    .subtitle-sm { color: #94a3b8; font-size: 0.84rem; margin-top: 4px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .subtitle { color: #cbd5e1; margin: 5px 0 14px; font-size: 0.9rem; }
+    .subtitle-sm { color: #94a3b8; font-size: 0.82rem; margin-top: 3px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
 
-    label { display: block; font-weight: 600; margin-top: 12px; margin-bottom: 6px; font-size: 0.88rem; color: #cbd5e1; }
-    select, textarea, input[type="text"], input[type="number"] {
-      width: 100%; padding: 10px 13px; background: #0f172a; color: #f8fafc;
-      border: 1px solid #334155; border-radius: 10px; font-size: 0.92rem; outline: none;
+    label { display: block; font-weight: 600; margin-top: 10px; margin-bottom: 5px; font-size: 0.85rem; color: #cbd5e1; }
+    select, textarea, input[type="text"], input[type="number"], input[type="password"] {
+      width: 100%; padding: 9px 12px; background: #0f172a; color: #f8fafc;
+      border: 1px solid #334155; border-radius: 10px; font-size: 0.9rem; outline: none;
     }
     select:focus, textarea:focus, input:focus { border-color: #38bdf8; }
 
-    /* PLANET GRID */
-    .planet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 14px; margin: 10px 0 20px; }
+    /* SUB-TABS */
+    .sub-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .btn-subtab { background: #0f172a; color: #94a3b8; border: 1px solid #334155; }
+    .btn-subtab.active { color: #38bdf8; border-color: #38bdf8; background: rgba(56, 189, 248, 0.1); }
+
+    /* BADGES & TAGS */
+    .badge-tag {
+      display: inline-block; background: rgba(99, 102, 241, 0.25); color: #a5b4fc;
+      padding: 3px 9px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; margin-right: 5px; margin-top: 3px;
+    }
+    .badge-kelas { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .badge-warn { background: rgba(245, 158, 11, 0.22); color: #fbbf24; }
+
+    /* PLANET GRID SISWA */
+    .planet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 14px; margin: 10px 0 18px; }
     .planet-card {
-      background: rgba(15, 23, 42, 0.88); border: 2px solid rgba(148, 163, 184, 0.25);
-      border-radius: 16px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.2s ease;
+      background: rgba(15, 23, 42, 0.9); border: 2px solid rgba(148, 163, 184, 0.25);
+      border-radius: 16px; padding: 15px 12px; text-align: center; cursor: pointer; transition: all 0.2s ease;
     }
     .planet-card:hover { border-color: #38bdf8; transform: translateY(-3px); }
     .planet-card.selected { border-color: #facc15; background: rgba(56, 189, 248, 0.16); box-shadow: 0 0 20px rgba(250, 204, 21, 0.3); }
     .planet-orb {
-      width: 58px; height: 58px; border-radius: 50%; margin: 0 auto 10px;
-      display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
-      box-shadow: inset -8px -8px 16px rgba(0,0,0,0.45), 0 0 18px rgba(255,255,255,0.2);
+      width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 9px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.65rem;
+      box-shadow: inset -8px -8px 16px rgba(0,0,0,0.45), 0 0 16px rgba(255,255,255,0.2);
     }
-    .planet-name { font-family: 'Fredoka', sans-serif; font-size: 1rem; color: #fff; }
-    .planet-sub { font-size: 0.78rem; color: #94a3b8; margin-top: 3px; }
+    .planet-name { font-family: 'Fredoka', sans-serif; font-size: 0.96rem; color: #fff; }
+    .planet-sub { font-size: 0.76rem; color: #94a3b8; margin-top: 3px; }
 
-    /* CHECKBOX MAPEL GURU */
-    .config-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
-    .checkbox-mapel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+    /* CHECKBOX MATRIX MAPEL LINTAS KELAS */
+    .kelas-matrix-group {
+      background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 12px; margin-bottom: 10px;
+    }
+    .kelas-matrix-title { font-weight: 700; color: #38bdf8; font-size: 0.88rem; margin-bottom: 8px; }
+    .checkbox-mapel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 7px; }
     .chk-mapel-item {
-      display: flex; align-items: center; gap: 9px; background: #0f172a; border: 1px solid #334155;
-      padding: 9px 12px; border-radius: 10px; cursor: pointer; margin-top: 0; font-size: 0.88rem;
+      display: flex; align-items: center; gap: 7px; background: #1e293b; border: 1px solid #334155;
+      padding: 6px 10px; border-radius: 8px; cursor: pointer; margin-top: 0; font-size: 0.81rem;
     }
-    .chk-mapel-item:has(input:checked) { border-color: #10b981; background: rgba(16, 185, 129, 0.14); }
+    .chk-mapel-item:has(input:checked) { border-color: #10b981; background: rgba(16, 185, 129, 0.18); color: #fff; }
 
-    /* TOOLBAR & KARTU SOAL */
-    .guru-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
-    .sub-tabs, .toolbar-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .select-compact { width: auto; min-width: 180px; }
-    .btn-subtab { background: #0f172a; color: #94a3b8; border: 1px solid #334155; }
-    .btn-subtab.active { color: #38bdf8; border-color: #38bdf8; }
-
-    .kartu-soal {
-      background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(99, 102, 241, 0.35);
-      border-radius: 14px; padding: 18px 20px; margin-bottom: 14px;
+    /* KARTU DATA */
+    .item-card {
+      background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(99, 102, 241, 0.32);
+      border-radius: 14px; padding: 15px 18px; margin-bottom: 12px;
     }
-    .header-soal {
+    .item-header {
       display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-      gap: 8px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed rgba(148, 163, 184, 0.25);
+      gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed rgba(148, 163, 184, 0.25);
     }
-    .badge-mapel-tag {
-      background: rgba(99, 102, 241, 0.25); color: #a5b4fc; padding: 3px 10px;
-      border-radius: 6px; font-size: 0.78rem; font-weight: 700; margin-left: 8px;
-    }
-    .btn-edit { background: #f59e0b; color: #0f172a; padding: 6px 14px; font-size: 0.84rem; margin-right: 6px; }
-    .btn-hapus { background: #ef4444; color: #fff; padding: 6px 14px; font-size: 0.84rem; }
-    .soal-img-display { max-width: 100%; max-height: 240px; border-radius: 10px; margin: 10px 0; border: 1px solid #334155; display: block; }
-    .opsi-img-display { max-width: 160px; max-height: 110px; border-radius: 8px; margin-top: 6px; display: block; }
+    .soal-img-display { max-width: 100%; max-height: 230px; border-radius: 10px; margin: 10px 0; border: 1px solid #334155; display: block; }
+    .opsi-img-display { max-width: 155px; max-height: 105px; border-radius: 8px; margin-top: 6px; display: block; }
 
-    /* ARENA UJIAN SISWA */
+    /* LOCK SCREEN BAR & ARENA SISWA */
+    .lock-banner {
+      background: linear-gradient(90deg, rgba(220, 38, 38, 0.25), rgba(245, 158, 11, 0.22));
+      border: 1px solid #ef4444; color: #fecaca; padding: 9px 14px; border-radius: 10px;
+      font-size: 0.82rem; font-weight: 600; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    }
     .ujian-topbar {
       display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-      gap: 10px; background: rgba(15, 23, 42, 0.9); padding: 12px 16px; border-radius: 12px;
-      margin-bottom: 16px; border: 1px solid rgba(56, 189, 248, 0.35);
+      gap: 10px; background: rgba(15, 23, 42, 0.92); padding: 12px 15px; border-radius: 12px;
+      margin-bottom: 14px; border: 1px solid rgba(56, 189, 248, 0.35);
     }
-    .badge-planet { background: rgba(139, 92, 246, 0.25); color: #c4b5fd; padding: 3px 10px; border-radius: 999px; font-size: 0.8rem; margin-left: 8px; }
-    .badge-save { background: rgba(16, 185, 129, 0.18); color: #34d399; padding: 3px 10px; border-radius: 999px; font-size: 0.78rem; margin-left: 6px; }
-    .badge-progress { font-weight: 700; color: #facc15; margin-right: 10px; }
-
-    .opsi-ammo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 14px; }
+    .opsi-ammo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 14px; }
     .btn-ammo-pg {
       display: flex; flex-direction: column; align-items: flex-start; text-align: left;
       background: rgba(30, 41, 59, 0.95); border: 2px solid #334155; color: #f8fafc;
-      padding: 14px; border-radius: 12px; font-weight: 500;
+      padding: 13px; border-radius: 12px; font-weight: 500;
     }
-    .btn-ammo-pg:hover { border-color: #38bdf8; }
-    .btn-ammo-pg.selected { border-color: #10b981; background: rgba(16, 185, 129, 0.2); box-shadow: 0 0 16px rgba(16, 185, 129, 0.35); }
+    .btn-ammo-pg:hover:not(:disabled) { border-color: #38bdf8; }
+    .btn-ammo-pg.selected-correct { border-color: #10b981; background: rgba(16, 185, 129, 0.22); }
+    .btn-ammo-pg.selected-wrong { border-color: #ef4444; background: rgba(239, 68, 68, 0.22); }
 
-    .uraian-target-box {
-      background: #020617; border: 2px dashed #38bdf8; border-radius: 12px; padding: 14px;
-      min-height: 76px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    /* DROPDOWN ISIAN SISWA */
+    .isian-dropdown-box {
+      background: #0f172a; border: 2px solid #38bdf8; border-radius: 12px; padding: 14px; margin-top: 12px;
     }
-    .uraian-ammo-pool { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .isian-preview-gallery { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .isian-opt-thumb {
+      background: #1e293b; border: 1px solid #475569; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; text-align: center;
+    }
+
+    /* URAIAN AMUNISI SISWA */
+    .uraian-target-box {
+      background: #020617; border: 2px dashed #38bdf8; border-radius: 12px; padding: 13px;
+      min-height: 72px; margin: 10px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    }
+    .uraian-ammo-pool { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 10px; }
     .btn-ammo-chip {
       background: linear-gradient(135deg, #1e293b, #334155); border: 1px solid #6366f1;
-      color: #f8fafc; padding: 9px 14px; border-radius: 10px; font-size: 0.88rem;
+      color: #f8fafc; padding: 8px 13px; border-radius: 10px; font-size: 0.86rem;
       display: inline-flex; align-items: center; gap: 8px;
     }
-    .btn-ammo-chip.used { opacity: 0.38; border-style: dashed; }
+    .btn-ammo-chip.used { opacity: 0.35; border-style: dashed; }
     .chip-selected-item {
       background: linear-gradient(135deg, #059669, #10b981); color: #fff; padding: 7px 12px;
-      border-radius: 8px; font-size: 0.86rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+      border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
     }
 
-    .nav-soal-bawah { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; gap: 10px; }
+    .nav-soal-bawah { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; gap: 10px; flex-wrap: wrap; }
     .nomor-dots { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
-    .dot-num { width: 32px; height: 32px; padding: 0; border-radius: 8px; background: #1e293b; color: #94a3b8; font-size: 0.82rem; }
-    .dot-num.answered { background: #059669; color: #fff; }
+    .dot-num { width: 32px; height: 32px; padding: 0; border-radius: 8px; background: #1e293b; color: #94a3b8; font-size: 0.8rem; }
+    .dot-num.answered-ok { background: #059669; color: #fff; }
+    .dot-num.answered-err { background: #dc2626; color: #fff; }
     .dot-num.active { border: 2px solid #facc15; color: #fff; }
 
     /* MODAL */
     .modal {
-      position: fixed; inset: 0; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(6px);
-      display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 14px;
+      position: fixed; inset: 0; background: rgba(2, 6, 23, 0.88); backdrop-filter: blur(6px);
+      display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 12px;
     }
     .modal-content {
-      background: #1e293b; border: 1px solid rgba(99, 102, 241, 0.45); width: 100%; max-width: 720px;
-      max-height: 92vh; overflow-y: auto; padding: 24px; border-radius: 18px;
+      background: #1e293b; border: 1px solid rgba(99, 102, 241, 0.45); width: 100%; max-width: 760px;
+      max-height: 92vh; overflow-y: auto; padding: 22px; border-radius: 18px;
     }
-    .modal-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #334155; }
+    .modal-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #334155; }
     .btn-close-icon { background: transparent; color: #94a3b8; font-size: 1.2rem; padding: 4px 10px; }
-    .section-box { background: rgba(15, 23, 42, 0.65); border: 1px solid #334155; border-radius: 12px; padding: 14px; margin-top: 14px; }
+    .section-box { background: rgba(15, 23, 42, 0.7); border: 1px solid #334155; border-radius: 12px; padding: 13px; margin-top: 12px; }
     .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-    .inline-generator { display: flex; gap: 6px; align-items: center; }
-    .input-num-sm { width: 68px !important; padding: 6px 8px !important; }
-    .image-upload-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-    .btn-upload-mini { display: inline-block; background: #334155; color: #f8fafc; padding: 6px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; margin-top: 0; }
-    .hint-paste { font-size: 0.78rem; color: #94a3b8; }
-    .img-preview-box img, .img-preview-mini img { max-height: 130px; border-radius: 8px; margin-top: 8px; border: 1px solid #475569; }
-    .opsi-pg-editor { background: #0f172a; padding: 10px; border-radius: 10px; margin-top: 8px; border: 1px solid #334155; }
+    .inline-generator { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+    .input-num-sm { width: 64px !important; padding: 6px 8px !important; }
+    .image-upload-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; margin-top: 8px; }
+    .btn-upload-mini { display: inline-block; background: #334155; color: #f8fafc; padding: 6px 11px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-top: 0; }
+    .img-preview-box img, .img-preview-mini img { max-height: 120px; border-radius: 8px; margin-top: 6px; border: 1px solid #475569; }
+    .opsi-pg-editor, .dynamic-item-card { background: #0f172a; padding: 10px; border-radius: 10px; margin-top: 8px; border: 1px solid #334155; }
     .opsi-row, .dynamic-item-row { display: flex; align-items: center; gap: 8px; }
     .opsi-badge { background: #6366f1; color: #fff; font-weight: 700; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .dynamic-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-    .dynamic-item-card { background: #0f172a; border: 1px solid #334155; padding: 10px; border-radius: 10px; }
-    .aksi-form-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 20px; padding-top: 14px; border-top: 1px solid #334155; }
-    .aksi-form-right { display: flex; gap: 10px; }
-    .skor-box { background: rgba(16, 185, 129, 0.16); border: 1px solid #10b981; color: #34d399; font-size: 1.25rem; font-weight: 700; padding: 16px; border-radius: 12px; margin-bottom: 16px; text-align: center; }
-    .db-banner { background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; color: #fde68a; padding: 12px 14px; border-radius: 12px; margin-bottom: 16px; font-size: 0.85rem; }
+    .aksi-form-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 18px; padding-top: 12px; border-top: 1px solid #334155; }
+    .skor-box { background: rgba(16, 185, 129, 0.16); border: 1px solid #10b981; color: #34d399; font-size: 1.2rem; font-weight: 700; padding: 15px; border-radius: 12px; margin-bottom: 14px; text-align: center; }
+    .profile-banner {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+      border: 1px solid rgba(99, 102, 241, 0.45); border-radius: 14px; padding: 14px 18px; margin-bottom: 16px;
+    }
   </style>
 </head>
 <body>
   <canvas id="space-canvas"></canvas>
 
-  <!-- EFEK LEDAKAN PENUH 3 DETIK -->
+  <!-- EFEK LEDAKAN PENUH 3 DETIK TANPA TERTUTUP SOAL -->
   <div id="explosion-stage" class="explosion-stage hidden" aria-hidden="true">
     <div class="explosion-core">
       <div class="shockwave"></div>
       <div class="fireball"></div>
       <div id="explosion-text" class="explosion-caption">💥 TARGET HANCUR!</div>
+      <div id="explosion-subtext" class="explosion-subcaption"></div>
     </div>
   </div>
 
   <div class="container">
     <header class="app-header">
       <div class="brand-area">
-        <span class="badge-tema">🚀 Space Adventure Mission</span>
-        <h1>Arena Ujian &amp; Bank Soal</h1>
+        <span class="badge-tema" id="header-nama-sekolah">🚀 SD Bina Ilmu Blora — Space CBT</span>
+        <h1>Arena Ujian &amp; Manajemen Sekolah</h1>
       </div>
-      <nav class="mode-switch">
-        <button id="tab-siswa" type="button" class="btn-tab active">🧑‍🚀 Misi Siswa</button>
-        <button id="tab-guru" type="button" class="btn-tab">🛠️ Panel Ustadz / Guru</button>
+      <nav class="mode-switch" id="main-nav-switch">
+        <button id="tab-siswa" type="button" class="btn-tab active">🧑‍🚀 Arena Siswa</button>
+        <button id="tab-guru" type="button" class="btn-tab">👨‍🏫 Panel Ustadz / Guru</button>
+        <button id="tab-admin" type="button" class="btn-tab">🏫 Panel Kepala Sekolah</button>
       </nav>
     </header>
 
-    <!-- ==================== TAMPILAN SISWA ==================== -->
+    <!-- ==================== 1. ARENA MISI SISWA ==================== -->
     <main id="view-siswa">
       <div id="siswa-mulai-card" class="card-panel">
-        <h2>Pilih Planet Misi &amp; Identitas Astronaut</h2>
-        <p class="subtitle">Planet yang tampil di bawah adalah mata pelajaran yang telah disiapkan oleh Ustadz/Guru.</p>
+        <h2>🚀 Briefing Misi Astronaut (Kelas 1 – 6)</h2>
+        <p class="subtitle">Pilih jenjang kelas Anda, pilih nama Anda, lalu pilih planet mata pelajaran yang diujikan oleh Ustadz/Guru.</p>
 
         <form id="form-identitas-siswa">
           <div class="grid-2">
             <div>
-              <label for="siswa-nama">Nama Lengkap Astronaut</label>
-              <input type="text" id="siswa-nama" required placeholder="Ketik nama lengkap..." />
+              <label for="siswa-pilih-kelas">Jenjang Kelas</label>
+              <select id="siswa-pilih-kelas" required>
+                <option value="Kelas 1">Kelas 1</option>
+                <option value="Kelas 2">Kelas 2</option>
+                <option value="Kelas 3">Kelas 3</option>
+                <option value="Kelas 4">Kelas 4</option>
+                <option value="Kelas 5">Kelas 5</option>
+                <option value="Kelas 6">Kelas 6</option>
+              </select>
             </div>
             <div>
-              <label for="siswa-kelas">Kelas / Rombel</label>
-              <input type="text" id="siswa-kelas" required placeholder="Contoh: Kelas 5" />
+              <label for="siswa-pilih-nama">Pilih Nama Siswa Terdaftar</label>
+              <select id="siswa-pilih-nama"></select>
+              <input type="text" id="siswa-nama-manual" class="hidden" placeholder="Ketik nama lengkap siswa..." style="margin-top:6px;" />
             </div>
           </div>
 
-          <label>Pilih Planet Mata Pelajaran yang Akan Ditempur:</label>
+          <label>Pilih Planet Mata Pelajaran (<span id="label-kelas-planet">Kelas 1</span>):</label>
           <div id="grid-planet-mapel" class="planet-grid"></div>
           <input type="hidden" id="siswa-mapel-terpilih" required />
 
-          <button type="submit" class="btn-primary-rocket">🚀 Meluncur ke Planet Misi</button>
+          <button type="submit" class="btn-primary-rocket">🔒 Kunci Layar &amp; Meluncur ke Misi</button>
         </form>
       </div>
 
+      <!-- AREA UJIAN TERKUNCI -->
       <div id="siswa-ujian-area" class="hidden">
+        <div class="lock-banner">
+          <span>🔒 <b>MODE UJIAN TERKUNCI:</b> Layar terkunci hingga seluruh misi selesai. Jangan keluar atau berpindah tab!</span>
+          <span id="lock-warning-count" class="badge-tag badge-warn">Pelanggaran Keluar: 0</span>
+        </div>
+
         <div class="ujian-topbar">
           <div>
-            <span id="info-peserta" class="badge-info">Peserta: -</span>
-            <span id="badge-planet-aktif" class="badge-planet">🪐 Planet: -</span>
-            <span id="status-autosave" class="badge-save">✓ Tersimpan lokal</span>
+            <span id="info-peserta" style="font-weight:700;">🧑‍🚀 -</span>
+            <span id="badge-planet-aktif" class="badge-tag">🪐 -</span>
           </div>
           <div>
-            <span id="progress-soal" class="badge-progress">Soal 1 / 1</span>
-            <button id="btn-kumpulkan-ujian" type="button" class="btn-success">🏁 Selesaikan Misi</button>
+            <span id="progress-soal" style="font-weight:700;color:#facc15;margin-right:10px;">Misi 1 / 1</span>
+            <button id="btn-kumpulkan-ujian" type="button" class="btn-success">🏁 Selesaikan Semua Misi</button>
           </div>
         </div>
 
         <div id="arena-soal-aktif"></div>
 
         <div class="nav-soal-bawah">
-          <button id="btn-prev-soal" type="button" class="btn-secondary">⬅️ Sebelumnya</button>
+          <button id="btn-prev-soal" type="button" class="btn-secondary">⬅️ Misi Sebelumnya</button>
           <div id="indikator-nomor-soal" class="nomor-dots"></div>
-          <button id="btn-next-soal" type="button" class="btn-primary-rocket">Selanjutnya ➡️</button>
+          <button id="btn-next-soal" type="button" class="btn-primary-rocket">Misi Selanjutnya ➡️</button>
         </div>
       </div>
 
       <div id="siswa-selesai-card" class="card-panel hidden">
-        <h2>🎉 Misi Planet Selesai!</h2>
+        <h2>🎉 Misi Planet Selesai &amp; Kunci Layar Dibuka!</h2>
         <p id="pesan-hasil-siswa" class="subtitle"></p>
         <div id="skor-akhir-box" class="skor-box"></div>
-        <button id="btn-ujian-ulang" type="button" class="btn-primary-rocket">Kembali ke Orbit Utama</button>
+        <button id="btn-ujian-ulang" type="button" class="btn-primary-rocket">Kembali ke Pangkalan Utama</button>
       </div>
     </main>
 
-    <!-- ==================== TAMPILAN USTADZ / GURU ==================== -->
+    <!-- ==================== 2. PANEL USTADZ / GURU ==================== -->
     <main id="view-guru" class="hidden">
-      <div id="banner-koneksi-db" class="db-banner hidden"></div>
-
-      <section class="card-panel config-mapel-panel">
-        <div class="config-header">
-          <div>
-            <h3>🪐 Pengaturan Mata Pelajaran yang Diampu</h3>
-            <p class="subtitle-sm">Centang mata pelajaran yang Anda ajarkan. Hanya mata pelajaran tercentang yang akan muncul sebagai planet di layar siswa.</p>
-          </div>
-          <button id="btn-simpan-mapel-guru" type="button" class="btn-success">💾 Terapkan Mapel</button>
+      <div class="profile-banner">
+        <div>
+          <span class="badge-tag">👨‍🏫 Akun Ustadz / Guru Aktif</span>
+          <h3 id="guru-nama-display" style="margin-top:4px;">Ustadz Pengampu</h3>
+          <p id="guru-info-display" class="subtitle-sm">NIP/ID: -</p>
         </div>
-        <div id="daftar-checkbox-mapel" class="checkbox-mapel-grid"></div>
-      </section>
-
-      <div class="guru-toolbar">
-        <div class="sub-tabs">
-          <button id="subtab-soal" type="button" class="btn-subtab active">📚 Bank Soal (<span id="jumlah-soal">0</span>)</button>
-          <button id="subtab-nilai" type="button" class="btn-subtab">📊 Hasil Jawaban Siswa</button>
-        </div>
-        <div class="toolbar-right">
-          <select id="filter-mapel-guru" class="select-compact">
-            <option value="ALL">Semua Mapel Diampu</option>
-          </select>
-          <button id="btn-tambah-baru" type="button" class="btn-primary-rocket">+ Buat Soal Baru</button>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <select id="pilih-akun-guru" style="width:auto;min-width:200px;"></select>
+          <button id="btn-edit-profil-guru" type="button" class="btn-warning">✏️ Edit Profil &amp; Mapel Saya</button>
         </div>
       </div>
 
-      <div id="panel-daftar-soal">
+      <div class="sub-tabs">
+        <button id="subtab-guru-soal" type="button" class="btn-subtab active">📚 Bank Soal (<span id="jumlah-soal">0</span>)</button>
+        <button id="subtab-guru-mapel" type="button" class="btn-subtab">🪐 Pilih Mapel &amp; Kelas Diampu</button>
+        <button id="subtab-guru-nilai" type="button" class="btn-subtab">📊 Rekap Hasil Siswa</button>
+      </div>
+
+      <!-- SUB-PANEL A: BANK SOAL -->
+      <div id="panel-guru-soal">
+        <div class="flex-between" style="margin-bottom:14px;">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <select id="filter-kelas-guru" style="width:auto;">
+              <option value="ALL">Semua Kelas Diampu</option>
+              <option value="Kelas 1">Kelas 1</option>
+              <option value="Kelas 2">Kelas 2</option>
+              <option value="Kelas 3">Kelas 3</option>
+              <option value="Kelas 4">Kelas 4</option>
+              <option value="Kelas 5">Kelas 5</option>
+              <option value="Kelas 6">Kelas 6</option>
+            </select>
+            <select id="filter-mapel-guru" style="width:auto;">
+              <option value="ALL">Semua Mapel Diampu</option>
+            </select>
+          </div>
+          <button id="btn-tambah-baru" type="button" class="btn-primary-rocket">+ Buat Soal Baru</button>
+        </div>
         <div id="daftar-soal"></div>
       </div>
 
-      <div id="panel-rekap-nilai" class="hidden">
-        <div class="rekap-header">
+      <!-- SUB-PANEL B: CHECKBOX MAPEL LINTAS KELAS -->
+      <div id="panel-guru-mapel" class="card-panel hidden">
+        <div class="flex-between" style="margin-bottom:12px;">
+          <div>
+            <h3>Centang Mata Pelajaran &amp; Kelas yang Anda Ajarkan</h3>
+            <p class="subtitle-sm">Satu guru dapat memilih lebih dari satu mata pelajaran dan lintas kelas (Kelas 1 – 6). Planet siswa otomatis menyesuaikan.</p>
+          </div>
+          <button id="btn-simpan-mapel-guru" type="button" class="btn-success">💾 Simpan Pilihan Mapel</button>
+        </div>
+        <div id="matrix-mapel-guru"></div>
+      </div>
+
+      <!-- SUB-PANEL C: REKAP NILAI -->
+      <div id="panel-guru-nilai" class="card-panel hidden">
+        <div class="flex-between" style="margin-bottom:12px;">
           <h3>Rekap Hasil Ujian Siswa</h3>
-          <button id="btn-refresh-nilai" type="button" class="btn-secondary">🔄 Segarkan Data</button>
+          <button id="btn-refresh-nilai" type="button" class="btn-secondary">🔄 Segarkan</button>
         </div>
         <div id="daftar-hasil-siswa"></div>
       </div>
     </main>
+
+    <!-- ==================== 3. PANEL ADMIN / KEPALA SEKOLAH ==================== -->
+    <main id="view-admin" class="hidden">
+      <div class="profile-banner">
+        <div>
+          <span class="badge-tag badge-warn">🏫 Administrator / Kepala Sekolah</span>
+          <h3 id="admin-nama-display" style="margin-top:4px;">Kepala Sekolah SD Bina Ilmu Blora</h3>
+          <p id="admin-sekolah-display" class="subtitle-sm">NPSN / Alamat: Blora, Jawa Tengah</p>
+        </div>
+        <button id="btn-edit-profil-admin" type="button" class="btn-warning">✏️ Edit Profil Kepala Sekolah</button>
+      </div>
+
+      <div class="sub-tabs">
+        <button id="subtab-admin-guru" type="button" class="btn-subtab active">👨‍🏫 Kelola Ustadz / Guru</button>
+        <button id="subtab-admin-siswa" type="button" class="btn-subtab">🧑‍🎓 Kelola Siswa &amp; Kelas (1–6)</button>
+      </div>
+
+      <!-- KELOLA GURU -->
+      <div id="panel-admin-guru" class="card-panel">
+        <div class="flex-between" style="margin-bottom:12px;">
+          <div>
+            <h3>Daftar Ustadz / Guru &amp; Mapel Ampuan</h3>
+            <p class="subtitle-sm">Tambahkan guru baru, atur mata pelajaran lintas kelas yang diampu, atau edit profil guru.</p>
+          </div>
+          <button id="btn-tambah-guru" type="button" class="btn-primary-rocket">+ Tambah Guru Baru</button>
+        </div>
+        <div id="daftar-guru-admin"></div>
+      </div>
+
+      <!-- KELOLA SISWA & KELAS 1-6 -->
+      <div id="panel-admin-siswa" class="card-panel hidden">
+        <div class="flex-between" style="margin-bottom:12px;">
+          <div>
+            <h3>Manajemen Siswa per Jenjang Kelas (Kelas 1 – 6)</h3>
+            <p class="subtitle-sm">Tambahkan siswa ke kelas, pindahkan kelas, atau keluarkan siswa dari kelas.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <select id="admin-filter-kelas-siswa" style="width:auto;">
+              <option value="ALL">Semua Kelas (1–6)</option>
+              <option value="Kelas 1">Kelas 1</option>
+              <option value="Kelas 2">Kelas 2</option>
+              <option value="Kelas 3">Kelas 3</option>
+              <option value="Kelas 4">Kelas 4</option>
+              <option value="Kelas 5">Kelas 5</option>
+              <option value="Kelas 6">Kelas 6</option>
+            </select>
+            <button id="btn-tambah-siswa" type="button" class="btn-primary-rocket">+ Tambah Siswa</button>
+          </div>
+        </div>
+        <div id="daftar-siswa-admin"></div>
+      </div>
+    </main>
   </div>
 
-  <!-- ==================== MODAL FORM TAMBAH/EDIT SOAL ==================== -->
+  <!-- ==================== MODAL EDIT PROFIL KEPALA SEKOLAH ==================== -->
+  <div id="modal-profil-admin" class="modal hidden">
+    <div class="modal-content" style="max-width:520px;">
+      <div class="modal-header-bar">
+        <h3>🏫 Edit Profil Kepala Sekolah / Admin</h3>
+        <button type="button" class="btn-close-icon" data-close="modal-profil-admin">✕</button>
+      </div>
+      <form id="form-profil-admin">
+        <label for="inp-admin-nama">Nama Kepala Sekolah / Admin</label>
+        <input type="text" id="inp-admin-nama" required />
+        <label for="inp-admin-nip">NIP / NUPTK</label>
+        <input type="text" id="inp-admin-nip" placeholder="Opsional" />
+        <label for="inp-admin-sekolah">Nama Satuan Pendidikan</label>
+        <input type="text" id="inp-admin-sekolah" required />
+        <label for="inp-admin-alamat">Alamat / Kota</label>
+        <input type="text" id="inp-admin-alamat" />
+        <div class="aksi-form-between">
+          <button type="button" class="btn-secondary" data-close="modal-profil-admin">Batal</button>
+          <button type="submit" class="btn-success">💾 Simpan Profil</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL TAMBAH / EDIT GURU ==================== -->
+  <div id="modal-guru" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header-bar">
+        <h3 id="judul-modal-guru">👨‍🏫 Tambah / Edit Data Guru</h3>
+        <button type="button" class="btn-close-icon" data-close="modal-guru">✕</button>
+      </div>
+      <form id="form-guru">
+        <input type="hidden" id="guru-edit-id" />
+        <div class="grid-2">
+          <div>
+            <label for="inp-guru-nama">Nama Lengkap Ustadz / Guru</label>
+            <input type="text" id="inp-guru-nama" required placeholder="Contoh: Ustadz Ahmad, S.Pd" />
+          </div>
+          <div>
+            <label for="inp-guru-nip">NIP / Kode Guru</label>
+            <input type="text" id="inp-guru-nip" placeholder="Contoh: GR-01" />
+          </div>
+        </div>
+        <label>Pilih Mata Pelajaran &amp; Kelas yang Diampu (Bisa Lintas Kelas):</label>
+        <div id="modal-guru-matrix" style="max-height:300px;overflow-y:auto;margin-top:6px;"></div>
+        <div class="aksi-form-between">
+          <button type="button" class="btn-secondary" data-close="modal-guru">Batal</button>
+          <button type="submit" class="btn-success">💾 Simpan Data Guru</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL TAMBAH / PINDAH KELAS SISWA ==================== -->
+  <div id="modal-siswa" class="modal hidden">
+    <div class="modal-content" style="max-width:500px;">
+      <div class="modal-header-bar">
+        <h3 id="judul-modal-siswa">🧑‍🎓 Tambah / Atur Kelas Siswa</h3>
+        <button type="button" class="btn-close-icon" data-close="modal-siswa">✕</button>
+      </div>
+      <form id="form-siswa">
+        <input type="hidden" id="siswa-edit-id" />
+        <label for="inp-siswa-nama">Nama Lengkap Siswa</label>
+        <input type="text" id="inp-siswa-nama" required placeholder="Ketik nama siswa..." />
+        <label for="inp-siswa-nis">NIS / Nomor Induk</label>
+        <input type="text" id="inp-siswa-nis" placeholder="Opsional" />
+        <label for="inp-siswa-kelas">Penempatan Kelas (Kelas 1 – 6)</label>
+        <select id="inp-siswa-kelas" required>
+          <option value="Kelas 1">Kelas 1</option>
+          <option value="Kelas 2">Kelas 2</option>
+          <option value="Kelas 3">Kelas 3</option>
+          <option value="Kelas 4">Kelas 4</option>
+          <option value="Kelas 5">Kelas 5</option>
+          <option value="Kelas 6">Kelas 6</option>
+          <option value="">-- Keluarkan dari Kelas (Non-Aktif) --</option>
+        </select>
+        <div class="aksi-form-between">
+          <button type="button" class="btn-secondary" data-close="modal-siswa">Batal</button>
+          <button type="submit" class="btn-success">💾 Simpan Siswa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL BUAT / EDIT SOAL ==================== -->
   <div id="modal-soal" class="modal hidden">
     <div class="modal-content">
       <div class="modal-header-bar">
         <h2 id="judul-modal">Buat Soal Baru</h2>
-        <button type="button" id="btn-close-x" class="btn-close-icon">✕</button>
+        <button type="button" class="btn-close-icon" data-close="modal-soal">✕</button>
       </div>
 
       <form id="form-soal">
         <input type="hidden" id="soal-id" />
 
-        <div class="grid-2">
+        <div class="grid-3">
           <div>
-            <label for="soal-mapel">Mata Pelajaran (Planet Misi)</label>
+            <label for="soal-kelas">Jenjang Kelas</label>
+            <select id="soal-kelas" required>
+              <option value="Kelas 1">Kelas 1</option>
+              <option value="Kelas 2">Kelas 2</option>
+              <option value="Kelas 3">Kelas 3</option>
+              <option value="Kelas 4">Kelas 4</option>
+              <option value="Kelas 5">Kelas 5</option>
+              <option value="Kelas 6">Kelas 6</option>
+            </select>
+          </div>
+          <div>
+            <label for="soal-mapel">Mata Pelajaran</label>
             <select id="soal-mapel" required></select>
           </div>
           <div>
             <label for="tipe-soal">Tipe Misi Soal</label>
             <select id="tipe-soal" required>
-              <option value="pg">Pilihan Ganda (A, B, C, D)</option>
-              <option value="isian">Isian Singkat (Klik/Tembak Pilihan Jawaban)</option>
-              <option value="uraian">Uraian (Susun Kalimat/Elemen Jawaban)</option>
+              <option value="pg">Pilihan Ganda (Langsung Eksekusi)</option>
+              <option value="isian">Isian Singkat (Dropdown Tak Terbatas)</option>
+              <option value="uraian">Uraian (Susun Tombol Amunisi)</option>
             </select>
           </div>
         </div>
@@ -396,7 +615,7 @@
         <div class="image-upload-bar">
           <label class="btn-upload-mini" for="file-gambar-soal">🖼️ Unggah Gambar Soal</label>
           <input type="file" id="file-gambar-soal" accept="image/*" hidden />
-          <span class="hint-paste">atau tekan <b>Ctrl+V</b> di kolom pertanyaan untuk tempel screenshot</span>
+          <span class="subtitle-sm">atau tekan <b>Ctrl+V</b> di kolom pertanyaan untuk paste gambar</span>
           <button type="button" id="btn-hapus-gambar-soal" class="btn-danger-xs hidden">Hapus Gambar</button>
         </div>
         <div id="preview-gambar-soal" class="img-preview-box"></div>
@@ -404,12 +623,12 @@
 
         <!-- BAGIAN 1: PILIHAN GANDA -->
         <div id="bagian-pg" class="section-box">
-          <label>Opsi Pilihan Ganda (Teks &amp; Gambar Opsional)</label>
+          <label>Opsi Pilihan Ganda (Teks &amp; Gambar Opsional per Opsi)</label>
           <div class="opsi-pg-editor">
             <div class="opsi-row">
               <span class="opsi-badge">A</span>
-              <input type="text" id="opsi-a" placeholder="Teks Pilihan A" />
-              <label class="btn-upload-mini" for="file-opsi-a" title="Unggah Gambar Opsi A">🖼️</label>
+              <input type="text" id="opsi-a" placeholder="Teks Pilihan A (bisa paste gambar Ctrl+V)" />
+              <label class="btn-upload-mini" for="file-opsi-a">🖼️</label>
               <input type="file" id="file-opsi-a" class="file-opsi-img" data-target="a" accept="image/*" hidden />
             </div>
             <div id="prev-img-a" class="img-preview-mini"></div>
@@ -419,8 +638,8 @@
           <div class="opsi-pg-editor">
             <div class="opsi-row">
               <span class="opsi-badge">B</span>
-              <input type="text" id="opsi-b" placeholder="Teks Pilihan B" />
-              <label class="btn-upload-mini" for="file-opsi-b" title="Unggah Gambar Opsi B">🖼️</label>
+              <input type="text" id="opsi-b" placeholder="Teks Pilihan B (bisa paste gambar Ctrl+V)" />
+              <label class="btn-upload-mini" for="file-opsi-b">🖼️</label>
               <input type="file" id="file-opsi-b" class="file-opsi-img" data-target="b" accept="image/*" hidden />
             </div>
             <div id="prev-img-b" class="img-preview-mini"></div>
@@ -430,8 +649,8 @@
           <div class="opsi-pg-editor">
             <div class="opsi-row">
               <span class="opsi-badge">C</span>
-              <input type="text" id="opsi-c" placeholder="Teks Pilihan C" />
-              <label class="btn-upload-mini" for="file-opsi-c" title="Unggah Gambar Opsi C">🖼️</label>
+              <input type="text" id="opsi-c" placeholder="Teks Pilihan C (bisa paste gambar Ctrl+V)" />
+              <label class="btn-upload-mini" for="file-opsi-c">🖼️</label>
               <input type="file" id="file-opsi-c" class="file-opsi-img" data-target="c" accept="image/*" hidden />
             </div>
             <div id="prev-img-c" class="img-preview-mini"></div>
@@ -441,8 +660,8 @@
           <div class="opsi-pg-editor">
             <div class="opsi-row">
               <span class="opsi-badge">D</span>
-              <input type="text" id="opsi-d" placeholder="Teks Pilihan D" />
-              <label class="btn-upload-mini" for="file-opsi-d" title="Unggah Gambar Opsi D">🖼️</label>
+              <input type="text" id="opsi-d" placeholder="Teks Pilihan D (bisa paste gambar Ctrl+V)" />
+              <label class="btn-upload-mini" for="file-opsi-d">🖼️</label>
               <input type="file" id="file-opsi-d" class="file-opsi-img" data-target="d" accept="image/*" hidden />
             </div>
             <div id="prev-img-d" class="img-preview-mini"></div>
@@ -458,35 +677,35 @@
           </select>
         </div>
 
-        <!-- BAGIAN 2: ISIAN SINGKAT INTERAKTIF -->
+        <!-- BAGIAN 2: ISIAN SINGKAT (DROPDOWN TAK TERBATAS) -->
         <div id="bagian-isian" class="section-box hidden">
           <div class="flex-between">
-            <label>Pilihan Jawaban Isian Singkat (Klik Kunci yang Benar)</label>
-            <button type="button" id="btn-tambah-amunisi-isian" class="btn-primary-xs">+ Tambah Pilihan</button>
+            <label>Daftar Pilihan Dropdown Isian Singkat (Tak Terbatas)</label>
+            <button type="button" id="btn-tambah-amunisi-isian" class="btn-primary-xs">+ Tambah Pilihan Dropdown</button>
           </div>
-          <p class="subtitle-sm">Siswa akan menembak/memilih satu jawaban yang paling tepat dari daftar amunisi ini.</p>
-          <div id="list-amunisi-isian" class="dynamic-list"></div>
+          <p class="subtitle-sm">Pilih radio button pada jawaban yang benar. Anda dapat menambah atau menghapus pilihan sebanyak yang dibutuhkan.</p>
+          <div id="list-amunisi-isian"></div>
         </div>
 
-        <!-- BAGIAN 3: URAIAN SUSUN JAWABAN INTERAKTIF -->
+        <!-- BAGIAN 3: URAIAN SUSUN TOMBOL AMUNISI -->
         <div id="bagian-uraian" class="section-box hidden">
           <div class="flex-between">
-            <label>Potongan Amunisi Jawaban Uraian (Siswa Tinggal Klik/Susun)</label>
+            <label>Daftar Tombol Amunisi Jawaban Uraian</label>
             <div class="inline-generator">
-              <input type="number" id="jumlah-slot-uraian" min="2" max="15" value="4" class="input-num-sm" />
-              <button type="button" id="btn-set-jumlah-uraian" class="btn-secondary-xs">Set Jumlah Slot</button>
-              <button type="button" id="btn-tambah-amunisi-uraian" class="btn-primary-xs">+ Slot</button>
+              <input type="number" id="jumlah-slot-uraian" min="2" max="20" value="4" class="input-num-sm" />
+              <button type="button" id="btn-set-jumlah-uraian" class="btn-secondary-xs">Set Jumlah</button>
+              <button type="button" id="btn-tambah-amunisi-uraian" class="btn-primary-xs">+ Tambah Amunisi</button>
             </div>
           </div>
-          <p class="subtitle-sm">Centang item yang termasuk <b>kunci jawaban benar</b> (item tidak tercentang menjadi pengecoh).</p>
-          <div id="list-amunisi-uraian" class="dynamic-list"></div>
+          <p class="subtitle-sm">Centang item yang termasuk <b>kunci jawaban benar</b>. Siswa akan mengklik tombol-tombol amunisi ini untuk menyusun jawabannya.</p>
+          <div id="list-amunisi-uraian"></div>
         </div>
 
         <div class="aksi-form-between">
           <button type="button" id="btn-preview-soal" class="btn-warning">👁️ Preview Tampilan Siswa</button>
-          <div class="aksi-form-right">
-            <button type="button" id="btn-batal" class="btn-secondary">Batal</button>
-            <button type="submit" id="btn-simpan-soal" class="btn-primary-rocket">💾 Simpan Soal ke Database</button>
+          <div style="display:flex;gap:8px;">
+            <button type="button" class="btn-secondary" data-close="modal-soal">Batal</button>
+            <button type="submit" id="btn-simpan-soal" class="btn-primary-rocket">💾 Simpan Soal</button>
           </div>
         </div>
       </form>
@@ -498,16 +717,16 @@
     <div class="modal-content">
       <div class="modal-header-bar">
         <h3>👁️ Simulasi Tampilan di Layar Siswa</h3>
-        <button type="button" id="btn-tutup-preview" class="btn-close-icon">✕</button>
+        <button type="button" class="btn-close-icon" data-close="modal-preview">✕</button>
       </div>
       <div id="kontainer-preview-siswa"></div>
-      <div class="aksi-form-right" style="margin-top:16px;">
-        <button type="button" id="btn-tutup-preview-bawah" class="btn-primary-rocket">Tutup Preview</button>
+      <div style="text-align:right;margin-top:14px;">
+        <button type="button" class="btn-primary-rocket" data-close="modal-preview">Tutup Preview</button>
       </div>
     </div>
   </div>
 
-  <!-- Jembatan opsional untuk mengambil SUPABASE_URL & KEY dari js/supabase.js jika tersedia -->
+  <!-- JEMBATAN KONEKSI SUPABASE -->
   <script type="module">
     try {
       const mod = await import('./js/supabase.js');
@@ -516,46 +735,78 @@
         window.__SB_CLIENT__ = client;
         window.dispatchEvent(new Event('sb-ready'));
       }
-    } catch (e) {
-      console.warn('Info import supabase.js:', e.message);
-    }
+    } catch (_) {}
   </script>
 
-  <!-- SCRIPT UTAMA APLIKASI (SELF-CONTAINED, TERUJI, & ANTI-MACET) -->
+  <!-- SCRIPT UTAMA APLIKASI -->
   <script>
     (function () {
-      const SEMUA_MAPEL_TERSEDIA = [
-        { nama: 'Matematika', ikon: '🪐', warna: 'linear-gradient(135deg, #f59e0b, #d97706)', desc: 'Planet Angka & Logika' },
-        { nama: 'IPA / Sains', ikon: '🌍', warna: 'linear-gradient(135deg, #10b981, #047857)', desc: 'Planet Eksperimen Alam' },
-        { nama: 'Bahasa Indonesia', ikon: '🌕', warna: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', desc: 'Planet Literasi & Kata' },
-        { nama: 'Bahasa Inggris', ikon: '🛸', warna: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', desc: 'Planet Global Galaxy' },
-        { nama: 'PAI / Tahfidz', ikon: '🌙', warna: 'linear-gradient(135deg, #14b8a6, #0f766e)', desc: 'Planet Cahaya Ilmu' },
-        { nama: 'IPS / Sosial', ikon: '☄️', warna: 'linear-gradient(135deg, #ec4899, #be185d)', desc: 'Planet Peradaban' },
-        { nama: 'PKn / Karakter', ikon: '⭐', warna: 'linear-gradient(135deg, #eab308, #a16207)', desc: 'Planet Bintang Adab' },
-        { nama: 'Informatika / TIK', ikon: '🛰️', warna: 'linear-gradient(135deg, #06b6d4, #0e7490)', desc: 'Planet Stasiun Siber' },
-        { nama: 'PJOK / Olahraga', ikon: '🔥', warna: 'linear-gradient(135deg, #ef4444, #b91c1c)', desc: 'Planet Energi Astra' },
-        { nama: 'Seni Budaya', ikon: '🌌', warna: 'linear-gradient(135deg, #a855f7, #7e22ce)', desc: 'Planet Nebula Kreasi' },
+      const DAFTAR_KELAS = ['Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas 4', 'Kelas 5', 'Kelas 6'];
+      const DAFTAR_MAPEL = [
+        { nama: 'Matematika', ikon: '🪐', warna: 'linear-gradient(135deg, #f59e0b, #d97706)' },
+        { nama: 'IPA / Sains', ikon: '🌍', warna: 'linear-gradient(135deg, #10b981, #047857)' },
+        { nama: 'Bahasa Indonesia', ikon: '🌕', warna: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' },
+        { nama: 'Bahasa Inggris', ikon: '🛸', warna: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' },
+        { nama: 'PAI / Tahfidz', ikon: '🌙', warna: 'linear-gradient(135deg, #14b8a6, #0f766e)' },
+        { nama: 'IPS / Sosial', ikon: '☄️', warna: 'linear-gradient(135deg, #ec4899, #be185d)' },
+        { nama: 'PKn / Karakter', ikon: '⭐', warna: 'linear-gradient(135deg, #eab308, #a16207)' },
+        { nama: 'Informatika / TIK', ikon: '🛰️', warna: 'linear-gradient(135deg, #06b6d4, #0e7490)' },
+        { nama: 'PJOK / Olahraga', ikon: '🔥', warna: 'linear-gradient(135deg, #ef4444, #b91c1c)' },
+        { nama: 'Seni Budaya', ikon: '🌌', warna: 'linear-gradient(135deg, #a855f7, #7e22ce)' },
       ];
 
-      const KEY_MAPEL_USTADZ = 'space_adv_mapel_ustadz_v3';
-      const KEY_JAWABAN_SISWA = 'space_adv_jawaban_siswa_v3';
-      const KEY_PESERTA_SISWA = 'space_adv_peserta_siswa_v3';
-      const KEY_LOCAL_SOAL_BACKUP = 'space_adv_local_soal_v3';
+      const STORAGE_KEY = 'space_cbt_school_state_v3';
 
-      let semuaSoalDB = [];
-      let mapelUstadzAktif = ['Matematika', 'IPA / Sains', 'PAI / Tahfidz'];
-      let soalMisiSiswa = [];
-      let indexSoalAktif = 0;
-      let jawabanSiswa = {};
-      let pesertaAktif = null;
+      // State Default Sekolah
+      let state = {
+        adminProfile: {
+          nama: 'Kepala Sekolah SD Bina Ilmu Blora',
+          nip: 'KS-001',
+          sekolah: 'SD Bina Ilmu Blora',
+          alamat: 'Blora, Jawa Tengah',
+        },
+        teachers: [
+          {
+            id: 'guru_1',
+            nama: 'Ustadz Pengampu Utama',
+            nip: 'GR-001',
+            assignments: [
+              { kelas: 'Kelas 1', mapel: 'Matematika' },
+              { kelas: 'Kelas 1', mapel: 'PAI / Tahfidz' },
+              { kelas: 'Kelas 2', mapel: 'Matematika' },
+              { kelas: 'Kelas 3', mapel: 'IPA / Sains' },
+            ],
+          },
+        ],
+        activeGuruId: 'guru_1',
+        students: [
+          { id: 'sis_1', nama: 'Ahmad Fauzan', nis: '1001', kelas: 'Kelas 1' },
+          { id: 'sis_2', nama: 'Aisyah Putri', nis: '1002', kelas: 'Kelas 1' },
+          { id: 'sis_3', nama: 'Zaidan Alfarizi', nis: '2001', kelas: 'Kelas 2' },
+        ],
+        soalList: [],
+        hasilList: [],
+      };
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            state = { ...state, ...parsed };
+          }
+        } catch (_) {}
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (_) {}
+      }
 
       function getSupabase() {
-        if (window.__SB_CLIENT__ && typeof window.__SB_CLIENT__.from === 'function') {
-          return window.__SB_CLIENT__;
-        }
-        if (window.supabaseClient && typeof window.supabaseClient.from === 'function') {
-          return window.supabaseClient;
-        }
+        if (window.__SB_CLIENT__ && typeof window.__SB_CLIENT__.from === 'function') return window.__SB_CLIENT__;
+        if (window.supabaseClient && typeof window.supabaseClient.from === 'function') return window.supabaseClient;
         return null;
       }
 
@@ -568,7 +819,7 @@
           .replace(/"/g, '&quot;');
       }
 
-      // ==================== AUDIO & EFEK LEDAKAN ====================
+      // ==================== AUDIO & LEDAKAN 3 DETIK ====================
       let audioCtx = null;
       function getAudioContext() {
         if (!audioCtx) {
@@ -586,9 +837,9 @@
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(880, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.18);
-          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          osc.frequency.setValueAtTime(920, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(130, ctx.currentTime + 0.18);
+          gain.gain.setValueAtTime(0.22, ctx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.18);
           osc.connect(gain);
           gain.connect(ctx.destination);
@@ -597,17 +848,19 @@
         } catch (_) {}
       }
 
-      function mainkanSuaraLedakanMenggelegar() {
+      function mainkanSuaraLedakanMenggelegar(isDamage = false) {
         try {
           const ctx = getAudioContext();
           if (!ctx) return;
-          const durasi = 2.9;
+          const durasi = 2.95;
           const now = ctx.currentTime;
+
+          // Sub-Bass Boom
           const osc = ctx.createOscillator();
           const bassGain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(135, now);
-          osc.frequency.exponentialRampToValueAtTime(24, now + durasi);
+          osc.type = isDamage ? 'sawtooth' : 'sine';
+          osc.frequency.setValueAtTime(isDamage ? 160 : 140, now);
+          osc.frequency.exponentialRampToValueAtTime(22, now + durasi);
           bassGain.gain.setValueAtTime(0.95, now);
           bassGain.gain.exponentialRampToValueAtTime(0.01, now + durasi);
           osc.connect(bassGain);
@@ -615,20 +868,21 @@
           osc.start(now);
           osc.stop(now + durasi);
 
+          // Gemuruh Ledakan White Noise
           const bufferSize = ctx.sampleRate * durasi;
           const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
           const data = buffer.getChannelData(0);
           for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 1.1));
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 1.15));
           }
           const noise = ctx.createBufferSource();
           noise.buffer = buffer;
           const filter = ctx.createBiquadFilter();
           filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(950, now);
-          filter.frequency.exponentialRampToValueAtTime(110, now + durasi);
+          filter.frequency.setValueAtTime(980, now);
+          filter.frequency.exponentialRampToValueAtTime(100, now + durasi);
           const noiseGain = ctx.createGain();
-          noiseGain.gain.setValueAtTime(0.9, now);
+          noiseGain.gain.setValueAtTime(0.92, now);
           noiseGain.gain.exponentialRampToValueAtTime(0.01, now + durasi);
           noise.connect(filter);
           filter.connect(noiseGain);
@@ -639,18 +893,25 @@
       }
 
       let sedangMeledak = false;
-      function picuLedakan3Detik(pesan = '💥 TARGET HANCUR!') {
+      function picuLedakan3Detik(isBenar, judul, detailPesan, selesaiCallback) {
         if (sedangMeledak) return;
         sedangMeledak = true;
         const stage = document.getElementById('explosion-stage');
-        document.getElementById('explosion-text').textContent = pesan;
+        stage.classList.remove('success-blast', 'damage-blast', 'hidden');
+        stage.classList.add(isBenar ? 'success-blast' : 'damage-blast');
+
+        document.getElementById('explosion-text').textContent = judul;
+        document.getElementById('explosion-subtext').textContent = detailPesan;
+
         document.body.classList.add('exploding');
-        stage.classList.remove('hidden');
-        mainkanSuaraLedakanMenggelegar();
+        mainkanSuaraLaser();
+        setTimeout(() => mainkanSuaraLedakanMenggelegar(!isBenar), 120);
+
         setTimeout(() => {
           stage.classList.add('hidden');
           document.body.classList.remove('exploding');
           sedangMeledak = false;
+          if (typeof selesaiCallback === 'function') selesaiCallback();
         }, 3000);
       }
 
@@ -662,11 +923,11 @@
         function resize() {
           canvas.width = window.innerWidth;
           canvas.height = window.innerHeight;
-          stars = Array.from({ length: 70 }, () => ({
+          stars = Array.from({ length: 65 }, () => ({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            r: Math.random() * 1.8 + 0.4,
-            s: Math.random() * 0.4 + 0.1,
+            r: Math.random() * 1.7 + 0.4,
+            s: Math.random() * 0.35 + 0.1,
           }));
         }
         function loop() {
@@ -686,8 +947,8 @@
         loop();
       }
 
-      // ==================== KOMPRESI GAMBAR ====================
-      function prosesFileGambarKeBase64(file, maxLebar = 720, kualitas = 0.72) {
+      // ==================== KOMPRESI GAMBAR RINGAN ====================
+      function prosesFileGambarKeBase64(file, maxLebar = 680, kualitas = 0.7) {
         return new Promise((resolve, reject) => {
           if (!file || !file.type.startsWith('image/')) return reject(new Error('File bukan gambar.'));
           const reader = new FileReader();
@@ -720,213 +981,469 @@
         return null;
       }
 
-      // ==================== NAVIGASI UTAMA ====================
-      const tabSiswa = document.getElementById('tab-siswa');
-      const tabGuru = document.getElementById('tab-guru');
-      const viewSiswa = document.getElementById('view-siswa');
-      const viewGuru = document.getElementById('view-guru');
+      // ==================== SISTEM KUNCI LAYAR UJIAN SISWA ====================
+      let ujianSedangTerkunci = false;
+      let pelanggaranKeluar = 0;
 
-      tabSiswa.addEventListener('click', () => {
-        tabSiswa.classList.add('active');
-        tabGuru.classList.remove('active');
-        viewSiswa.classList.remove('hidden');
-        viewGuru.classList.add('hidden');
-        renderPlanetSiswa();
-      });
-
-      tabGuru.addEventListener('click', () => {
-        tabGuru.classList.add('active');
-        tabSiswa.classList.remove('active');
-        viewGuru.classList.remove('hidden');
-        viewSiswa.classList.add('hidden');
-        muatSoalDariDatabase();
-      });
-
-      document.getElementById('subtab-soal').addEventListener('click', () => {
-        document.getElementById('subtab-soal').classList.add('active');
-        document.getElementById('subtab-nilai').classList.remove('active');
-        document.getElementById('panel-daftar-soal').classList.remove('hidden');
-        document.getElementById('panel-rekap-nilai').classList.add('hidden');
-      });
-
-      document.getElementById('subtab-nilai').addEventListener('click', async () => {
-        document.getElementById('subtab-nilai').classList.add('active');
-        document.getElementById('subtab-soal').classList.remove('active');
-        document.getElementById('panel-rekap-nilai').classList.remove('hidden');
-        document.getElementById('panel-daftar-soal').classList.add('hidden');
-        await muatRekapNilai();
-      });
-
-      document.getElementById('btn-refresh-nilai').addEventListener('click', muatRekapNilai);
-
-      // ==================== MAPEL USTADZ & PLANET SISWA ====================
-      function muatMapelUstadz() {
+      function aktifkanKunciLayarUjian() {
+        ujianSedangTerkunci = true;
+        pelanggaranKeluar = 0;
+        document.getElementById('lock-warning-count').textContent = 'Pelanggaran Keluar: 0';
+        document.getElementById('main-nav-switch').classList.add('hidden');
         try {
-          const saved = localStorage.getItem(KEY_MAPEL_USTADZ);
-          if (saved) {
-            const parsed = JSON.parse(saved);
-            if (Array.isArray(parsed) && parsed.length > 0) mapelUstadzAktif = parsed;
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(() => {});
           }
         } catch (_) {}
-        renderCheckboxMapelGuru();
-        perbaruiDropdownMapel();
       }
 
-      function renderCheckboxMapelGuru() {
-        const container = document.getElementById('daftar-checkbox-mapel');
-        container.innerHTML = '';
-        SEMUA_MAPEL_TERSEDIA.forEach((m) => {
-          const checked = mapelUstadzAktif.includes(m.nama) ? 'checked' : '';
-          const label = document.createElement('label');
-          label.className = 'chk-mapel-item';
-          label.innerHTML = `<input type="checkbox" name="mapel_guru" value="${escapeHtml(m.nama)}" ${checked} /><span>${m.ikon} ${escapeHtml(m.nama)}</span>`;
-          container.appendChild(label);
-        });
+      function nonaktifkanKunciLayarUjian() {
+        ujianSedangTerkunci = false;
+        document.getElementById('main-nav-switch').classList.remove('hidden');
+        try {
+          if (document.fullscreenElement && document.exitFullscreen) {
+            document.exitFullscreen().catch(() => {});
+          }
+        } catch (_) {}
       }
 
-      function perbaruiDropdownMapel() {
-        const filterSelect = document.getElementById('filter-mapel-guru');
-        const formSelect = document.getElementById('soal-mapel');
-        filterSelect.innerHTML = '<option value="ALL">Semua Mapel Diampu</option>';
-        formSelect.innerHTML = '';
-        mapelUstadzAktif.forEach((namaMapel) => {
-          const opt1 = document.createElement('option');
-          opt1.value = namaMapel; opt1.textContent = namaMapel;
-          filterSelect.appendChild(opt1);
-
-          const opt2 = document.createElement('option');
-          opt2.value = namaMapel; opt2.textContent = namaMapel;
-          formSelect.appendChild(opt2);
-        });
-      }
-
-      document.getElementById('btn-simpan-mapel-guru').addEventListener('click', () => {
-        const checked = Array.from(document.querySelectorAll('input[name="mapel_guru"]:checked')).map((el) => el.value);
-        if (!checked.length) {
-          alert('Pilih minimal satu mata pelajaran yang Anda ampu.');
-          return;
+      window.addEventListener('beforeunload', (e) => {
+        if (ujianSedangTerkunci) {
+          e.preventDefault();
+          e.returnValue = 'Ujian sedang terkunci! Selesaikan semua misi terlebih dahulu.';
         }
-        mapelUstadzAktif = checked;
-        localStorage.setItem(KEY_MAPEL_USTADZ, JSON.stringify(mapelUstadzAktif));
-        perbaruiDropdownMapel();
-        renderPlanetSiswa();
-        tampilkanDaftarSoalTerfilter();
-        alert('✅ Daftar mata pelajaran berhasil diterapkan! Planet di layar siswa telah diperbarui.');
       });
 
-      function renderPlanetSiswa() {
-        const grid = document.getElementById('grid-planet-mapel');
-        const hiddenInput = document.getElementById('siswa-mapel-terpilih');
-        grid.innerHTML = '';
+      document.addEventListener('visibilitychange', () => {
+        if (ujianSedangTerkunci && document.hidden) {
+          pelanggaranKeluar++;
+          document.getElementById('lock-warning-count').textContent = `Pelanggaran Keluar: ${pelanggaranKeluar}`;
+          alert(`⚠️ PERINGATAN KEAMANAN UJIAN!\nLayar ujian sedang dikunci. Dilarang keluar atau membuka tab lain sebelum misi selesai! (Catatan pelanggaran: ${pelanggaranKeluar}x)`);
+        }
+      });
 
-        const mapelTampil = SEMUA_MAPEL_TERSEDIA.filter((m) => mapelUstadzAktif.includes(m.nama));
-        mapelTampil.forEach((m, index) => {
-          const jmlSoal = semuaSoalDB.filter((s) => (s.mapel || 'Matematika') === m.nama).length;
-          const card = document.createElement('div');
-          card.className = 'planet-card' + (index === 0 ? ' selected' : '');
-          if (index === 0) hiddenInput.value = m.nama;
+      document.addEventListener('fullscreenchange', () => {
+        if (ujianSedangTerkunci && !document.fullscreenElement) {
+          pelanggaranKeluar++;
+          document.getElementById('lock-warning-count').textContent = `Pelanggaran Keluar: ${pelanggaranKeluar}`;
+        }
+      });
 
-          card.innerHTML = `
-            <div class="planet-orb" style="background: ${m.warna};">${m.ikon}</div>
-            <div class="planet-name">${escapeHtml(m.nama)}</div>
-            <div class="planet-sub">${jmlSoal} Misi Tersedia</div>
-          `;
+      // ==================== NAVIGASI UTAMA & MODAL CLOSE ====================
+      document.querySelectorAll('[data-close]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.getElementById(btn.dataset.close).classList.add('hidden');
+        });
+      });
 
-          card.addEventListener('click', () => {
-            document.querySelectorAll('.planet-card').forEach((c) => c.classList.remove('selected'));
-            card.classList.add('selected');
-            hiddenInput.value = m.nama;
+      function switchMainView(target) {
+        if (ujianSedangTerkunci) {
+          alert('🔒 Layar terkunci selama ujian berlangsung!');
+          return;
+        }
+        ['tab-siswa', 'tab-guru', 'tab-admin'].forEach((id) => document.getElementById(id).classList.remove('active'));
+        ['view-siswa', 'view-guru', 'view-admin'].forEach((id) => document.getElementById(id).classList.add('hidden'));
+
+        document.getElementById(`tab-${target}`).classList.add('active');
+        document.getElementById(`view-${target}`).classList.remove('hidden');
+
+        if (target === 'siswa') renderBriefingSiswa();
+        if (target === 'guru') renderPanelGuru();
+        if (target === 'admin') renderPanelAdmin();
+      }
+
+      document.getElementById('tab-siswa').addEventListener('click', () => switchMainView('siswa'));
+      document.getElementById('tab-guru').addEventListener('click', () => switchMainView('guru'));
+      document.getElementById('tab-admin').addEventListener('click', () => switchMainView('admin'));
+
+      // ==================== HELPER MATRIX MAPEL LINTAS KELAS ====================
+      function renderMatrixCheckboxes(containerEl, selectedAssignments, inputName) {
+        containerEl.innerHTML = '';
+        DAFTAR_KELAS.forEach((kelas) => {
+          const group = document.createElement('div');
+          group.className = 'kelas-matrix-group';
+          group.innerHTML = `<div class="kelas-matrix-title">📘 ${kelas}</div><div class="checkbox-mapel-grid"></div>`;
+          const grid = group.querySelector('.checkbox-mapel-grid');
+
+          DAFTAR_MAPEL.forEach((m) => {
+            const isChecked = selectedAssignments.some((a) => a.kelas === kelas && a.mapel === m.nama);
+            const lbl = document.createElement('label');
+            lbl.className = 'chk-mapel-item';
+            lbl.innerHTML = `
+              <input type="checkbox" name="${inputName}" data-kelas="${kelas}" data-mapel="${escapeHtml(m.nama)}" ${isChecked ? 'checked' : ''} />
+              <span>${m.ikon} ${escapeHtml(m.nama)}</span>
+            `;
+            grid.appendChild(lbl);
           });
-          grid.appendChild(card);
+          containerEl.appendChild(group);
         });
       }
 
-      // ==================== DATABASE SOAL (SUPABASE + FALLBACK LOKAL) ====================
-      async function muatSoalDariDatabase() {
-        const banner = document.getElementById('banner-koneksi-db');
-        const sb = getSupabase();
-        if (!sb) {
-          banner.classList.remove('hidden');
-          banner.innerHTML = '⚠️ <b>Mode Offline / Koneksi Supabase Belum Terbaca:</b> Pastikan file <code>js/supabase.js</code> memiliki <code>export const supabase = createClient(...)</code>. Untuk sementara soal tersimpan di memori browser.';
-          try {
-            semuaSoalDB = JSON.parse(localStorage.getItem(KEY_LOCAL_SOAL_BACKUP) || '[]');
-          } catch (_) { semuaSoalDB = []; }
-          tampilkanDaftarSoalTerfilter();
-          renderPlanetSiswa();
-          return;
-        }
-
-        try {
-          const { data, error } = await sb.from('soal').select('*').order('created_at', { ascending: true });
-          if (error) throw error;
-          banner.classList.add('hidden');
-          semuaSoalDB = data || [];
-          localStorage.setItem(KEY_LOCAL_SOAL_BACKUP, JSON.stringify(semuaSoalDB));
-        } catch (err) {
-          banner.classList.remove('hidden');
-          banner.innerHTML = '⚠️ <b>Info Database Supabase:</b> ' + escapeHtml(err.message);
-          try {
-            semuaSoalDB = JSON.parse(localStorage.getItem(KEY_LOCAL_SOAL_BACKUP) || '[]');
-          } catch (_) { semuaSoalDB = []; }
-        }
-        tampilkanDaftarSoalTerfilter();
-        renderPlanetSiswa();
+      function ambilAssignmentsDariMatrix(containerEl, inputName) {
+        const result = [];
+        containerEl.querySelectorAll(`input[name="${inputName}"]:checked`).forEach((chk) => {
+          result.push({ kelas: chk.dataset.kelas, mapel: chk.dataset.mapel });
+        });
+        return result;
       }
 
-      function tampilkanDaftarSoalTerfilter() {
-        const filterVal = document.getElementById('filter-mapel-guru').value;
-        const hasilFilter = semuaSoalDB.filter((s) => {
-          const m = s.mapel || 'Matematika';
-          if (filterVal === 'ALL') return mapelUstadzAktif.includes(m);
-          return m === filterVal;
-        });
+      // ==================== PANEL ADMIN / KEPALA SEKOLAH ====================
+      function renderProfilAdminHeader() {
+        document.getElementById('header-nama-sekolah').textContent = `🚀 ${state.adminProfile.sekolah} — Space CBT`;
+        document.getElementById('admin-nama-display').textContent = state.adminProfile.nama;
+        document.getElementById('admin-sekolah-display').textContent =
+          `${state.adminProfile.sekolah} • NIP: ${state.adminProfile.nip || '-'} • ${state.adminProfile.alamat || '-'}`;
+      }
 
-        const container = document.getElementById('daftar-soal');
-        document.getElementById('jumlah-soal').textContent = hasilFilter.length;
-        container.innerHTML = '';
+      document.getElementById('btn-edit-profil-admin').addEventListener('click', () => {
+        document.getElementById('inp-admin-nama').value = state.adminProfile.nama;
+        document.getElementById('inp-admin-nip').value = state.adminProfile.nip || '';
+        document.getElementById('inp-admin-sekolah').value = state.adminProfile.sekolah;
+        document.getElementById('inp-admin-alamat').value = state.adminProfile.alamat || '';
+        document.getElementById('modal-profil-admin').classList.remove('hidden');
+      });
 
-        if (!hasilFilter.length) {
-          container.innerHTML = '<div class="card-panel"><p style="color:#94a3b8;">Belum ada soal untuk filter mata pelajaran ini. Klik <b>+ Buat Soal Baru</b> di kanan atas untuk membuat soal.</p></div>';
+      document.getElementById('form-profil-admin').addEventListener('submit', (e) => {
+        e.preventDefault();
+        state.adminProfile = {
+          nama: document.getElementById('inp-admin-nama').value.trim(),
+          nip: document.getElementById('inp-admin-nip').value.trim(),
+          sekolah: document.getElementById('inp-admin-sekolah').value.trim(),
+          alamat: document.getElementById('inp-admin-alamat').value.trim(),
+        };
+        saveState();
+        renderProfilAdminHeader();
+        document.getElementById('modal-profil-admin').classList.add('hidden');
+        alert('✅ Profil Kepala Sekolah / Admin berhasil diperbarui!');
+      });
+
+      document.getElementById('subtab-admin-guru').addEventListener('click', () => {
+        document.getElementById('subtab-admin-guru').classList.add('active');
+        document.getElementById('subtab-admin-siswa').classList.remove('active');
+        document.getElementById('panel-admin-guru').classList.remove('hidden');
+        document.getElementById('panel-admin-siswa').classList.add('hidden');
+      });
+
+      document.getElementById('subtab-admin-siswa').addEventListener('click', () => {
+        document.getElementById('subtab-admin-siswa').classList.add('active');
+        document.getElementById('subtab-admin-guru').classList.remove('active');
+        document.getElementById('panel-admin-siswa').classList.remove('hidden');
+        document.getElementById('panel-admin-guru').classList.add('hidden');
+        renderDaftarSiswaAdmin();
+      });
+
+      function renderPanelAdmin() {
+        renderProfilAdminHeader();
+        renderDaftarGuruAdmin();
+        renderDaftarSiswaAdmin();
+      }
+
+      function renderDaftarGuruAdmin() {
+        const box = document.getElementById('daftar-guru-admin');
+        box.innerHTML = '';
+        if (!state.teachers.length) {
+          box.innerHTML = '<p class="subtitle-sm">Belum ada data guru.</p>';
           return;
         }
-
-        const labelTipe = { pg: 'Pilihan Ganda', isian: 'Isian Singkat (Amunisi)', uraian: 'Uraian Susun Jawaban' };
-        hasilFilter.forEach((soal, index) => {
+        state.teachers.forEach((g) => {
           const div = document.createElement('div');
-          div.className = 'kartu-soal';
+          div.className = 'item-card';
+          const tags = (g.assignments || [])
+            .map((a) => `<span class="badge-tag">${escapeHtml(a.mapel)} (${escapeHtml(a.kelas)})</span>`)
+            .join('');
           div.innerHTML = `
-            <div class="header-soal">
+            <div class="item-header">
               <div>
-                <strong>Misi #${index + 1} (${labelTipe[soal.tipe] || soal.tipe})</strong>
-                <span class="badge-mapel-tag">🪐 ${escapeHtml(soal.mapel || 'Matematika')}</span>
+                <strong>👨‍🏫 ${escapeHtml(g.nama)}</strong>
+                <span class="subtitle-sm" style="margin-left:8px;">NIP/ID: ${escapeHtml(g.nip || '-')}</span>
               </div>
               <div>
-                <button type="button" class="btn-edit" data-id="${soal.id}">✏️ Edit</button>
-                <button type="button" class="btn-hapus" data-id="${soal.id}">🗑️ Hapus</button>
+                <button type="button" class="btn-warning btn-edit-guru" style="padding:5px 11px;font-size:0.8rem;">✏️ Edit Guru &amp; Mapel</button>
+                ${state.teachers.length > 1 ? '<button type="button" class="btn-danger-xs btn-del-guru" style="margin-left:5px;">🗑️ Hapus</button>' : ''}
               </div>
             </div>
-            <p style="line-height:1.5;margin-bottom:8px;">${escapeHtml(soal.pertanyaan)}</p>
-            ${soal.gambar_soal ? `<img src="${soal.gambar_soal}" class="soal-img-display" />` : ''}
-            <p style="margin-top:8px;color:#34d399;font-size:0.86rem;"><strong>Kunci:</strong> ${escapeHtml(soal.kunci || '-')}</p>
+            <div>${tags || '<span class="subtitle-sm">Belum ada mapel dipilih</span>'}</div>
           `;
-          div.querySelector('.btn-edit').addEventListener('click', () => bukaFormEdit(soal));
-          div.querySelector('.btn-hapus').addEventListener('click', async () => {
-            if (!confirm('Yakin ingin menghapus soal ini?')) return;
-            const sb = getSupabase();
-            if (sb) {
-              await sb.from('soal').delete().eq('id', soal.id);
-            }
-            semuaSoalDB = semuaSoalDB.filter((item) => item.id !== soal.id);
-            localStorage.setItem(KEY_LOCAL_SOAL_BACKUP, JSON.stringify(semuaSoalDB));
-            await muatSoalDariDatabase();
-          });
-          container.appendChild(div);
+          div.querySelector('.btn-edit-guru').addEventListener('click', () => bukaModalGuru(g));
+          const delBtn = div.querySelector('.btn-del-guru');
+          if (delBtn) {
+            delBtn.addEventListener('click', () => {
+              if (!confirm(`Hapus guru ${g.nama}?`)) return;
+              state.teachers = state.teachers.filter((t) => t.id !== g.id);
+              if (state.activeGuruId === g.id) state.activeGuruId = state.teachers[0].id;
+              saveState();
+              renderDaftarGuruAdmin();
+            });
+          }
+          box.appendChild(div);
         });
       }
 
-      document.getElementById('filter-mapel-guru').addEventListener('change', tampilkanDaftarSoalTerfilter);
+      function bukaModalGuru(guru = null) {
+        document.getElementById('guru-edit-id').value = guru ? guru.id : '';
+        document.getElementById('judul-modal-guru').textContent = guru ? '✏️ Edit Profil Guru & Mapel Diampu' : '➕ Tambah Ustadz / Guru Baru';
+        document.getElementById('inp-guru-nama').value = guru ? guru.nama : '';
+        document.getElementById('inp-guru-nip').value = guru ? (guru.nip || '') : '';
+        renderMatrixCheckboxes(
+          document.getElementById('modal-guru-matrix'),
+          guru ? (guru.assignments || []) : [],
+          'modal_guru_assign'
+        );
+        document.getElementById('modal-guru').classList.remove('hidden');
+      }
 
-      // ==================== EDITOR SOAL ====================
+      document.getElementById('btn-tambah-guru').addEventListener('click', () => bukaModalGuru(null));
+
+      document.getElementById('form-guru').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('guru-edit-id').value;
+        const nama = document.getElementById('inp-guru-nama').value.trim();
+        const nip = document.getElementById('inp-guru-nip').value.trim();
+        const assignments = ambilAssignmentsDariMatrix(document.getElementById('modal-guru-matrix'), 'modal_guru_assign');
+
+        if (id) {
+          state.teachers = state.teachers.map((t) => (t.id === id ? { ...t, nama, nip, assignments } : t));
+        } else {
+          const newId = 'guru_' + Date.now();
+          state.teachers.push({ id: newId, nama, nip, assignments });
+          state.activeGuruId = newId;
+        }
+        saveState();
+        document.getElementById('modal-guru').classList.add('hidden');
+        renderDaftarGuruAdmin();
+        renderPanelGuru();
+        renderBriefingSiswa();
+        alert('✅ Data Guru & Mata Pelajaran berhasil disimpan!');
+      });
+
+      // KELOLA SISWA ADMIN
+      function renderDaftarSiswaAdmin() {
+        const filterKelas = document.getElementById('admin-filter-kelas-siswa').value;
+        const box = document.getElementById('daftar-siswa-admin');
+        box.innerHTML = '';
+
+        const list = state.students.filter((s) => filterKelas === 'ALL' || s.kelas === filterKelas);
+        if (!list.length) {
+          box.innerHTML = '<p class="subtitle-sm">Belum ada siswa pada filter kelas ini.</p>';
+          return;
+        }
+
+        list.forEach((s) => {
+          const div = document.createElement('div');
+          div.className = 'item-card';
+          const statusKelas = s.kelas
+            ? `<span class="badge-tag badge-kelas">📘 ${escapeHtml(s.kelas)}</span>`
+            : `<span class="badge-tag badge-warn">⚠️ Dikeluarkan / Belum Masuk Kelas</span>`;
+          div.innerHTML = `
+            <div class="item-header" style="margin-bottom:0;padding-bottom:0;border:none;">
+              <div>
+                <strong>🧑‍🚀 ${escapeHtml(s.nama)}</strong>
+                <span class="subtitle-sm" style="margin-left:6px;">NIS: ${escapeHtml(s.nis || '-')}</span>
+                ${statusKelas}
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button type="button" class="btn-warning btn-edit-sis" style="padding:5px 10px;font-size:0.78rem;">✏️ Pindah / Edit</button>
+                ${s.kelas ? '<button type="button" class="btn-secondary-xs btn-kick-sis">🚪 Keluarkan dari Kelas</button>' : ''}
+                <button type="button" class="btn-danger-xs btn-del-sis">🗑️ Hapus</button>
+              </div>
+            </div>
+          `;
+          div.querySelector('.btn-edit-sis').addEventListener('click', () => bukaModalSiswa(s));
+          const kickBtn = div.querySelector('.btn-kick-sis');
+          if (kickBtn) {
+            kickBtn.addEventListener('click', () => {
+              if (!confirm(`Keluarkan ${s.nama} dari ${s.kelas}?`)) return;
+              state.students = state.students.map((st) => (st.id === s.id ? { ...st, kelas: '' } : st));
+              saveState();
+              renderDaftarSiswaAdmin();
+            });
+          }
+          div.querySelector('.btn-del-sis').addEventListener('click', () => {
+            if (!confirm(`Hapus permanen siswa ${s.nama}?`)) return;
+            state.students = state.students.filter((st) => st.id !== s.id);
+            saveState();
+            renderDaftarSiswaAdmin();
+          });
+          box.appendChild(div);
+        });
+      }
+
+      document.getElementById('admin-filter-kelas-siswa').addEventListener('change', renderDaftarSiswaAdmin);
+
+      function bukaModalSiswa(siswa = null) {
+        document.getElementById('siswa-edit-id').value = siswa ? siswa.id : '';
+        document.getElementById('judul-modal-siswa').textContent = siswa ? '✏️ Edit / Pindah Kelas Siswa' : '➕ Tambah Siswa Baru';
+        document.getElementById('inp-siswa-nama').value = siswa ? siswa.nama : '';
+        document.getElementById('inp-siswa-nis').value = siswa ? (siswa.nis || '') : '';
+        document.getElementById('inp-siswa-kelas').value = siswa ? (siswa.kelas || '') : 'Kelas 1';
+        document.getElementById('modal-siswa').classList.remove('hidden');
+      }
+
+      document.getElementById('btn-tambah-siswa').addEventListener('click', () => bukaModalSiswa(null));
+
+      document.getElementById('form-siswa').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('siswa-edit-id').value;
+        const nama = document.getElementById('inp-siswa-nama').value.trim();
+        const nis = document.getElementById('inp-siswa-nis').value.trim();
+        const kelas = document.getElementById('inp-siswa-kelas').value;
+
+        if (id) {
+          state.students = state.students.map((s) => (s.id === id ? { ...s, nama, nis, kelas } : s));
+        } else {
+          state.students.push({ id: 'sis_' + Date.now(), nama, nis, kelas });
+        }
+        saveState();
+        document.getElementById('modal-siswa').classList.add('hidden');
+        renderDaftarSiswaAdmin();
+        renderBriefingSiswa();
+        alert('✅ Data Siswa berhasil disimpan!');
+      });
+
+      // ==================== PANEL GURU / USTADZ ====================
+      function getGuruAktif() {
+        return state.teachers.find((t) => t.id === state.activeGuruId) || state.teachers[0];
+      }
+
+      function renderPanelGuru() {
+        const selAkun = document.getElementById('pilih-akun-guru');
+        selAkun.innerHTML = '';
+        state.teachers.forEach((t) => {
+          const opt = document.createElement('option');
+          opt.value = t.id;
+          opt.textContent = `👨‍🏫 ${t.nama}`;
+          if (t.id === state.activeGuruId) opt.selected = true;
+          selAkun.appendChild(opt);
+        });
+
+        const guru = getGuruAktif();
+        if (!guru) return;
+
+        document.getElementById('guru-nama-display').textContent = guru.nama;
+        const ringkasanMapel = [...new Set((guru.assignments || []).map((a) => `${a.mapel} (${a.kelas})`))].join(', ');
+        document.getElementById('guru-info-display').textContent =
+          `NIP/ID: ${guru.nip || '-'} • Diampu: ${ringkasanMapel || 'Belum ada mapel'}`;
+
+        // Populate filter mapel guru
+        const filterMapel = document.getElementById('filter-mapel-guru');
+        const mapelUnik = [...new Set((guru.assignments || []).map((a) => a.mapel))];
+        filterMapel.innerHTML = '<option value="ALL">Semua Mapel Diampu</option>';
+        mapelUnik.forEach((m) => {
+          const opt = document.createElement('option');
+          opt.value = m; opt.textContent = m;
+          filterMapel.appendChild(opt);
+        });
+
+        renderMatrixCheckboxes(
+          document.getElementById('matrix-mapel-guru'),
+          guru.assignments || [],
+          'guru_panel_assign'
+        );
+
+        renderDaftarSoalGuru();
+      }
+
+      document.getElementById('pilih-akun-guru').addEventListener('change', (e) => {
+        state.activeGuruId = e.target.value;
+        saveState();
+        renderPanelGuru();
+      });
+
+      document.getElementById('btn-edit-profil-guru').addEventListener('click', () => {
+        const guru = getGuruAktif();
+        if (guru) bukaModalGuru(guru);
+      });
+
+      ['soal', 'mapel', 'nilai'].forEach((sub) => {
+        document.getElementById(`subtab-guru-${sub}`).addEventListener('click', () => {
+          ['soal', 'mapel', 'nilai'].forEach((x) => {
+            document.getElementById(`subtab-guru-${x}`).classList.remove('active');
+            document.getElementById(`panel-guru-${x}`).classList.add('hidden');
+          });
+          document.getElementById(`subtab-guru-${sub}`).classList.add('active');
+          document.getElementById(`panel-guru-${sub}`).classList.remove('hidden');
+          if (sub === 'nilai') renderRekapNilaiGuru();
+        });
+      });
+
+      document.getElementById('btn-simpan-mapel-guru').addEventListener('click', () => {
+        const guru = getGuruAktif();
+        if (!guru) return;
+        const assignments = ambilAssignmentsDariMatrix(document.getElementById('matrix-mapel-guru'), 'guru_panel_assign');
+        state.teachers = state.teachers.map((t) => (t.id === guru.id ? { ...t, assignments } : t));
+        saveState();
+        renderPanelGuru();
+        renderBriefingSiswa();
+        alert('✅ Pilihan mata pelajaran & kelas berhasil disimpan! Planet siswa otomatis diperbarui.');
+      });
+
+      function renderDaftarSoalGuru() {
+        const guru = getGuruAktif();
+        const fKelas = document.getElementById('filter-kelas-guru').value;
+        const fMapel = document.getElementById('filter-mapel-guru').value;
+
+        const filtered = state.soalList.filter((s) => {
+          const cocokGuru = !guru || (guru.assignments || []).some((a) => a.kelas === s.kelas && a.mapel === s.mapel);
+          if (!cocokGuru) return false;
+          if (fKelas !== 'ALL' && s.kelas !== fKelas) return false;
+          if (fMapel !== 'ALL' && s.mapel !== fMapel) return false;
+          return true;
+        });
+
+        document.getElementById('jumlah-soal').textContent = filtered.length;
+        const box = document.getElementById('daftar-soal');
+        box.innerHTML = '';
+
+        if (!filtered.length) {
+          box.innerHTML = '<div class="card-panel"><p class="subtitle-sm">Belum ada soal pada filter kelas/mapel ini. Klik <b>+ Buat Soal Baru</b> untuk menambahkan.</p></div>';
+          return;
+        }
+
+        const labelTipe = {
+          pg: 'Pilihan Ganda',
+          isian: 'Isian Singkat (Dropdown)',
+          uraian: 'Uraian (Susun Amunisi)',
+        };
+
+        filtered.forEach((soal, idx) => {
+          const div = document.createElement('div');
+          div.className = 'item-card';
+          div.innerHTML = `
+            <div class="item-header">
+              <div>
+                <strong>Misi #${idx + 1}</strong>
+                <span class="badge-tag badge-kelas">📘 ${escapeHtml(soal.kelas)}</span>
+                <span class="badge-tag">🪐 ${escapeHtml(soal.mapel)}</span>
+                <span class="badge-tag badge-warn">${labelTipe[soal.tipe] || soal.tipe}</span>
+              </div>
+              <div>
+                <button type="button" class="btn-warning btn-edit-soal" style="padding:5px 11px;font-size:0.8rem;">✏️ Edit</button>
+                <button type="button" class="btn-danger-xs btn-del-soal" style="margin-left:5px;">🗑️ Hapus</button>
+              </div>
+            </div>
+            <p style="line-height:1.5;margin-bottom:6px;">${escapeHtml(soal.pertanyaan)}</p>
+            ${soal.gambar_soal ? `<img src="${soal.gambar_soal}" class="soal-img-display" />` : ''}
+            <p class="subtitle-sm" style="color:#34d399;"><b>Kunci Jawaban:</b> ${escapeHtml(soal.kunci)}</p>
+          `;
+          div.querySelector('.btn-edit-soal').addEventListener('click', () => bukaModalSoal(soal));
+          div.querySelector('.btn-del-soal').addEventListener('click', async () => {
+            if (!confirm('Hapus soal ini?')) return;
+            state.soalList = state.soalList.filter((item) => item.id !== soal.id);
+            saveState();
+            const sb = getSupabase();
+            if (sb && !String(soal.id).startsWith('local_')) {
+              try { await sb.from('soal').delete().eq('id', soal.id); } catch (_) {}
+            }
+            renderDaftarSoalGuru();
+          });
+          box.appendChild(div);
+        });
+      }
+
+      document.getElementById('filter-kelas-guru').addEventListener('change', renderDaftarSoalGuru);
+      document.getElementById('filter-mapel-guru').addEventListener('change', renderDaftarSoalGuru);
+
+      // ==================== EDITOR SOAL (GAMBAR, DROPDOWN TAK TERBATAS, URAIAN, PREVIEW) ====================
       const modalSoal = document.getElementById('modal-soal');
       const formSoal = document.getElementById('form-soal');
       const selectTipe = document.getElementById('tipe-soal');
@@ -937,6 +1454,25 @@
         if (inp) inp.value = base64Data || '';
         if (box) box.innerHTML = base64Data ? `<img src="${base64Data}" alt="Preview" />` : '';
       }
+
+      function perbaruiDropdownMapelFormSoal() {
+        const guru = getGuruAktif();
+        const kelasDipilih = document.getElementById('soal-kelas').value;
+        const selMapel = document.getElementById('soal-mapel');
+        const mapelKelasIni = (guru?.assignments || [])
+          .filter((a) => a.kelas === kelasDipilih)
+          .map((a) => a.mapel);
+
+        const sumber = mapelKelasIni.length ? mapelKelasIni : DAFTAR_MAPEL.map((m) => m.nama);
+        selMapel.innerHTML = '';
+        sumber.forEach((m) => {
+          const opt = document.createElement('option');
+          opt.value = m; opt.textContent = m;
+          selMapel.appendChild(opt);
+        });
+      }
+
+      document.getElementById('soal-kelas').addEventListener('change', perbaruiDropdownMapelFormSoal);
 
       function sesuaikanFormTipe(tipe) {
         document.getElementById('bagian-pg').classList.toggle('hidden', tipe !== 'pg');
@@ -960,8 +1496,8 @@
         card.className = 'dynamic-item-card';
         card.innerHTML = `
           <div class="dynamic-item-row">
-            <input type="radio" name="kunci_isian_radio" ${data.benar ? 'checked' : ''} title="Tandai sebagai jawaban benar" />
-            <input type="text" class="inp-teks-isian" placeholder="Pilihan jawaban #${idx}" value="${escapeHtml(data.teks)}" />
+            <input type="radio" name="kunci_isian_radio" ${data.benar ? 'checked' : ''} title="Pilih sebagai jawaban benar" />
+            <input type="text" class="inp-teks-isian" placeholder="Opsi Dropdown #${idx} (bisa paste gambar Ctrl+V)" value="${escapeHtml(data.teks)}" />
             <label class="btn-upload-mini">🖼️<input type="file" class="file-img-isian" accept="image/*" hidden /></label>
             <button type="button" class="btn-danger-xs btn-del-row">✕</button>
           </div>
@@ -971,6 +1507,14 @@
         card.querySelector('.file-img-isian').addEventListener('change', async (e) => {
           if (e.target.files[0]) {
             const b64 = await prosesFileGambarKeBase64(e.target.files[0]);
+            card.querySelector('.data-img-isian').value = b64;
+            card.querySelector('.prev-img-isian').innerHTML = `<img src="${b64}" />`;
+          }
+        });
+        card.querySelector('.inp-teks-isian').addEventListener('paste', async (e) => {
+          const b64 = await ambilGambarDariPaste(e);
+          if (b64) {
+            e.preventDefault();
             card.querySelector('.data-img-isian').value = b64;
             card.querySelector('.prev-img-isian').innerHTML = `<img src="${b64}" />`;
           }
@@ -986,8 +1530,8 @@
         card.className = 'dynamic-item-card';
         card.innerHTML = `
           <div class="dynamic-item-row">
-            <input type="checkbox" class="chk-kunci-uraian" ${data.benar ? 'checked' : ''} title="Centang jika bagian dari kunci jawaban benar" />
-            <input type="text" class="inp-teks-uraian" placeholder="Potongan kalimat / kata #${idx}" value="${escapeHtml(data.teks)}" />
+            <input type="checkbox" class="chk-kunci-uraian" ${data.benar ? 'checked' : ''} title="Centang jika bagian dari jawaban benar" />
+            <input type="text" class="inp-teks-uraian" placeholder="Tombol Amunisi #${idx} (bisa paste gambar Ctrl+V)" value="${escapeHtml(data.teks)}" />
             <label class="btn-upload-mini">🖼️<input type="file" class="file-img-uraian" accept="image/*" hidden /></label>
             <button type="button" class="btn-danger-xs btn-del-row">✕</button>
           </div>
@@ -1001,56 +1545,64 @@
             card.querySelector('.prev-img-uraian').innerHTML = `<img src="${b64}" />`;
           }
         });
+        card.querySelector('.inp-teks-uraian').addEventListener('paste', async (e) => {
+          const b64 = await ambilGambarDariPaste(e);
+          if (b64) {
+            e.preventDefault();
+            card.querySelector('.data-img-uraian').value = b64;
+            card.querySelector('.prev-img-uraian').innerHTML = `<img src="${b64}" />`;
+          }
+        });
         card.querySelector('.btn-del-row').addEventListener('click', () => card.remove());
         list.appendChild(card);
       }
 
-      function bukaFormEdit(soal) {
-        document.getElementById('soal-id').value = soal.id;
-        document.getElementById('judul-modal').textContent = 'Edit Soal Misi';
-        document.getElementById('soal-mapel').value = soal.mapel || 'Matematika';
-        selectTipe.value = soal.tipe;
-        document.getElementById('pertanyaan').value = soal.pertanyaan || '';
-
-        setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', soal.gambar_soal || '');
-        document.getElementById('btn-hapus-gambar-soal').classList.toggle('hidden', !soal.gambar_soal);
-
+      function bukaModalSoal(soal = null) {
+        formSoal.reset();
         document.getElementById('list-amunisi-isian').innerHTML = '';
         document.getElementById('list-amunisi-uraian').innerHTML = '';
 
-        if (soal.tipe === 'pg') {
-          ['a', 'b', 'c', 'd'].forEach((h) => {
-            document.getElementById(`opsi-${h}`).value = soal[`opsi_${h}`] || '';
-            setPreviewGambarEditor(`prev-img-${h}`, `data-gambar-${h}`, soal[`gambar_${h}`] || '');
-          });
-          document.getElementById('kunci-pg').value = soal.kunci || 'A';
-        } else if (soal.tipe === 'isian') {
-          const items = Array.isArray(soal.opsi_tambahan) ? soal.opsi_tambahan : [];
-          items.forEach((it) => tambahBarisAmunisiIsian(it));
-        } else if (soal.tipe === 'uraian') {
-          const items = Array.isArray(soal.opsi_tambahan) ? soal.opsi_tambahan : [];
-          items.forEach((it) => tambahBarisAmunisiUraian(it));
+        if (soal) {
+          document.getElementById('soal-id').value = soal.id;
+          document.getElementById('judul-modal').textContent = '✏️ Edit Soal Misi';
+          document.getElementById('soal-kelas').value = soal.kelas || 'Kelas 1';
+          perbaruiDropdownMapelFormSoal();
+          document.getElementById('soal-mapel').value = soal.mapel || 'Matematika';
+          selectTipe.value = soal.tipe;
+          document.getElementById('pertanyaan').value = soal.pertanyaan || '';
+          setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', soal.gambar_soal || '');
+          document.getElementById('btn-hapus-gambar-soal').classList.toggle('hidden', !soal.gambar_soal);
+
+          if (soal.tipe === 'pg') {
+            ['a', 'b', 'c', 'd'].forEach((h) => {
+              document.getElementById(`opsi-${h}`).value = soal[`opsi_${h}`] || '';
+              setPreviewGambarEditor(`prev-img-${h}`, `data-gambar-${h}`, soal[`gambar_${h}`] || '');
+            });
+            document.getElementById('kunci-pg').value = soal.kunci || 'A';
+          } else if (soal.tipe === 'isian') {
+            (soal.opsi_tambahan || []).forEach((it) => tambahBarisAmunisiIsian(it));
+          } else if (soal.tipe === 'uraian') {
+            (soal.opsi_tambahan || []).forEach((it) => tambahBarisAmunisiUraian(it));
+          }
+          sesuaikanFormTipe(soal.tipe);
+        } else {
+          document.getElementById('soal-id').value = '';
+          document.getElementById('judul-modal').textContent = 'Buat Soal Baru';
+          const guru = getGuruAktif();
+          const firstAssign = guru?.assignments?.[0];
+          document.getElementById('soal-kelas').value = firstAssign ? firstAssign.kelas : 'Kelas 1';
+          perbaruiDropdownMapelFormSoal();
+          if (firstAssign) document.getElementById('soal-mapel').value = firstAssign.mapel;
+          setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', '');
+          document.getElementById('btn-hapus-gambar-soal').classList.add('hidden');
+          ['a', 'b', 'c', 'd'].forEach((k) => setPreviewGambarEditor(`prev-img-${k}`, `data-gambar-${k}`, ''));
+          selectTipe.value = 'pg';
+          sesuaikanFormTipe('pg');
         }
-        sesuaikanFormTipe(soal.tipe);
         modalSoal.classList.remove('hidden');
       }
 
-      document.getElementById('btn-tambah-baru').addEventListener('click', () => {
-        formSoal.reset();
-        document.getElementById('soal-id').value = '';
-        document.getElementById('judul-modal').textContent = 'Buat Soal Baru';
-        setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', '');
-        document.getElementById('btn-hapus-gambar-soal').classList.add('hidden');
-        ['a', 'b', 'c', 'd'].forEach((k) => setPreviewGambarEditor(`prev-img-${k}`, `data-gambar-${k}`, ''));
-        document.getElementById('list-amunisi-isian').innerHTML = '';
-        document.getElementById('list-amunisi-uraian').innerHTML = '';
-        selectTipe.value = 'pg';
-        sesuaikanFormTipe('pg');
-        modalSoal.classList.remove('hidden');
-      });
-
-      document.getElementById('btn-batal').addEventListener('click', () => modalSoal.classList.add('hidden'));
-      document.getElementById('btn-close-x').addEventListener('click', () => modalSoal.classList.add('hidden'));
+      document.getElementById('btn-tambah-baru').addEventListener('click', () => bukaModalSoal(null));
       selectTipe.addEventListener('change', (e) => sesuaikanFormTipe(e.target.value));
 
       document.getElementById('file-gambar-soal').addEventListener('change', async (e) => {
@@ -1107,6 +1659,7 @@
       function rakitPayloadDariForm() {
         const tipe = selectTipe.value;
         const payload = {
+          kelas: document.getElementById('soal-kelas').value,
           mapel: document.getElementById('soal-mapel').value,
           tipe,
           pertanyaan: document.getElementById('pertanyaan').value.trim(),
@@ -1129,13 +1682,14 @@
         } else if (tipe === 'isian') {
           const items = [];
           let kunciBenar = '';
-          document.querySelectorAll('#list-amunisi-isian .dynamic-item-card').forEach((r) => {
+          document.querySelectorAll('#list-amunisi-isian .dynamic-item-card').forEach((r, i) => {
             const teks = r.querySelector('.inp-teks-isian').value.trim();
             const gambar = r.querySelector('.data-img-isian').value || '';
             const benar = r.querySelector('input[type="radio"]').checked;
             if (teks || gambar) {
-              items.push({ teks, gambar, benar });
-              if (benar) kunciBenar = teks;
+              const label = teks || `Opsi Gambar #${i + 1}`;
+              items.push({ teks: label, gambar, benar });
+              if (benar) kunciBenar = label;
             }
           });
           payload.opsi_tambahan = items;
@@ -1143,13 +1697,14 @@
         } else if (tipe === 'uraian') {
           const items = [];
           const kunciList = [];
-          document.querySelectorAll('#list-amunisi-uraian .dynamic-item-card').forEach((r) => {
+          document.querySelectorAll('#list-amunisi-uraian .dynamic-item-card').forEach((r, i) => {
             const teks = r.querySelector('.inp-teks-uraian').value.trim();
             const gambar = r.querySelector('.data-img-uraian').value || '';
             const benar = r.querySelector('.chk-kunci-uraian').checked;
             if (teks || gambar) {
-              items.push({ teks, gambar, benar });
-              if (benar) kunciList.push(teks);
+              const label = teks || `Amunisi Gambar #${i + 1}`;
+              items.push({ teks: label, gambar, benar });
+              if (benar) kunciList.push(label);
             }
           });
           payload.opsi_tambahan = items;
@@ -1158,75 +1713,84 @@
         return payload;
       }
 
-      // PREVIEW SISWA
-      const modalPreview = document.getElementById('modal-preview');
+      // PREVIEW TAMPILAN SISWA
       document.getElementById('btn-preview-soal').addEventListener('click', () => {
-        const draftSoal = rakitPayloadDariForm();
-        if (!draftSoal.pertanyaan) {
-          alert('Tuliskan pertanyaan terlebih dahulu untuk melihat preview.');
+        const draft = rakitPayloadDariForm();
+        if (!draft.pertanyaan) {
+          alert('Tuliskan pertanyaan terlebih dahulu sebelum preview.');
           return;
         }
         const box = document.getElementById('kontainer-preview-siswa');
         box.innerHTML = '';
-        renderKartuInteraktifSiswa(box, draftSoal, 1, null, () => {});
-        modalPreview.classList.remove('hidden');
+        renderKartuInteraktifSiswa(box, draft, 1, null, true, () => {});
+        document.getElementById('modal-preview').classList.remove('hidden');
       });
-      document.getElementById('btn-tutup-preview').addEventListener('click', () => modalPreview.classList.add('hidden'));
-      document.getElementById('btn-tutup-preview-bawah').addEventListener('click', () => modalPreview.classList.add('hidden'));
 
       formSoal.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const btnSimpan = document.getElementById('btn-simpan-soal');
-        btnSimpan.disabled = true;
-        btnSimpan.textContent = 'Menyimpan...';
-
         const id = document.getElementById('soal-id').value;
         const payload = rakitPayloadDariForm();
 
-        try {
-          const sb = getSupabase();
-          if (sb) {
-            if (id) {
-              const { error } = await sb.from('soal').update(payload).eq('id', id);
-              if (error) throw error;
-            } else {
-              const { error } = await sb.from('soal').insert([payload]);
-              if (error) throw error;
-            }
-          } else {
-            if (id) {
-              semuaSoalDB = semuaSoalDB.map((s) => (s.id === id ? { ...s, ...payload } : s));
-            } else {
-              semuaSoalDB.push({ id: 'local_' + Date.now(), ...payload });
-            }
-            localStorage.setItem(KEY_LOCAL_SOAL_BACKUP, JSON.stringify(semuaSoalDB));
-          }
-          modalSoal.classList.add('hidden');
-          await muatSoalDariDatabase();
-          alert('✅ Soal berhasil disimpan!');
-        } catch (err) {
-          alert('Gagal menyimpan soal: ' + err.message);
-        } finally {
-          btnSimpan.disabled = false;
-          btnSimpan.textContent = '💾 Simpan Soal ke Database';
+        if ((payload.tipe === 'isian' || payload.tipe === 'uraian') && payload.opsi_tambahan.length === 0) {
+          alert('Tambahkan minimal 1 pilihan jawaban terlebih dahulu.');
+          return;
         }
+
+        if (id) {
+          state.soalList = state.soalList.map((s) => (s.id === id ? { ...s, ...payload } : s));
+        } else {
+          state.soalList.push({ id: 'local_' + Date.now(), ...payload });
+        }
+        saveState();
+
+        // Sinkron ke Supabase jika terhubung
+        const sb = getSupabase();
+        if (sb) {
+          try {
+            const dbPayload = {
+              mapel: `${payload.mapel} (${payload.kelas})`,
+              tipe: payload.tipe,
+              pertanyaan: payload.pertanyaan,
+              gambar_soal: payload.gambar_soal,
+              opsi_a: payload.opsi_a, gambar_a: payload.gambar_a,
+              opsi_b: payload.opsi_b, gambar_b: payload.gambar_b,
+              opsi_c: payload.opsi_c, gambar_c: payload.gambar_c,
+              opsi_d: payload.opsi_d, gambar_d: payload.gambar_d,
+              opsi_tambahan: payload.opsi_tambahan,
+              kunci: payload.kunci,
+            };
+            await sb.from('soal').insert([dbPayload]);
+          } catch (_) {}
+        }
+
+        modalSoal.classList.add('hidden');
+        renderDaftarSoalGuru();
+        renderBriefingSiswa();
+        alert('✅ Soal berhasil disimpan!');
       });
 
-      // ==================== RENDER KARTU INTERAKTIF SISWA ====================
-      function renderKartuInteraktifSiswa(container, soal, nomor, jawabanSaatIni, onJawabCallback) {
+      // ==================== RENDER KARTU SOAL INTERAKTIF SISWA ====================
+      // Ketentuan 11 & 12:
+      // - PG: langsung dieksekusi saat opsi diklik -> ledakan 3 detik penuh (hancur jika benar, warning kerusakan jika salah) -> otomatis lanjut soal berikutnya.
+      // - Isian (Dropdown tak terbatas) & Uraian (Tombol amunisi): dieksekusi setelah siswa menekan tombol "🚀 Tembak & Lanjut" -> ledakan spektakuler 3 detik -> lanjut soal berikutnya.
+      function renderKartuInteraktifSiswa(container, soal, nomor, recordJawaban, isPreview, onEksekusiSelesai) {
         const card = document.createElement('div');
         card.className = 'card-panel';
         card.innerHTML = `
-          <div class="header-soal">
-            <strong>🎯 Target Misi #${nomor}</strong>
-            <span class="badge-mapel-tag">🪐 ${escapeHtml(soal.mapel || 'Matematika')}</span>
+          <div class="item-header">
+            <div>
+              <strong>🎯 Target Misi #${nomor}</strong>
+              <span class="badge-tag badge-kelas">📘 ${escapeHtml(soal.kelas || '')}</span>
+              <span class="badge-tag">🪐 ${escapeHtml(soal.mapel || '')}</span>
+            </div>
+            ${isPreview ? '<span class="badge-tag badge-warn">MODE SIMULASI PREVIEW</span>' : ''}
           </div>
-          <p style="font-size:1.08rem;line-height:1.55;margin-bottom:12px;">${escapeHtml(soal.pertanyaan)}</p>
-          ${soal.gambar_soal ? `<img src="${soal.gambar_soal}" class="soal-img-display" alt="Gambar Misi" />` : ''}
-          <div class="zona-amunisi"></div>
+          <p style="font-size:1.08rem;line-height:1.55;margin-bottom:10px;">${escapeHtml(soal.pertanyaan)}</p>
+          ${soal.gambar_soal ? `<img src="${soal.gambar_soal}" class="soal-img-display" />` : ''}
+          <div class="zona-interaksi"></div>
         `;
 
-        const zona = card.querySelector('.zona-amunisi');
+        const zona = card.querySelector('.zona-interaksi');
 
         if (soal.tipe === 'pg') {
           const grid = document.createElement('div');
@@ -1239,64 +1803,106 @@
 
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = `btn-ammo-pg ${jawabanSaatIni === huruf ? 'selected' : ''}`;
+            btn.className = 'btn-ammo-pg';
+            if (recordJawaban && recordJawaban.jawaban === huruf) {
+              btn.classList.add(recordJawaban.benar ? 'selected-correct' : 'selected-wrong');
+            }
             btn.innerHTML = `
               <div><strong style="color:#38bdf8;">[${huruf}]</strong> ${escapeHtml(teks || '')}</div>
               ${gbr ? `<img src="${gbr}" class="opsi-img-display" />` : ''}
             `;
+
             btn.addEventListener('click', () => {
-              grid.querySelectorAll('.btn-ammo-pg').forEach((b) => b.classList.remove('selected'));
-              btn.classList.add('selected');
-              mainkanSuaraLaser();
-              picuLedakan3Detik(`💥 AMUNISI ${huruf} MENGENAI TARGET!`);
-              onJawabCallback(huruf);
+              const isBenar = huruf === soal.kunci;
+              grid.querySelectorAll('.btn-ammo-pg').forEach((b) => b.classList.remove('selected-correct', 'selected-wrong'));
+              btn.classList.add(isBenar ? 'selected-correct' : 'selected-wrong');
+
+              const judul = isBenar
+                ? '💥 RINTANGAN HANCUR BERKEPING-KEPING!'
+                : '⚠️ WARNING! PERISAI PESAWAT RUSAK!';
+              const sub = isBenar
+                ? `Tembakan Amunisi [${huruf}] tepat sasaran! Pertahanan musuh hancur total.`
+                : `Amunisi [${huruf}] meleset! Laser balik musuh mengenai lambung pesawat (Kunci tepat: ${soal.kunci}).`;
+
+              picuLedakan3Detik(isBenar, judul, sub, () => {
+                onEksekusiSelesai({ jawaban: huruf, benar: isBenar });
+              });
             });
             grid.appendChild(btn);
           });
           zona.appendChild(grid);
         } else if (soal.tipe === 'isian') {
           const items = Array.isArray(soal.opsi_tambahan) ? soal.opsi_tambahan : [];
-          const grid = document.createElement('div');
-          grid.className = 'opsi-ammo-grid';
-          items.forEach((it) => {
-            const nilai = it.teks || '[Gambar]';
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = `btn-ammo-pg ${jawabanSaatIni === nilai ? 'selected' : ''}`;
-            btn.innerHTML = `
-              <div>🚀 ${escapeHtml(it.teks || '')}</div>
-              ${it.gambar ? `<img src="${it.gambar}" class="opsi-img-display" />` : ''}
-            `;
-            btn.addEventListener('click', () => {
-              grid.querySelectorAll('.btn-ammo-pg').forEach((b) => b.classList.remove('selected'));
-              btn.classList.add('selected');
-              mainkanSuaraLaser();
-              picuLedakan3Detik('💥 TEMBAKAN JAWABAN TEPAT SASARAN!');
-              onJawabCallback(nilai);
+          const box = document.createElement('div');
+          box.className = 'isian-dropdown-box';
+          box.innerHTML = `
+            <label for="dd-jawaban-isian" style="margin-top:0;color:#38bdf8;">🔽 Pilih Jawaban dari Dropdown Amunisi:</label>
+            <select id="dd-jawaban-isian">
+              <option value="">-- Pilih Jawaban Anda --</option>
+              ${items.map((it) => `<option value="${escapeHtml(it.teks)}" ${recordJawaban?.jawaban === it.teks ? 'selected' : ''}>${escapeHtml(it.teks)}</option>`).join('')}
+            </select>
+          `;
+
+          // Tampilkan thumbnail gambar jika ada opsi dropdown yang bergambar
+          const bergambar = items.filter((it) => it.gambar);
+          if (bergambar.length > 0) {
+            const gal = document.createElement('div');
+            gal.className = 'isian-preview-gallery';
+            bergambar.forEach((it) => {
+              const th = document.createElement('div');
+              th.className = 'isian-opt-thumb';
+              th.innerHTML = `<img src="${it.gambar}" style="max-height:70px;border-radius:6px;display:block;margin:0 auto 4px;" /><span>${escapeHtml(it.teks)}</span>`;
+              gal.appendChild(th);
             });
-            grid.appendChild(btn);
+            box.appendChild(gal);
+          }
+
+          const btnLanjut = document.createElement('button');
+          btnLanjut.type = 'button';
+          btnLanjut.className = 'btn-primary-rocket';
+          btnLanjut.style.marginTop = '14px';
+          btnLanjut.textContent = '🚀 Eksekusi Jawaban & Lanjut';
+          btnLanjut.addEventListener('click', () => {
+            const val = box.querySelector('#dd-jawaban-isian').value;
+            if (!val) {
+              alert('Pilih salah satu jawaban di dropdown terlebih dahulu!');
+              return;
+            }
+            const isBenar = String(val).toLowerCase() === String(soal.kunci).toLowerCase();
+            const judul = isBenar
+              ? '💥 TARGET ISIAN HANCUR SPEKTAKULER!'
+              : '⚠️ WARNING! KERUSAKAN SISTEM NAVIGASI!';
+            const sub = isBenar
+              ? `Jawaban "${val}" tepat menghancurkan asteroid penghalang!`
+              : `Jawaban "${val}" kurang tepat! Terjadi benturan meteor (Jawaban benar: ${soal.kunci}).`;
+
+            picuLedakan3Detik(isBenar, judul, sub, () => {
+              onEksekusiSelesai({ jawaban: val, benar: isBenar });
+            });
           });
-          zona.appendChild(grid);
+
+          box.appendChild(btnLanjut);
+          zona.appendChild(box);
         } else if (soal.tipe === 'uraian') {
           const items = Array.isArray(soal.opsi_tambahan) ? soal.opsi_tambahan : [];
-          let terpilih = Array.isArray(jawabanSaatIni) ? [...jawabanSaatIni] : [];
+          let terpilih = Array.isArray(recordJawaban?.jawaban) ? [...recordJawaban.jawaban] : [];
 
           const lblTarget = document.createElement('p');
           lblTarget.className = 'subtitle-sm';
-          lblTarget.innerHTML = '🛸 <b>Rangkaian Jawaban Anda</b> (Klik chip untuk membatalkan):';
+          lblTarget.innerHTML = '🛸 <b>Kotak Susunan Jawaban Anda</b> (Klik chip untuk melepas kembali):';
           const targetBox = document.createElement('div');
           targetBox.className = 'uraian-target-box';
 
           const lblPool = document.createElement('p');
           lblPool.className = 'subtitle-sm';
-          lblPool.innerHTML = '🔫 <b>Klik Amunisi di Bawah untuk Menyusun Jawaban:</b>';
+          lblPool.innerHTML = '🔫 <b>Ambil Tombol Amunisi di Bawah untuk Dimasukkan ke Jawaban:</b>';
           const poolBox = document.createElement('div');
           poolBox.className = 'uraian-ammo-pool';
 
-          function refreshUraianUI() {
+          function refreshUraian() {
             targetBox.innerHTML = '';
             if (!terpilih.length) {
-              targetBox.innerHTML = '<span style="color:#64748b;font-size:0.86rem;">Belum ada amunisi dipilih...</span>';
+              targetBox.innerHTML = '<span style="color:#64748b;font-size:0.84rem;">Klik tombol amunisi di bawah untuk menyusun jawaban...</span>';
             } else {
               terpilih.forEach((teksItem, idx) => {
                 const chip = document.createElement('span');
@@ -1304,8 +1910,7 @@
                 chip.innerHTML = `${idx + 1}. ${escapeHtml(teksItem)} ✕`;
                 chip.addEventListener('click', () => {
                   terpilih.splice(idx, 1);
-                  onJawabCallback([...terpilih]);
-                  refreshUraianUI();
+                  refreshUraian();
                 });
                 targetBox.appendChild(chip);
               });
@@ -1313,54 +1918,202 @@
 
             poolBox.innerHTML = '';
             items.forEach((it) => {
-              const labelItem = it.teks || '[Gambar]';
-              const sudahDipakai = terpilih.includes(labelItem);
+              const sudahDipakai = terpilih.includes(it.teks);
               const btn = document.createElement('button');
               btn.type = 'button';
               btn.className = `btn-ammo-chip ${sudahDipakai ? 'used' : ''}`;
               btn.disabled = sudahDipakai;
               btn.innerHTML = `
-                <span>⚡ ${escapeHtml(it.teks || '')}</span>
+                <span>⚡ ${escapeHtml(it.teks)}</span>
                 ${it.gambar ? `<img src="${it.gambar}" style="max-height:42px;border-radius:4px;" />` : ''}
               `;
               btn.addEventListener('click', () => {
-                terpilih.push(labelItem);
+                terpilih.push(it.teks);
                 mainkanSuaraLaser();
-                picuLedakan3Detik('💥 ELEMEN JAWABAN TERKUNCI!');
-                onJawabCallback([...terpilih]);
-                refreshUraianUI();
+                refreshUraian();
               });
               poolBox.appendChild(btn);
             });
           }
 
-          refreshUraianUI();
+          refreshUraian();
+
+          const btnLanjut = document.createElement('button');
+          btnLanjut.type = 'button';
+          btnLanjut.className = 'btn-primary-rocket';
+          btnLanjut.style.marginTop = '14px';
+          btnLanjut.textContent = '🚀 Eksekusi Rangkaian Uraian & Lanjut';
+          btnLanjut.addEventListener('click', () => {
+            if (!terpilih.length) {
+              alert('Ambil minimal 1 tombol amunisi jawaban terlebih dahulu!');
+              return;
+            }
+            let kunciArr = [];
+            try { kunciArr = JSON.parse(soal.kunci || '[]'); } catch (_) {}
+            const isBenar =
+              kunciArr.length > 0 &&
+              kunciArr.length === terpilih.length &&
+              kunciArr.every((k) => terpilih.includes(k));
+
+            const judul = isBenar
+              ? '💥 BENTENG URAIAN MELEDAK DAHSYAT!'
+              : '⚠️ WARNING! KOMBINASI AMUNISI TIDAK COCOK!';
+            const sub = isBenar
+              ? 'Seluruh elemen amunisi jawaban tepat! Benteng utama hancur berkeping-keping.'
+              : `Susunan jawaban belum tepat sehingga memicu ledakan balik! (Kunci: ${kunciArr.join(', ')})`;
+
+            picuLedakan3Detik(isBenar, judul, sub, () => {
+              onEksekusiSelesai({ jawaban: [...terpilih], benar: isBenar });
+            });
+          });
+
           zona.appendChild(lblTarget);
           zona.appendChild(targetBox);
           zona.appendChild(lblPool);
           zona.appendChild(poolBox);
+          zona.appendChild(btnLanjut);
         }
 
         container.appendChild(card);
       }
 
-      // ==================== UJIAN SISWA ====================
+      // ==================== ALUR UJIAN SISWA ====================
+      let soalMisiSiswa = [];
+      let indexSoalAktif = 0;
+      let rekamanJawabanSiswa = {}; // { [soalId]: { jawaban, benar } }
+      let pesertaAktif = null;
+
+      function renderBriefingSiswa() {
+        const kelasDipilih = document.getElementById('siswa-pilih-kelas').value;
+        document.getElementById('label-kelas-planet').textContent = kelasDipilih;
+
+        // Populate dropdown siswa sesuai kelas
+        const selNama = document.getElementById('siswa-pilih-nama');
+        const inpManual = document.getElementById('siswa-nama-manual');
+        const siswaKelasIni = state.students.filter((s) => s.kelas === kelasDipilih);
+
+        selNama.innerHTML = '';
+        siswaKelasIni.forEach((s) => {
+          const opt = document.createElement('option');
+          opt.value = s.nama;
+          opt.textContent = `${s.nama} ${s.nis ? `(NIS: ${s.nis})` : ''}`;
+          selNama.appendChild(opt);
+        });
+        const optManual = document.createElement('option');
+        optManual.value = '__MANUAL__';
+        optManual.textContent = '+ Ketik Nama Manual...';
+        selNama.appendChild(optManual);
+
+        if (siswaKelasIni.length === 0) {
+          selNama.value = '__MANUAL__';
+          inpManual.classList.remove('hidden');
+        } else {
+          inpManual.classList.add('hidden');
+        }
+
+        // Kumpulkan semua mata pelajaran yang diikutkan oleh guru untuk kelas ini
+        const mapelAktifKelasIni = new Set();
+        state.teachers.forEach((t) => {
+          (t.assignments || []).forEach((a) => {
+            if (a.kelas === kelasDipilih) mapelAktifKelasIni.add(a.mapel);
+          });
+        });
+
+        const grid = document.getElementById('grid-planet-mapel');
+        const hiddenMapel = document.getElementById('siswa-mapel-terpilih');
+        grid.innerHTML = '';
+        hiddenMapel.value = '';
+
+        const planetList = DAFTAR_MAPEL.filter((m) => mapelAktifKelasIni.has(m.nama));
+        if (!planetList.length) {
+          grid.innerHTML = `<p class="subtitle-sm">Belum ada mata pelajaran yang diaktifkan Ustadz/Guru untuk ${kelasDipilih}.</p>`;
+          return;
+        }
+
+        planetList.forEach((m, idx) => {
+          const jmlSoal = state.soalList.filter((s) => s.kelas === kelasDipilih && s.mapel === m.nama).length;
+          const card = document.createElement('div');
+          card.className = 'planet-card' + (idx === 0 ? ' selected' : '');
+          if (idx === 0) hiddenMapel.value = m.nama;
+
+          card.innerHTML = `
+            <div class="planet-orb" style="background:${m.warna};">${m.ikon}</div>
+            <div class="planet-name">${escapeHtml(m.nama)}</div>
+            <div class="planet-sub">${kelasDipilih} • ${jmlSoal} Misi</div>
+          `;
+          card.addEventListener('click', () => {
+            document.querySelectorAll('.planet-card').forEach((c) => c.classList.remove('selected'));
+            card.classList.add('selected');
+            hiddenMapel.value = m.nama;
+          });
+          grid.appendChild(card);
+        });
+      }
+
+      document.getElementById('siswa-pilih-kelas').addEventListener('change', renderBriefingSiswa);
+      document.getElementById('siswa-pilih-nama').addEventListener('change', (e) => {
+        document.getElementById('siswa-nama-manual').classList.toggle('hidden', e.target.value !== '__MANUAL__');
+      });
+
+      document.getElementById('form-identitas-siswa').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const kelas = document.getElementById('siswa-pilih-kelas').value;
+        const selNama = document.getElementById('siswa-pilih-nama').value;
+        const nama = selNama === '__MANUAL__'
+          ? document.getElementById('siswa-nama-manual').value.trim()
+          : selNama;
+        const mapel = document.getElementById('siswa-mapel-terpilih').value;
+
+        if (!nama) {
+          alert('Silakan pilih atau ketik nama siswa terlebih dahulu.');
+          return;
+        }
+        if (!mapel) {
+          alert('Pilih planet mata pelajaran terlebih dahulu.');
+          return;
+        }
+
+        soalMisiSiswa = state.soalList.filter((s) => s.kelas === kelas && s.mapel === mapel);
+        if (!soalMisiSiswa.length) {
+          alert(`Belum ada soal yang dibuat guru untuk ${mapel} (${kelas}).`);
+          return;
+        }
+
+        pesertaAktif = { nama, kelas, mapel };
+        rekamanJawabanSiswa = {};
+        indexSoalAktif = 0;
+
+        aktifkanKunciLayarUjian();
+        document.getElementById('siswa-mulai-card').classList.add('hidden');
+        document.getElementById('siswa-ujian-area').classList.remove('hidden');
+        document.getElementById('info-peserta').textContent = `🧑‍🚀 ${nama} (${kelas})`;
+        document.getElementById('badge-planet-aktif').textContent = `🪐 ${mapel}`;
+        renderSoalAktifSiswa();
+      });
+
       function renderSoalAktifSiswa() {
         const arena = document.getElementById('arena-soal-aktif');
         arena.innerHTML = '';
-        if (!soalMisiSiswa.length) {
-          arena.innerHTML = '<div class="card-panel"><p>Belum ada soal misi di planet mata pelajaran ini.</p></div>';
-          return;
-        }
         const soal = soalMisiSiswa[indexSoalAktif];
         document.getElementById('progress-soal').textContent = `Misi ${indexSoalAktif + 1} / ${soalMisiSiswa.length}`;
 
-        renderKartuInteraktifSiswa(arena, soal, indexSoalAktif + 1, jawabanSiswa[soal.id], (nilaiBaru) => {
-          jawabanSiswa[soal.id] = nilaiBaru;
-          localStorage.setItem(KEY_JAWABAN_SISWA, JSON.stringify(jawabanSiswa));
-          document.getElementById('status-autosave').textContent = '✓ Tersimpan lokal (' + new Date().toLocaleTimeString('id-ID') + ')';
-          renderIndikatorNomor();
-        });
+        renderKartuInteraktifSiswa(
+          arena,
+          soal,
+          indexSoalAktif + 1,
+          rekamanJawabanSiswa[soal.id],
+          false,
+          (hasilEksekusi) => {
+            rekamanJawabanSiswa[soal.id] = hasilEksekusi;
+            renderIndikatorNomor();
+            if (indexSoalAktif < soalMisiSiswa.length - 1) {
+              indexSoalAktif++;
+              renderSoalAktifSiswa();
+            } else {
+              selesaikanMisiSiswa(true);
+            }
+          }
+        );
 
         document.getElementById('btn-prev-soal').disabled = indexSoalAktif === 0;
         document.getElementById('btn-next-soal').disabled = indexSoalAktif === soalMisiSiswa.length - 1;
@@ -1373,11 +2126,16 @@
         soalMisiSiswa.forEach((s, idx) => {
           const btn = document.createElement('button');
           btn.type = 'button';
-          const jwb = jawabanSiswa[s.id];
-          const terisi = Array.isArray(jwb) ? jwb.length > 0 : Boolean(jwb);
-          btn.className = `dot-num ${terisi ? 'answered' : ''} ${idx === indexSoalAktif ? 'active' : ''}`;
+          const rec = rekamanJawabanSiswa[s.id];
+          let cls = 'dot-num';
+          if (rec) cls += rec.benar ? ' answered-ok' : ' answered-err';
+          if (idx === indexSoalAktif) cls += ' active';
+          btn.className = cls;
           btn.textContent = idx + 1;
-          btn.addEventListener('click', () => { indexSoalAktif = idx; renderSoalAktifSiswa(); });
+          btn.addEventListener('click', () => {
+            indexSoalAktif = idx;
+            renderSoalAktifSiswa();
+          });
           dots.appendChild(btn);
         });
       }
@@ -1389,124 +2147,91 @@
         if (indexSoalAktif < soalMisiSiswa.length - 1) { indexSoalAktif++; renderSoalAktifSiswa(); }
       });
 
-      document.getElementById('form-identitas-siswa').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const mapelDipilih = document.getElementById('siswa-mapel-terpilih').value;
-        if (!mapelDipilih) {
-          alert('Silakan pilih planet mata pelajaran terlebih dahulu.');
-          return;
-        }
-        pesertaAktif = {
-          nama: document.getElementById('siswa-nama').value.trim(),
-          kelas: document.getElementById('siswa-kelas').value.trim(),
-          mapel: mapelDipilih,
-        };
-        localStorage.setItem(KEY_PESERTA_SISWA, JSON.stringify(pesertaAktif));
-        soalMisiSiswa = semuaSoalDB.filter((s) => (s.mapel || 'Matematika') === pesertaAktif.mapel);
-        indexSoalAktif = 0;
-
-        document.getElementById('siswa-mulai-card').classList.add('hidden');
-        document.getElementById('siswa-ujian-area').classList.remove('hidden');
-        document.getElementById('info-peserta').textContent = `🧑‍🚀 ${pesertaAktif.nama} (${pesertaAktif.kelas})`;
-        document.getElementById('badge-planet-aktif').textContent = `🪐 ${pesertaAktif.mapel}`;
-        mainkanSuaraLaser();
-        renderSoalAktifSiswa();
-      });
-
-      document.getElementById('btn-kumpulkan-ujian').addEventListener('click', async () => {
-        if (!confirm('Selesaikan misi dan kirim semua jawaban ke Ustadz?')) return;
-        const btn = document.getElementById('btn-kumpulkan-ujian');
-        btn.disabled = true;
-        btn.textContent = 'Mengirim...';
+      async function selesaikanMisiSiswa(otomatis = false) {
+        if (!otomatis && !confirm('Selesaikan seluruh misi dan buka kunci layar?')) return;
 
         let benar = 0;
-        const detail = soalMisiSiswa.map((s, idx) => {
-          const jwb = jawabanSiswa[s.id];
-          if (s.tipe === 'pg' || s.tipe === 'isian') {
-            if (jwb && s.kunci && String(jwb).toLowerCase() === String(s.kunci).toLowerCase()) benar++;
-          } else if (s.tipe === 'uraian') {
-            try {
-              const kunciArr = JSON.parse(s.kunci || '[]');
-              const jwbArr = Array.isArray(jwb) ? jwb : [];
-              if (kunciArr.length > 0 && kunciArr.length === jwbArr.length && kunciArr.every((k) => jwbArr.includes(k))) benar++;
-            } catch (_) {}
-          }
-          return { no: idx + 1, tipe: s.tipe, pertanyaan: s.pertanyaan, jawaban_siswa: jwb || '(Kosong)', kunci: s.kunci };
+        soalMisiSiswa.forEach((s) => {
+          if (rekamanJawabanSiswa[s.id]?.benar) benar++;
         });
-
         const skor = soalMisiSiswa.length > 0 ? Math.round((benar / soalMisiSiswa.length) * 100) : 0;
-        try {
-          const sb = getSupabase();
-          if (sb) {
-            const { error } = await sb.from('hasil_ujian').insert([{
-              nama_siswa: pesertaAktif.nama, kelas: pesertaAktif.kelas, mapel: pesertaAktif.mapel,
-              skor_otomatis: skor, detail_jawaban: detail,
-            }]);
-            if (error) throw error;
-          }
-          localStorage.removeItem(KEY_JAWABAN_SISWA);
-          localStorage.removeItem(KEY_PESERTA_SISWA);
-          jawabanSiswa = {};
 
-          document.getElementById('siswa-ujian-area').classList.add('hidden');
-          document.getElementById('siswa-selesai-card').classList.remove('hidden');
-          document.getElementById('pesan-hasil-siswa').textContent = `Misi Planet ${pesertaAktif.mapel} oleh ${pesertaAktif.nama} telah berhasil dikirim!`;
-          document.getElementById('skor-akhir-box').textContent = `Skor Akhir: ${skor} (${benar} dari ${soalMisiSiswa.length} Misi Tepat)`;
-        } catch (err) {
-          alert('Gagal mengirim jawaban: ' + err.message);
-        } finally {
-          btn.disabled = false;
-          btn.textContent = '🏁 Selesaikan Misi';
+        const hasilBaru = {
+          id: 'res_' + Date.now(),
+          nama_siswa: pesertaAktif.nama,
+          kelas: pesertaAktif.kelas,
+          mapel: pesertaAktif.mapel,
+          skor_otomatis: skor,
+          benar,
+          total: soalMisiSiswa.length,
+          pelanggaran: pelanggaranKeluar,
+          created_at: new Date().toISOString(),
+        };
+        state.hasilList.unshift(hasilBaru);
+        saveState();
+
+        const sb = getSupabase();
+        if (sb) {
+          try {
+            await sb.from('hasil_ujian').insert([{
+              nama_siswa: hasilBaru.nama_siswa,
+              kelas: hasilBaru.kelas,
+              mapel: hasilBaru.mapel,
+              skor_otomatis: hasilBaru.skor_otomatis,
+              detail_jawaban: rekamanJawabanSiswa,
+            }]);
+          } catch (_) {}
         }
-      });
+
+        nonaktifkanKunciLayarUjian();
+        document.getElementById('siswa-ujian-area').classList.add('hidden');
+        document.getElementById('siswa-selesai-card').classList.remove('hidden');
+        document.getElementById('pesan-hasil-siswa').textContent =
+          `Astronaut ${pesertaAktif.nama} (${pesertaAktif.kelas}) telah menyelesaikan Planet ${pesertaAktif.mapel}.`;
+        document.getElementById('skor-akhir-box').textContent =
+          `Skor Akhir: ${skor} (${benar} dari ${soalMisiSiswa.length} Misi Tepat) • Pelanggaran Keluar: ${pelanggaranKeluar}x`;
+      }
+
+      document.getElementById('btn-kumpulkan-ujian').addEventListener('click', () => selesaikanMisiSiswa(false));
 
       document.getElementById('btn-ujian-ulang').addEventListener('click', () => {
         document.getElementById('siswa-selesai-card').classList.add('hidden');
         document.getElementById('siswa-mulai-card').classList.remove('hidden');
+        renderBriefingSiswa();
       });
 
-      async function muatRekapNilai() {
-        const container = document.getElementById('daftar-hasil-siswa');
-        const sb = getSupabase();
-        if (!sb) {
-          container.innerHTML = '<p style="color:#f59e0b;">Database Supabase belum terhubung.</p>';
+      function renderRekapNilaiGuru() {
+        const box = document.getElementById('daftar-hasil-siswa');
+        box.innerHTML = '';
+        if (!state.hasilList.length) {
+          box.innerHTML = '<p class="subtitle-sm">Belum ada siswa yang menyelesaikan ujian.</p>';
           return;
         }
-        try {
-          const { data, error } = await sb.from('hasil_ujian').select('*').order('created_at', { ascending: false });
-          if (error) throw error;
-          if (!data || !data.length) {
-            container.innerHTML = '<p style="color:#94a3b8;">Belum ada siswa yang mengumpulkan hasil ujian.</p>';
-            return;
-          }
-          container.innerHTML = '';
-          data.forEach((item) => {
-            const div = document.createElement('div');
-            div.className = 'kartu-soal';
-            const waktu = new Date(item.created_at).toLocaleString('id-ID');
-            div.innerHTML = `
-              <div class="header-soal">
-                <div>
-                  <strong>🧑‍🚀 ${escapeHtml(item.nama_siswa)}</strong> (${escapeHtml(item.kelas)})
-                  <span class="badge-mapel-tag">🪐 ${escapeHtml(item.mapel || '-')}</span>
-                  <div style="font-size:0.8rem;color:#94a3b8;margin-top:3px;">Waktu Selesai: ${waktu}</div>
-                </div>
-                <span style="background:#059669;color:#fff;padding:5px 12px;border-radius:8px;font-weight:700;">Skor: ${item.skor_otomatis}</span>
+        state.hasilList.forEach((h) => {
+          const div = document.createElement('div');
+          div.className = 'item-card';
+          div.innerHTML = `
+            <div class="item-header" style="margin-bottom:0;padding-bottom:0;border:none;">
+              <div>
+                <strong>🧑‍🚀 ${escapeHtml(h.nama_siswa)}</strong>
+                <span class="badge-tag badge-kelas">${escapeHtml(h.kelas)}</span>
+                <span class="badge-tag">🪐 ${escapeHtml(h.mapel)}</span>
+                <div class="subtitle-sm">${new Date(h.created_at).toLocaleString('id-ID')} • Pelanggaran Keluar: ${h.pelanggaran || 0}x</div>
               </div>
-            `;
-            container.appendChild(div);
-          });
-        } catch (err) {
-          container.innerHTML = `<p style="color:#f87171;">Gagal memuat rekap nilai: ${escapeHtml(err.message)}</p>`;
-        }
+              <span style="background:#059669;color:#fff;padding:6px 12px;border-radius:8px;font-weight:700;">Skor: ${h.skor_otomatis}</span>
+            </div>
+          `;
+          box.appendChild(div);
+        });
       }
 
+      document.getElementById('btn-refresh-nilai').addEventListener('click', renderRekapNilaiGuru);
+
       // ==================== STARTUP ====================
-      window.addEventListener('sb-ready', () => muatSoalDariDatabase());
+      loadState();
       initSpaceCanvas();
-      muatMapelUstadz();
-      renderPlanetSiswa();
-      muatSoalDariDatabase();
+      renderProfilAdminHeader();
+      renderBriefingSiswa();
     })();
   </script>
 </body>
