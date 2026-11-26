@@ -1021,7 +1021,7 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
         <!-- FORM 3: URAIAN (5 SOAL) -->
         <div id="guruFormEssay" class="glass-card" style="display:none">
           <h3>Boss Jurang Kosmik: Soal Uraian (<span id="guruEssayCounter">1</span> / 5)</h3>
-          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">5 musuh boss menghadang di jurang. Siswa dapat mengambil petunjuk/kunci jawaban di dinding tebing jurang untuk merumuskan jawaban.</p>
+          <p style="font-size:12px;color:#94a3b8;margin-bottom:14px">5 musuh boss menghadang di jurang. Guru menyediakan tombol-tombol amunisi jawaban di tebing jurang yang harus diambil siswa untuk menyerang boss.</p>
           <div class="form-field">
             <label>Teks Soal Uraian</label>
             <textarea id="essayInputText" class="form-control" style="min-height:70px" placeholder="Tuliskan pertanyaan uraian mendalam..."></textarea>
@@ -1032,17 +1032,45 @@ table.cosmic-table tr:hover td { background: rgba(99, 102, 241, 0.05); }
             <img id="essayImgPrev" class="preview-img" style="display:none">
           </div>
           <div class="form-field">
-            <label>Kunci Jawaban Uraian (Konsep/Kata Kunci)</label>
-            <textarea id="essayInputAnswer" class="form-control" style="min-height:50px" placeholder="Tuliskan kata kunci atau rumusan jawaban yang benar..."></textarea>
+            <label>Kunci Jawaban Konseptual / Rangkuman (Opsional)</label>
+            <textarea id="essayInputAnswer" class="form-control" style="min-height:45px" placeholder="Tuliskan penjelasan atau rumus lengkap jawaban benar..."></textarea>
           </div>
           <div class="form-field">
             <label>Gambar Jawaban (Opsional - untuk kunci jawaban berupa gambar)</label>
             <input type="file" id="essayAnswerFile" accept="image/*" class="form-control" onchange="handleImagePreview(this, 'essayAnswerImgPrev')">
             <img id="essayAnswerImgPrev" class="preview-img" style="display:none">
           </div>
-          <div class="form-field">
-            <label>Petunjuk / Kristal Jawaban di Tebing Jurang (Siswa dapat mengambil ini)</label>
-            <input type="text" id="essayInputCliffHint" class="form-control" placeholder="Contoh petunjuk tebing: 'Perhatikan zat cair, oksigen dan atmosfer bumi'">
+
+          <!-- OPSI AMUNISI TEBING JURANG (TOMBOL-TOMBOL AMUNISI JAWABAN) -->
+          <div class="form-field" style="background:rgba(251,191,36,0.08);border:1px dashed rgba(251,191,36,0.3);padding:14px;border-radius:12px;margin-top:12px">
+            <label style="color:#fbbf24;font-weight:700">💎 DAFTAR TOMBOL AMUNISI JAWABAN DI TEBING JURANG:</label>
+            <p style="font-size:11px;color:#cbd5e1;margin-bottom:10px">
+              Masukkan pilihan amunisi yang akan muncul di tebing jurang. <strong>Centang kotak (☑️)</strong> pada amunisi yang merupakan <strong>jawaban BENAR</strong> (bisa lebih dari satu).
+            </p>
+            <div id="essayOptionsContainer" style="display:flex;flex-direction:column;gap:8px">
+              <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" class="essay-opt-correct" checked style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+                <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Jawaban 1 (Misal: Oksigen & Atmosfer)">
+              </div>
+              <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" class="essay-opt-correct" checked style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+                <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Jawaban 2 (Misal: Gravitasi Bumi)">
+              </div>
+              <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+                <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pengecoh 3 (Misal: Gas Beracun)">
+              </div>
+              <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+                <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pengecoh 4 (Misal: Radiasi Kosmik)">
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" style="margin-top:10px" onclick="addEssayOption()">+ Tambah Tombol Amunisi</button>
+          </div>
+
+          <div class="form-field" style="margin-top:10px">
+            <label>Petunjuk Tambahan di Tebing (Opsional)</label>
+            <input type="text" id="essayInputCliffHint" class="form-control" placeholder="Contoh petunjuk: 'Ambil amunisi yang berkaitan dengan syarat kehidupan'">
           </div>
           <button class="btn btn-primary" onclick="guruSaveEssayQuestion()">💾 Simpan Soal Uraian</button>
         </div>
@@ -1288,7 +1316,8 @@ class SoundEngine {
     if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;
-    const bufferSize = this.ctx.sampleRate * 0.4;
+    const duration = 1.2;
+    const bufferSize = Math.floor(this.ctx.sampleRate * duration);
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
@@ -1298,11 +1327,54 @@ class SoundEngine {
     noise.buffer = buffer;
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(800, this.ctx.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.4);
+    filter.frequency.setValueAtTime(600, this.ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + duration);
     const gain = this.ctx.createGain();
-    gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
+    gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start();
+  }
+  // Suara ledakan dahsyat bergemuruh (3 detik) untuk eksekusi tembakan boss jurang
+  playMegaExplosion() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const duration = 3.0; // 3 detik menggelegar
+    const bufferSize = Math.floor(this.ctx.sampleRate * duration);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    // Filter bergemuruh rendah (sub-bass rumble)
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(900, this.ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(35, this.ctx.currentTime + duration);
+
+    // Osc sub-bass untuk dentuman awal
+    const subOsc = this.ctx.createOscillator();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(140, this.ctx.currentTime);
+    subOsc.frequency.exponentialRampToValueAtTime(25, this.ctx.currentTime + 1.2);
+    const subGain = this.ctx.createGain();
+    subGain.gain.setValueAtTime(0.7, this.ctx.currentTime);
+    subGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.2);
+    subOsc.connect(subGain);
+    subGain.connect(this.ctx.destination);
+    subOsc.start();
+    subOsc.stop(this.ctx.currentTime + 1.2);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.8, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
     noise.connect(filter);
     filter.connect(gain);
     gain.connect(this.ctx.destination);
@@ -2308,6 +2380,52 @@ function resetFillOptions() {
   }
 }
 
+// Dynamic Essay Option (Amunisi Uraian Tebing Jurang)
+let essayOptionCounter = 4;
+
+function addEssayOption() {
+  const container = document.getElementById('essayOptionsContainer');
+  const idx = essayOptionCounter++;
+  const row = document.createElement('div');
+  row.className = 'essay-option-row';
+  row.style.cssText = 'display:flex;align-items:center;gap:10px';
+  row.innerHTML = `
+    <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+    <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pilihan ${idx + 1}">
+    <button type="button" class="btn btn-danger btn-sm" style="padding:4px 10px;font-size:16px;line-height:1" onclick="removeEssayOption(this)" title="Hapus pilihan">×</button>
+  `;
+  container.appendChild(row);
+}
+
+function removeEssayOption(btn) {
+  const row = btn.closest('.essay-option-row');
+  if (row) row.remove();
+}
+
+function resetEssayOptions() {
+  const container = document.getElementById('essayOptionsContainer');
+  if (!container) return;
+  essayOptionCounter = 4;
+  container.innerHTML = `
+    <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" class="essay-opt-correct" checked style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+      <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Jawaban 1">
+    </div>
+    <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" class="essay-opt-correct" checked style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+      <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Jawaban 2">
+    </div>
+    <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+      <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pengecoh 3">
+    </div>
+    <div class="essay-option-row" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" class="essay-opt-correct" style="width:18px;height:18px;accent-color:#10b981;cursor:pointer" title="Centang jika ini jawaban benar">
+      <input type="text" class="form-control essay-opt-text" placeholder="Amunisi Pengecoh 4">
+    </div>
+  `;
+}
+
 async function guruSaveMcQuestion() {
   if (!guruAssignedMapel) { showToast('Anda belum ditugaskan ke mapel manapun!', 'error'); return; }
   const data = getLocalData();
@@ -2421,7 +2539,32 @@ async function guruSaveEssayQuestion() {
   const answer = document.getElementById('essayInputAnswer').value.trim();
   const cliff_hint = document.getElementById('essayInputCliffHint').value.trim();
 
-  if (!text || !answer) { showToast('Lengkapi teks soal dan kunci jawaban uraian!', 'error'); return; }
+  // Kumpulkan daftar opsi amunisi uraian tebing jurang
+  const optRows = document.querySelectorAll('#essayOptionsContainer .essay-option-row');
+  const essayOptions = [];
+  const correctOptions = [];
+
+  optRows.forEach(row => {
+    const txtInp = row.querySelector('.essay-opt-text');
+    const chk = row.querySelector('.essay-opt-correct');
+    const val = txtInp ? txtInp.value.trim() : '';
+    if (val) {
+      essayOptions.push(val);
+      if (chk && chk.checked) {
+        correctOptions.push(val);
+      }
+    }
+  });
+
+  if (!text) { showToast('Tuliskan teks pertanyaan soal uraian!', 'error'); return; }
+  if (essayOptions.length < 2) {
+    showToast('Buat minimal 2 amunisi jawaban untuk tebing jurang!', 'error');
+    return;
+  }
+  if (correctOptions.length === 0) {
+    showToast('Tandai minimal 1 amunisi sebagai jawaban BENAR (centang kotak)!', 'error');
+    return;
+  }
 
   const imgEl = document.getElementById('essayImgPrev');
   const image_url = (imgEl && imgEl.style.display !== 'none') ? imgEl.src : null;
@@ -2436,9 +2579,11 @@ async function guruSaveEssayQuestion() {
     type: 'essay',
     text,
     image_url,
-    answer,
+    answer: answer || correctOptions.join(', '),
     answer_image_url,
-    cliff_hint: cliff_hint || answer,
+    options: essayOptions, // Semua opsi tombol amunisi di tebing
+    correct_options: correctOptions, // Amunisi yang benar
+    cliff_hint: cliff_hint || 'Pilih amunisi yang tepat dari tebing jurang!',
     created_by: currentUser.username,
     created_at: new Date().toISOString()
   };
@@ -2458,10 +2603,11 @@ async function guruSaveEssayQuestion() {
   imgEl.style.display = 'none';
   if (document.getElementById('essayAnswerFile')) document.getElementById('essayAnswerFile').value = '';
   if (ansImgEl) ansImgEl.style.display = 'none';
+  resetEssayOptions();
 
   guruUpdateCounters();
   guruRenderMyQuestions();
-  showToast('Soal uraian tebing jurang tersimpan!', 'success');
+  showToast('Soal uraian tebing jurang & amunisi tersimpan!', 'success');
 }
 
 function guruRenderMyQuestions() {
@@ -2580,17 +2726,28 @@ function renderGalaxyPlanets() {
   const grid = document.getElementById('planetOrbitGrid');
   grid.innerHTML = '';
 
-  const studentUser = currentUser.username;
+  const studentUser = (currentUser.username || '').toLowerCase();
+  const studentKelas = String(currentUser.kelas || '');
   const permittedPlanets = [];
 
   data.mapel.forEach(m => {
-    const allowed = data.akses[m.id] || [];
-    if (allowed.includes(studentUser)) {
+    const rawAllowed = data.akses[m.id] || [];
+    const allowed = rawAllowed.map(x => String(x).toLowerCase());
+
+    // Diizinkan jika:
+    // 1. Username siswa secara eksplisit ada di data akses guru
+    // 2. ATAU jika kelas mapel sama dengan kelas siswa (fallback otomatis agar siswa baru langsung dapat mengakses planet kelasnya)
+    // 3. ATAU jika belum ada daftar akses yang di-setting sama sekali untuk mapel tersebut
+    const isExplicitlyAllowed = allowed.includes(studentUser);
+    const isClassMatch = studentKelas && String(m.kelas || '') === studentKelas;
+    const isDefaultOpen = (rawAllowed.length === 0);
+
+    if (isExplicitlyAllowed || isClassMatch || isDefaultOpen) {
       const qs = data.questions.filter(q => q.mapel_id === m.id);
       const mcC = qs.filter(q => q.type === 'mc').length;
       const fillC = qs.filter(q => q.type === 'fill').length;
       const essayC = qs.filter(q => q.type === 'essay').length;
-      // Complete is 15 MC, 10 Fill, 5 Essay
+      // Syarat siap ujian: 15 MC, 10 Fill, 5 Essay
       const isReady = (mcC >= 15 && fillC >= 10 && essayC >= 5);
       permittedPlanets.push({ ...m, isReady, mcC, fillC, essayC });
     }
@@ -2598,12 +2755,18 @@ function renderGalaxyPlanets() {
 
   if (permittedPlanets.length === 0) {
     grid.innerHTML = `
-      <div class="glass-card" style="max-width:500px">
-        <div style="font-size:42px;margin-bottom:10px">📡</div>
-        <h3 style="color:#fbbf24">Belum Ada Planet yang Diizinkan</h3>
-        <p style="color:#94a3b8;font-size:14px">
-          Akunmu belum didaftarkan untuk mengakses planet mata pelajaran apapun. Silakan hubungi Guru Pengampu untuk membuka akses planetmu!
+      <div class="glass-card" style="max-width:560px;margin:20px auto;padding:30px;text-align:center">
+        <div style="font-size:52px;margin-bottom:12px;animation:floatRocket 2.5s infinite alternate">📡</div>
+        <h3 style="color:#fbbf24;font-size:20px;margin-bottom:8px">Belum Ada Planet Terdaftar Untukmu</h3>
+        <p style="color:#94a3b8;font-size:14px;line-height:1.6;margin-bottom:15px">
+          Akun siswa <strong>${currentUser.nama}</strong> (${currentUser.username}) belum diberikan akses ke planet mata pelajaran ujian.
         </p>
+        <div style="background:rgba(0,0,0,0.3);padding:12px;border-radius:10px;border:1px dashed rgba(255,255,255,0.15);font-size:12px;color:#cbd5e1;text-align:left">
+          💡 <strong>Solusi untuk Guru / Kepala Sekolah:</strong><br>
+          1. Masuk sebagai <strong>Guru Pengampu</strong> atau <strong>Kepala Sekolah</strong>.<br>
+          2. Masuk ke menu <strong>🔑 Akses Siswa Planet</strong>.<br>
+          3. Centang nama siswa <strong>${currentUser.nama}</strong> lalu klik <strong>💾 Simpan Hak Akses Siswa</strong>.
+        </div>
       </div>
     `;
     return;
@@ -2620,7 +2783,7 @@ function renderGalaxyPlanets() {
       </div>
       <div class="planet-name">${p.nama}</div>
       <div class="planet-meta ${p.isReady ? 'ready' : 'incomplete'}">
-        ${p.isReady ? '🚀 Siap Ujian' : `⚠️ Soal (${p.mcC}/15, ${p.fillC}/10, ${p.essayC}/5)`}
+        ${p.isReady ? '🚀 Siap Ujian' : `⚠️ Belum Lengkap (${p.mcC}/15 PG, ${p.fillC}/10 Isian, ${p.essayC}/5 Uraian)`}
       </div>
     `;
 
@@ -2895,23 +3058,47 @@ function renderFlightScene() {
     return m.x < cw + 80;
   });
 
-  // Explosions
+  // Explosions (Didukung Shockwave Cahaya, Kilatan Flash, dan Partikel Dahsyat 3 Detik)
   gameState.explosions = gameState.explosions.filter(e => {
     e.frame++;
     const progress = e.frame / e.maxFrame;
-    const radius = e.maxRadius * progress;
-    const alpha = 1 - progress;
+    const alpha = Math.max(0, 1 - progress);
 
     ctx.save();
-    ctx.globalAlpha = alpha;
-    for (let i = 0; i < 12; i++) {
-      const angle = (i / 12) * Math.PI * 2 + e.frame * 0.15;
-      const d = radius * (0.6 + Math.random() * 0.4);
-      const px = e.x + Math.cos(angle) * d;
-      const py = e.y + Math.sin(angle) * d;
-      ctx.fillStyle = i % 2 === 0 ? '#ffea00' : '#ff4400';
+    // 1. Shockwave Cincin Gelombang Kejut yang Mengembang
+    const waveRadius = (e.maxRadius * 2.2) * progress;
+    ctx.strokeStyle = progress < 0.3 ? 'rgba(255, 255, 255, ' + (alpha * 0.9) + ')' :
+                      (e.isMega ? 'rgba(255, 68, 0, ' + (alpha * 0.8) + ')' : 'rgba(0, 240, 255, ' + (alpha * 0.7) + ')');
+    ctx.lineWidth = Math.max(1, 10 * (1 - progress));
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, waveRadius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 2. Kilatan Inti Bola Api (Core Fireball Glow)
+    const coreGrad = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.maxRadius * (0.3 + progress * 0.7));
+    coreGrad.addColorStop(0, 'rgba(255, 255, 255, ' + alpha + ')');
+    coreGrad.addColorStop(0.2, 'rgba(255, 234, 0, ' + (alpha * 0.9) + ')');
+    coreGrad.addColorStop(0.6, 'rgba(255, 68, 0, ' + (alpha * 0.6) + ')');
+    coreGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = coreGrad;
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.maxRadius * (0.3 + progress * 0.7), 0, Math.PI * 2);
+    ctx.fill();
+
+    // 3. Partikel Pecahan Logam & Plasma Panas
+    const particleCount = e.isMega ? 36 : 16;
+    for (let i = 0; i < particleCount; i++) {
+      const angle = (i / particleCount) * Math.PI * 2 + (i % 3 === 0 ? e.frame * 0.08 : -e.frame * 0.05);
+      const dist = (e.maxRadius * 1.5) * Math.pow(progress, 0.7) * (0.5 + ((i * 17) % 10) / 20);
+      const px = e.x + Math.cos(angle) * dist;
+      const py = e.y + Math.sin(angle) * dist;
+      const pSize = Math.max(1.5, (e.isMega ? 10 : 6) * (1 - progress));
+
+      ctx.fillStyle = i % 3 === 0 ? '#ffffff' : (i % 2 === 0 ? '#ffea00' : '#ff3300');
+      ctx.shadowColor = '#ff4400';
+      ctx.shadowBlur = 10;
       ctx.beginPath();
-      ctx.arc(px, py, 6 * (1 - progress), 0, Math.PI * 2);
+      ctx.arc(px, py, pSize, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.restore();
@@ -3345,88 +3532,183 @@ function submitFillAnswer(correctIdx) {
   }, 1600);
 }
 
+// Array amunisi yang saat ini dipilih siswa untuk soal uraian
+let currentEssaySelectedAmmo = [];
+
 function renderEssayQuestionCard(q) {
   const overlay = document.getElementById('flightDialog');
   const modal = document.getElementById('flightModalContent');
   const num = gameState.qIndex - 25 + 1;
+  currentEssaySelectedAmmo = [];
+
+  // Ambil daftar amunisi tebing dari q.options atau fallback
+  let ammoList = [];
+  if (q.options && Array.isArray(q.options) && q.options.length > 0) {
+    ammoList = q.options;
+  } else if (q.cliff_hint) {
+    ammoList = q.cliff_hint.split(/[,;]+/).map(s => s.trim()).filter(s => s.length > 0);
+  }
+  if (ammoList.length === 0) {
+    ammoList = ['Oksigen & Atmosfer', 'Gravitasi Bumi', 'Air & Hidrosfer', 'Radiasi Kosmik'];
+  }
 
   let html = `
     <div class="modal-phase-tag phase-essay">CANYON BOSS #${num} • URAIAN TEBING JURANG (8 POIN)</div>
     <div class="q-body-text">${q.text}</div>
     ${q.image_url ? `<img src="${q.image_url}" class="q-body-img">` : ''}
 
-    <div class="canyon-cliff-box">
-      <div style="font-size:12px;font-weight:700;color:#fbbf24">📜 ARTEFAK TEBING JURANG:</div>
-      <p style="font-size:12px;color:#cbd5e1;margin-top:4px">Klik petunjuk tebing di bawah untuk membantu merumuskan jawabanmu:</p>
-      <div class="cliff-scroll-list">
-        <div class="cliff-rune-pill" onclick="insertCliffHint('${escapeHtml(q.cliff_hint || q.answer)}')">
-          <span>💎 ${q.cliff_hint || q.answer}</span>
-          <span style="font-size:10px;color:#fbbf24">Ambil ke Jawaban ➜</span>
-        </div>
+    <div class="canyon-cliff-box" style="margin-top:14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.3);padding:14px;border-radius:12px">
+      <div style="font-size:12px;font-weight:700;color:#fbbf24;display:flex;align-items:center;gap:6px">
+        <span>📜 AMUNISI TEBING JURANG (KLIK UNTUK MENGAMBIL KE SLOT SENJATA):</span>
+      </div>
+      <p style="font-size:11px;color:#cbd5e1;margin:6px 0 10px 0">
+        Pilih amunisi yang tepat dari tebing jurang untuk merakit serangan dahsyat ke Boss Jurang:
+      </p>
+      <div class="cliff-scroll-list" id="essayAmmoButtonsGrid" style="display:flex;flex-wrap:wrap;gap:8px">
+  `;
+
+  ammoList.forEach((ammo, idx) => {
+    html += `
+      <button type="button" class="cliff-rune-pill ammo-btn-${idx}" onclick="toggleEssayAmmo(this, '${escapeHtml(ammo)}')" style="cursor:pointer;padding:8px 14px;border-radius:8px;border:1px solid #fbbf24;background:rgba(251,191,36,0.15);color:#fff;font-size:12px;display:flex;align-items:center;gap:6px;transition:all 0.2s">
+        <span>💎 ${ammo}</span>
+        <span class="ammo-action-tag" style="font-size:10px;color:#fbbf24;font-weight:700">+ Ambil</span>
+      </button>
+    `;
+  });
+
+  html += `
       </div>
     </div>
 
-    <textarea id="essayStudentInput" class="essay-textarea" placeholder="Tuliskan rumusan jawabanmu di sini..."></textarea>
-    <button class="btn-fire-action" onclick="submitEssayAnswer('${escapeHtml(q.answer)}')">⚔️ SERANG BOSS JURANG KOSMIK!</button>
+    <!-- SLOT SENJATA JAWABAN SISWA -->
+    <div style="margin-top:12px;text-align:left">
+      <label style="font-size:12px;color:#94a3b8;font-weight:600">🎯 Amunisi yang Terpasang di Peluncur Senjata:</label>
+      <div id="essayAmmoSelectedContainer" style="min-height:42px;padding:8px 12px;background:rgba(0,0,0,0.5);border:1px solid var(--space-border);border-radius:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px">
+        <span id="essayAmmoEmptyHint" style="font-size:11px;color:#64748b;font-style:italic">Klik tombol amunisi di atas untuk memuat ke slot senjata...</span>
+      </div>
+    </div>
+
+    <textarea id="essayStudentInput" class="essay-textarea" style="margin-top:10px;min-height:50px;display:none" placeholder="Catatan analisis tambahan (opsional)..."></textarea>
+    <button class="btn-fire-action" onclick="submitEssayAmmoAnswer()" style="margin-top:14px;background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 0 25px rgba(239,68,68,0.5)">
+      💥 EKSEKUSI TEMBAKAN DAHSYAT KE BOSS JURANG! ⚔️
+    </button>
   `;
 
   modal.innerHTML = html;
   overlay.classList.add('active');
 }
 
-function insertCliffHint(hint) {
-  const el = document.getElementById('essayStudentInput');
-  if (el) {
-    if (el.value.trim().length > 0) el.value += ' ' + hint;
-    else el.value = hint;
+function toggleEssayAmmo(btnEl, ammoText) {
+  sound.playLaser();
+  const idx = currentEssaySelectedAmmo.indexOf(ammoText);
+  const tag = btnEl.querySelector('.ammo-action-tag');
+
+  if (idx === -1) {
+    // Tambahkan amunisi
+    currentEssaySelectedAmmo.push(ammoText);
+    btnEl.style.background = 'rgba(16, 185, 129, 0.35)';
+    btnEl.style.borderColor = '#34d399';
+    if (tag) { tag.textContent = '✓ Terpasang'; tag.style.color = '#34d399'; }
+  } else {
+    // Lepas amunisi
+    currentEssaySelectedAmmo.splice(idx, 1);
+    btnEl.style.background = 'rgba(251, 191, 36, 0.15)';
+    btnEl.style.borderColor = '#fbbf24';
+    if (tag) { tag.textContent = '+ Ambil'; tag.style.color = '#fbbf24'; }
   }
+
+  // Update container amunisi yang terpasang
+  renderSelectedAmmoSlots();
 }
 
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-}
+function renderSelectedAmmoSlots() {
+  const container = document.getElementById('essayAmmoSelectedContainer');
+  if (!container) return;
 
-function submitEssayAnswer(keyAnswer) {
-  const inputEl = document.getElementById('essayStudentInput');
-  const studentAns = inputEl.value.trim().toLowerCase();
-
-  if (!studentAns) {
-    showToast('Tuliskan jawaban uraian terlebih dahulu!', 'error');
+  if (currentEssaySelectedAmmo.length === 0) {
+    container.innerHTML = '<span id="essayAmmoEmptyHint" style="font-size:11px;color:#64748b;font-style:italic">Klik tombol amunisi di atas untuk memuat ke slot senjata...</span>';
     return;
   }
 
-  // Evaluation: keyword matching ratio
-  const keys = keyAnswer.toLowerCase().split(/[,;.\s]+/).filter(w => w.length > 2);
-  let matches = 0;
-  keys.forEach(k => {
-    if (studentAns.includes(k)) matches++;
+  container.innerHTML = '';
+  currentEssaySelectedAmmo.forEach((ammo, i) => {
+    const pill = document.createElement('div');
+    pill.style.cssText = 'background:rgba(16,185,129,0.2);border:1px solid #10b981;color:#34d399;font-size:11px;padding:3px 10px;border-radius:12px;display:flex;align-items:center;gap:5px;font-weight:600';
+    pill.innerHTML = `<span>🚀 Amunisi #${i + 1}: ${ammo}</span>`;
+    container.appendChild(pill);
   });
-  const ratio = keys.length > 0 ? (matches / keys.length) : 0;
-  const isCorrect = (ratio >= 0.35 || studentAns.length > 20);
+}
+
+function submitEssayAmmoAnswer() {
+  const q = gameState.essayQuestions[gameState.qIndex - 25];
+  if (!q) return;
+
+  if (currentEssaySelectedAmmo.length === 0) {
+    showToast('Pilih dan pasang amunisi dari tebing jurang terlebih dahulu!', 'error');
+    return;
+  }
+
+  // Validasi kecocokan amunisi:
+  // Jika guru mendefinisikan correct_options:
+  let isCorrect = false;
+  if (q.correct_options && Array.isArray(q.correct_options) && q.correct_options.length > 0) {
+    // Cocokkan pilihan amunisi siswa dengan kunci guru
+    const correctCount = currentEssaySelectedAmmo.filter(a => q.correct_options.includes(a)).length;
+    const wrongCount = currentEssaySelectedAmmo.filter(a => !q.correct_options.includes(a)).length;
+    // Benar jika memilih mayoritas kunci benar dan minim salah
+    isCorrect = (correctCount >= 1 && wrongCount === 0) || (correctCount >= q.correct_options.length * 0.6);
+  } else {
+    // Fallback evaluasi teks kunci kata
+    const key = (q.answer || '').toLowerCase();
+    const joined = currentEssaySelectedAmmo.join(' ').toLowerCase();
+    isCorrect = key.split(/[,;\s]+/).some(w => w.length > 2 && joined.includes(w)) || currentEssaySelectedAmmo.length >= 2;
+  }
+
+  // LANGSUNG TUTUP MODAL SOAL AGAR USER BISA MELIHAT SENSASI GRAFIS LEDAKAN PENUH SELAMA 3 DETIK
+  document.getElementById('flightDialog').classList.remove('active');
+
+  const bossX = gameCanvas.width * 0.5;
+  const bossY = gameCanvas.height * 0.42;
 
   if (isCorrect) {
-    sound.playVictory();
-    triggerExplosion(gameCanvas.width * 0.5, gameCanvas.height * 0.45);
-    gameState.score += 8;
-    gameState.essayScore += 8;
-    gameState.warpSpeed = 7;
-    showToast('Hebat! Boss jurang berhasil dikalahkan (+8 Poin) ⚔️✨', 'success');
-    updateGameHUD();
+    // TEMBAKAN BERUNTUN KE BOSS JURANG
+    sound.playMissile();
+    triggerMissileLaunch();
+    setTimeout(() => { sound.playLaser(); triggerLaserBlast(); }, 200);
+
+    // EKSEKUSI LEDAKAN DAHSYAT 3 DETIK (180 FRAMES) DENGAN SUARA MENGGELEGAR
+    setTimeout(() => {
+      sound.playMegaExplosion();
+      triggerExplosion(bossX, bossY, true); // isMega = true (3 detik durasi penuh)
+      gameState.score += 8;
+      gameState.essayScore += 8;
+      gameState.warpSpeed = 7;
+      showToast('💥 LEDAKAN DAHSYAT! Boss jurang hancur lebur (+8 Poin) ⚔️✨', 'success');
+      updateGameHUD();
+    }, 450);
+
+    // Berikan jeda 3.2 detik penuh tanpa tertutup dialog soal agar sensasi grafis ledakan terasa maksimal
+    setTimeout(() => {
+      gameState.warpSpeed = 1.5;
+      gameState.qIndex++;
+      presentQuestion();
+    }, 3200);
+
   } else {
+    // Gagal: Pesawat menghindar ke tebing jurang
     sound.playEvasion();
     gameState.cockpitTargetRoll = -0.22;
     gameState.shakeAmount = 30;
-    showToast('Jawaban kurang tepat! Pesawat bermanuver ke dinding tebing (+0 Poin)', 'error');
-    setTimeout(() => { gameState.cockpitTargetRoll = 0; }, 700);
-  }
+    showToast('Amunisi tidak tepat! Pesawat bermanuver menghindari serangan balasan (+0 Poin)', 'error');
+    setTimeout(() => { gameState.cockpitTargetRoll = 0; }, 800);
 
-  setTimeout(() => {
-    document.getElementById('flightDialog').classList.remove('active');
-    gameState.warpSpeed = 1.5;
-    gameState.qIndex++;
-    setTimeout(() => presentQuestion(), 700);
-  }, 1700);
+    // Jeda manuver
+    setTimeout(() => {
+      gameState.warpSpeed = 1.5;
+      gameState.qIndex++;
+      presentQuestion();
+    }, 2000);
+  }
 }
 
 function triggerLaserBlast() {
@@ -3442,13 +3724,21 @@ function triggerMissileLaunch() {
   gameState.missiles.push({ x: cw * 0.5, y: ch * 0.75, vx: 18, vy: -8 });
 }
 
-function triggerExplosion(x, y) {
+function triggerExplosion(x, y, isMega = false) {
+  // isMega: true untuk ledakan dahsyat boss jurang (180 frame / 3 detik pada 60 FPS)
+  const maxFrame = isMega ? 180 : 35;
+  const maxRadius = isMega ? 180 : 75;
   gameState.explosions.push({
     x, y,
     frame: 0,
-    maxFrame: 28,
-    maxRadius: 70
+    maxFrame,
+    maxRadius,
+    isMega
   });
+  if (isMega) {
+    // Gempa kokpit dahsyat selama 3 detik
+    gameState.shakeAmount = 45;
+  }
 }
 
 /* ==============================================================================
@@ -3604,32 +3894,42 @@ function seedFullDemoQuestions() {
     });
   });
 
-  // 5 Uraian (Essay Boss Jurang)
+  // 5 Uraian (Essay Boss Jurang dengan Tombol-Tombol Amunisi Kristal Tebing)
   const essaySample = [
     {
-      text: 'Jelaskan mengapa planet Bumi merupakan satu-satunya planet di tata surya kita yang dapat dihuni oleh kehidupan makhluk hidup!',
-      answer: 'Memiliki air dalam bentuk cair, lapisan atmosfer kaya oksigen, dan jarak ideal dari matahari sehingga suhu stabil.',
-      hint: 'Air cair, oksigen atmosfer, dan suhu yang sesuai bagi kehidupan.'
+      text: 'Jelaskan faktor utama mengapa planet Bumi merupakan satu-satunya planet di tata surya kita yang dapat dihuni kehidupan!',
+      answer: 'Memiliki air cair, lapisan atmosfer kaya oksigen, dan jarak ideal dari matahari.',
+      hint: 'Pilih amunisi yang mendukung kehidupan di Bumi!',
+      options: ['Air dalam Bentuk Cair', 'Atmosfer Kaya Oksigen', 'Jarak Ideal dari Matahari', 'Suhu Ekstrem 500 Derajat', 'Gas Karbon Beracun'],
+      correct_options: ['Air dalam Bentuk Cair', 'Atmosfer Kaya Oksigen', 'Jarak Ideal dari Matahari']
     },
     {
-      text: 'Sebutkan 3 perbedaan mendasar antara bintang dan planet di luar angkasa!',
-      answer: 'Bintang memancarkan cahaya sendiri sedangkan planet memantulkan cahaya; bintang bersuhu sangat tinggi; planet mengorbit bintang.',
-      hint: 'Bintang memancarkan cahaya sendiri dan bersuhu sangat tinggi, planet mengorbit bintang.'
+      text: 'Sebutkan perbedaan mendasar antara bintang dan planet di ruang angkasa!',
+      answer: 'Bintang memancarkan cahaya sendiri dan bersuhu sangat tinggi, planet mengorbit bintang dan memantulkan cahaya.',
+      hint: 'Ambil amunisi yang mencirikan sifat bintang!',
+      options: ['Bintang Memancarkan Cahaya Sendiri', 'Bintang Bersuhu Sangat Tinggi (Reaksi Fusi)', 'Planet Memantulkan Cahaya Bintang', 'Planet Menghasilkan Panas Fusi Sendiri'],
+      correct_options: ['Bintang Memancarkan Cahaya Sendiri', 'Bintang Bersuhu Sangat Tinggi (Reaksi Fusi)', 'Planet Memantulkan Cahaya Bintang']
     },
     {
-      text: 'Jelaskan akibat yang ditimbulkan oleh peristiwa rotasi Bumi bagi kehidupan sehari-hari di permukaan bumi!',
-      answer: 'Terjadinya siang dan malam, gerak semu harian matahari, dan terjadinya perbedaan pembagian waktu di berbagai belahan bumi.',
-      hint: 'Terjadinya siang dan malam serta perbedaan waktu antarwilayah.'
+      text: 'Jelaskan akibat yang ditimbulkan oleh peristiwa rotasi Bumi bagi kehidupan sehari-hari!',
+      answer: 'Terjadinya siang dan malam serta perbedaan waktu antarwilayah.',
+      hint: 'Pilih akibat perputaran bumi pada porosnya!',
+      options: ['Terjadinya Pergantian Siang dan Malam', 'Perbedaan Waktu Antarwilayah', 'Gerak Semu Harian Matahari', 'Terjadinya Gerhana Matahari Tiap Pekan', 'Perubahan Musim Empat Benua'],
+      correct_options: ['Terjadinya Pergantian Siang dan Malam', 'Perbedaan Waktu Antarwilayah', 'Gerak Semu Harian Matahari']
     },
     {
       text: 'Mengapa gaya gravitasi sangat penting bagi kelangsungan tata surya dan kehidupan makhluk hidup di Bumi?',
-      answer: 'Gaya gravitasi menahan atmosfer agar tidak lepas ke luar angkasa, menjaga planet tetap pada garis orbitnya, dan membuat benda tidak melayang.',
-      hint: 'Menahan atmosfer bumi dan menjaga planet tetap mengorbit matahari.'
+      answer: 'Gaya gravitasi menahan atmosfer agar tidak lepas dan menjaga planet tetap pada orbitnya.',
+      hint: 'Pilih fungsi vital gaya tarik gravitasi!',
+      options: ['Menahan Lapisan Atmosfer Agar Tidak Lepas', 'Menjaga Planet Tetap Pada Jalur Orbit', 'Membuat Benda dan Air Tidak Melayang Bebas', 'Membuat Suhu Menjadi Beku Mutlak'],
+      correct_options: ['Menahan Lapisan Atmosfer Agar Tidak Lepas', 'Menjaga Planet Tetap Pada Jalur Orbit', 'Membuat Benda dan Air Tidak Melayang Bebas']
     },
     {
       text: 'Sebutkan tindakan nyata yang dapat dilakukan oleh siswa SD untuk menjaga kelestarian bumi dan lingkungan!',
-      answer: 'Menghemat air dan listrik, menanam pohon atau reboisasi, membuang sampah pada tempatnya, dan mendaur ulang barang bekas.',
-      hint: 'Menghemat energi, menanam pohon, dan membuang sampah pada tempatnya.'
+      answer: 'Menghemat air dan listrik, menanam pohon, dan membuang sampah pada tempatnya.',
+      hint: 'Pilih perilaku positif pelestarian lingkungan!',
+      options: ['Menghemat Penggunaan Air dan Listrik', 'Menanam Pohon dan Reboisasi Hijau', 'Memilah dan Membuang Sampah Pada Tempatnya', 'Menebang Hutan Secara Liar', 'Membuang Limbah Plastik ke Sungai'],
+      correct_options: ['Menghemat Penggunaan Air dan Listrik', 'Menanam Pohon dan Reboisasi Hijau', 'Memilah dan Membuang Sampah Pada Tempatnya']
     }
   ];
 
@@ -3642,6 +3942,8 @@ function seedFullDemoQuestions() {
       image_url: null,
       answer: e.answer,
       cliff_hint: e.hint,
+      options: e.options,
+      correct_options: e.correct_options,
       created_by: 'admin',
       created_at: new Date().toISOString()
     });
