@@ -449,6 +449,11 @@
 
     <!-- ==================== 2. PANEL USTADZ / GURU ==================== -->
     <main id="view-guru" class="hidden">
+      <div id="admin-impersonate-banner" class="lock-banner hidden" style="background:linear-gradient(90deg, rgba(37, 99, 235, 0.35), rgba(124, 58, 237, 0.35));border-color:#38bdf8;color:#e0f2fe;">
+        <span>🏫 <b>Mode Akses Cepat Admin:</b> Anda sedang membuka Bank Soal dengan role akses guru ini.</span>
+        <button type="button" id="btn-kembali-ke-admin" class="btn-warning-xs" style="padding:7px 12px;">⬅️ Kembali ke Panel Admin</button>
+      </div>
+
       <div class="profile-banner">
         <div>
           <span class="badge-tag">👨‍🏫 Akun Ustadz / Guru Aktif</span>
@@ -528,6 +533,7 @@
 
       <div class="sub-tabs">
         <button id="subtab-admin-guru" type="button" class="btn-subtab active">👨‍🏫 Profil Ustadz / Guru</button>
+        <button id="subtab-admin-soal" type="button" class="btn-subtab">📚 Monitoring Soal Guru (<span id="admin-total-soal-badge">0</span>)</button>
         <button id="subtab-admin-siswa" type="button" class="btn-subtab">🧑‍🎓 Profil Murid &amp; Kelas (1–6)</button>
         <button id="subtab-admin-mapel" type="button" class="btn-subtab">🪐 Daftar Mapel per Kelas</button>
         <button id="subtab-admin-db" type="button" class="btn-subtab">🗄️ Status &amp; Migrasi Database</button>
@@ -538,11 +544,25 @@
         <div class="flex-between" style="margin-bottom:12px;">
           <div>
             <h3>Daftar Profil Ustadz / Guru &amp; Kredensial Login</h3>
-            <p class="subtitle-sm">Admin dapat melihat profil guru, mengatur username &amp; password guru, serta mapel yang diampu.</p>
+            <p class="subtitle-sm">Admin dapat melihat profil guru, jumlah soal yang sudah dibuat per mapel, dan masuk langsung sebagai guru tersebut.</p>
           </div>
           <button id="btn-tambah-guru" type="button" class="btn-primary-rocket">+ Tambah Guru Baru</button>
         </div>
         <div id="daftar-guru-admin"></div>
+      </div>
+
+      <!-- MONITORING SOAL GURU & SHORTCUT AKSES ROLE GURU -->
+      <div id="panel-admin-soal" class="card-panel hidden">
+        <div class="flex-between" style="margin-bottom:12px;">
+          <div>
+            <h3>📚 Informasi Bank Soal per Guru &amp; Mata Pelajaran yang Diampu</h3>
+            <p class="subtitle-sm">Pantau progres pembuatan soal tiap ustadz/guru dan klik shortcut untuk langsung membuka &amp; mengelola soal dengan role akses guru tersebut.</p>
+          </div>
+          <select id="admin-filter-guru-soal" style="width:auto;">
+            <option value="ALL">Semua Ustadz / Guru</option>
+          </select>
+        </div>
+        <div id="daftar-monitoring-soal-admin"></div>
       </div>
 
       <!-- KELOLA SISWA & KELAS 1-6 -->
@@ -1653,10 +1673,23 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
           renderBriefingSiswa();
         } else if (sessionObj.role === 'guru') {
           state.activeGuruId = sessionObj.guruId;
-          document.getElementById('session-user-role').textContent = 'Role: Ustadz / Guru';
+          const isFromAdmin = Boolean(sessionObj.fromAdmin);
+          document.getElementById('admin-impersonate-banner').classList.toggle('hidden', !isFromAdmin);
+          document.getElementById('session-user-role').textContent = isFromAdmin
+            ? `Role: Ustadz / Guru (Akses Shortcut Admin)`
+            : 'Role: Ustadz / Guru';
           document.getElementById('view-guru').classList.remove('hidden');
           renderPanelGuru();
+          if (sessionObj.targetKelas) {
+            const fKelasEl = document.getElementById('filter-kelas-guru');
+            if ([...fKelasEl.options].some((o) => o.value === sessionObj.targetKelas)) {
+              fKelasEl.value = sessionObj.targetKelas;
+              perbaruiDropdownMapelDariKelasTerpilih(sessionObj.targetMapel || '');
+              renderDaftarSoalGuru();
+            }
+          }
         } else if (sessionObj.role === 'admin') {
+          document.getElementById('admin-impersonate-banner').classList.add('hidden');
           document.getElementById('session-user-role').textContent = 'Role: Admin / Kepala Sekolah (Tertinggi)';
           document.getElementById('view-admin').classList.remove('hidden');
           renderPanelAdmin();
@@ -2004,14 +2037,50 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         alert('✅ Profil, Username & Password Admin berhasil disimpan ke Database Supabase!');
       });
 
-      ['guru', 'siswa', 'mapel', 'db'].forEach((sub) => {
+      function bukaShortcutAksesGuru(guruId, targetKelas = '', targetMapel = '') {
+        const guru = state.teachers.find((t) => t.id === guruId);
+        if (!guru) return;
+        const adminSessionBackup = currentSession?.role === 'admin'
+          ? { ...currentSession }
+          : (currentSession?.adminBackup || {
+              role: 'admin',
+              id: 'admin_main',
+              nama: state.adminProfile.nama,
+              username: state.adminProfile.username,
+            });
+
+        masukKeSesiRole({
+          role: 'guru',
+          id: guru.id,
+          guruId: guru.id,
+          nama: guru.nama,
+          username: guru.username,
+          fromAdmin: true,
+          adminBackup: adminSessionBackup,
+          targetKelas,
+          targetMapel,
+        });
+      }
+
+      document.getElementById('btn-kembali-ke-admin').addEventListener('click', () => {
+        const backup = currentSession?.adminBackup || {
+          role: 'admin',
+          id: 'admin_main',
+          nama: state.adminProfile.nama,
+          username: state.adminProfile.username,
+        };
+        masukKeSesiRole(backup);
+      });
+
+      ['guru', 'soal', 'siswa', 'mapel', 'db'].forEach((sub) => {
         document.getElementById(`subtab-admin-${sub}`).addEventListener('click', () => {
-          ['guru', 'siswa', 'mapel', 'db'].forEach((x) => {
+          ['guru', 'soal', 'siswa', 'mapel', 'db'].forEach((x) => {
             document.getElementById(`subtab-admin-${x}`).classList.remove('active');
             document.getElementById(`panel-admin-${x}`).classList.add('hidden');
           });
           document.getElementById(`subtab-admin-${sub}`).classList.add('active');
           document.getElementById(`panel-admin-${sub}`).classList.remove('hidden');
+          if (sub === 'soal') renderMonitoringSoalAdmin();
           if (sub === 'siswa') renderDaftarSiswaAdmin();
           if (sub === 'mapel') renderDaftarMapelAdmin();
         });
@@ -2019,10 +2088,105 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
 
       function renderPanelAdmin() {
         renderProfilAdminHeader();
+        document.getElementById('admin-total-soal-badge').textContent = state.soalList.length;
         renderDaftarGuruAdmin();
+        renderMonitoringSoalAdmin();
         renderDaftarSiswaAdmin();
         renderDaftarMapelAdmin();
       }
+
+      function renderMonitoringSoalAdmin() {
+        const box = document.getElementById('daftar-monitoring-soal-admin');
+        const selGuru = document.getElementById('admin-filter-guru-soal');
+        if (!box || !selGuru) return;
+
+        const prevFilter = selGuru.value || 'ALL';
+        selGuru.innerHTML = '<option value="ALL">Semua Ustadz / Guru</option>';
+        state.teachers.forEach((g) => {
+          const opt = document.createElement('option');
+          opt.value = g.id;
+          opt.textContent = `👨‍🏫 ${g.nama}`;
+          selGuru.appendChild(opt);
+        });
+        if ([...selGuru.options].some((o) => o.value === prevFilter)) {
+          selGuru.value = prevFilter;
+        }
+
+        const guruTerfilter = state.teachers.filter((g) => selGuru.value === 'ALL' || g.id === selGuru.value);
+        box.innerHTML = '';
+
+        if (!guruTerfilter.length) {
+          box.innerHTML = '<p class="subtitle-sm">Belum ada data guru terdaftar.</p>';
+          return;
+        }
+
+        guruTerfilter.forEach((g) => {
+          const assignments = g.assignments || [];
+          const totalSoalGuru = assignments.reduce((acc, a) => {
+            return acc + state.soalList.filter((s) => s.kelas === a.kelas && s.mapel === a.mapel).length;
+          }, 0);
+
+          const card = document.createElement('div');
+          card.className = 'item-card';
+          card.innerHTML = `
+            <div class="item-header">
+              <div>
+                <strong>👨‍🏫 ${escapeHtml(g.nama)}</strong>
+                <span class="badge-tag badge-kelas">Total: ${totalSoalGuru} Soal Dibuat</span>
+                <span class="subtitle-sm" style="margin-left:6px;">(${assignments.length} Penugasan Kelas/Mapel)</span>
+              </div>
+              <button type="button" class="btn-primary-rocket btn-masuk-guru-all" style="padding:6px 12px;font-size:0.8rem;">
+                🚀 Buka Bank Soal (Role Guru)
+              </button>
+            </div>
+            <div class="rincian-mapel-guru" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px;margin-top:8px;"></div>
+          `;
+
+          card.querySelector('.btn-masuk-guru-all').addEventListener('click', () => {
+            bukaShortcutAksesGuru(g.id);
+          });
+
+          const grid = card.querySelector('.rincian-mapel-guru');
+          if (!assignments.length) {
+            grid.innerHTML = '<span class="subtitle-sm">Belum ada mata pelajaran yang ditugaskan kepada guru ini.</span>';
+          } else {
+            assignments.forEach((a) => {
+              const soalMapelIni = state.soalList.filter((s) => s.kelas === a.kelas && s.mapel === a.mapel);
+              const jmlPg = soalMapelIni.filter((s) => s.tipe === 'pg').length;
+              const jmlIsian = soalMapelIni.filter((s) => s.tipe === 'isian').length;
+              const jmlUraian = soalMapelIni.filter((s) => s.tipe === 'uraian').length;
+
+              const subBox = document.createElement('div');
+              subBox.style.cssText = 'background:#1e293b;border:1px solid #334155;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;';
+              subBox.innerHTML = `
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;">
+                    <strong style="font-size:0.88rem;color:#f8fafc;">🪐 ${escapeHtml(a.mapel)}</strong>
+                    <span class="badge-tag badge-kelas" style="margin:0;">📘 ${escapeHtml(a.kelas)}</span>
+                  </div>
+                  <div style="margin-top:6px;font-size:0.8rem;color:${soalMapelIni.length > 0 ? '#34d399' : '#fbbf24'};font-weight:700;">
+                    ${soalMapelIni.length > 0 ? `✅ ${soalMapelIni.length} Soal Tersedia` : '⚠️ Belum Ada Soal (0)'}
+                  </div>
+                  <div class="subtitle-sm" style="margin-top:2px;">
+                    PG: ${jmlPg} • Isian: ${jmlIsian} • Uraian: ${jmlUraian}
+                  </div>
+                </div>
+                <button type="button" class="btn-primary-xs btn-shortcut-mapel" style="width:100%;padding:7px 10px;">
+                  🔑 Kelola Soal ${escapeHtml(a.mapel)} (${escapeHtml(a.kelas)})
+                </button>
+              `;
+              subBox.querySelector('.btn-shortcut-mapel').addEventListener('click', () => {
+                bukaShortcutAksesGuru(g.id, a.kelas, a.mapel);
+              });
+              grid.appendChild(subBox);
+            });
+          }
+
+          box.appendChild(card);
+        });
+      }
+
+      document.getElementById('admin-filter-guru-soal').addEventListener('change', renderMonitoringSoalAdmin);
 
       function renderDaftarMapelAdmin() {
         const container = document.getElementById('daftar-mapel-per-kelas-admin');
@@ -2075,25 +2239,48 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         state.teachers.forEach((g) => {
           const div = document.createElement('div');
           div.className = 'item-card';
-          const tags = (g.assignments || [])
-            .map((a) => `<span class="badge-tag">${escapeHtml(a.mapel)} (${escapeHtml(a.kelas)})</span>`)
-            .join('');
+          const assignments = g.assignments || [];
+          const totalSoalGuru = assignments.reduce((acc, a) => {
+            return acc + state.soalList.filter((s) => s.kelas === a.kelas && s.mapel === a.mapel).length;
+          }, 0);
+
           div.innerHTML = `
             <div class="item-header">
               <div>
                 <strong>👨‍🏫 ${escapeHtml(g.nama)}</strong>
                 <span class="badge-tag badge-kelas">User: ${escapeHtml(g.username || '-')}</span>
                 <span class="badge-tag badge-warn">Pass: ${escapeHtml(g.pin || '1234')}</span>
+                <span class="badge-tag" style="background:rgba(16,185,129,0.22);color:#34d399;border-color:#10b981;">📚 ${totalSoalGuru} Soal Dibuat</span>
                 <span class="subtitle-sm" style="margin-left:6px;">NIP: ${escapeHtml(g.nip || '-')}</span>
               </div>
               <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button type="button" class="btn-success btn-shortcut-guru-role" style="padding:5px 11px;font-size:0.8rem;">🚀 Akses Soal (Role Guru)</button>
                 <button type="button" class="btn-primary-xs btn-kred-guru">🔑 Edit User/Pass</button>
                 <button type="button" class="btn-warning btn-edit-guru" style="padding:5px 11px;font-size:0.8rem;">✏️ Edit Profil &amp; Mapel</button>
                 ${state.teachers.length > 1 ? '<button type="button" class="btn-danger-xs btn-del-guru">🗑️ Hapus</button>' : ''}
               </div>
             </div>
-            <div>${tags || '<span class="subtitle-sm">Belum ada mapel dipilih</span>'}</div>
+            <div class="guru-mapel-shortcut-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
           `;
+
+          const shortcutContainer = div.querySelector('.guru-mapel-shortcut-list');
+          if (!assignments.length) {
+            shortcutContainer.innerHTML = '<span class="subtitle-sm">Belum ada mapel dipilih</span>';
+          } else {
+            assignments.forEach((a) => {
+              const jmlSoal = state.soalList.filter((s) => s.kelas === a.kelas && s.mapel === a.mapel).length;
+              const pillBtn = document.createElement('button');
+              pillBtn.type = 'button';
+              pillBtn.className = 'badge-tag';
+              pillBtn.style.cssText = 'cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:5px 10px;';
+              pillBtn.title = `Klik untuk langsung membuka & mengedit soal ${a.mapel} (${a.kelas}) sebagai ${g.nama}`;
+              pillBtn.innerHTML = `🪐 ${escapeHtml(a.mapel)} (${escapeHtml(a.kelas)}) • <b style="color:${jmlSoal > 0 ? '#34d399' : '#fcd347'};">${jmlSoal} Soal</b> ↗`;
+              pillBtn.addEventListener('click', () => bukaShortcutAksesGuru(g.id, a.kelas, a.mapel));
+              shortcutContainer.appendChild(pillBtn);
+            });
+          }
+
+          div.querySelector('.btn-shortcut-guru-role').addEventListener('click', () => bukaShortcutAksesGuru(g.id));
           div.querySelector('.btn-kred-guru').addEventListener('click', () => bukaModalEditKredensial('guru', g.id));
           div.querySelector('.btn-edit-guru').addEventListener('click', () => bukaModalGuru(g));
           const delBtn = div.querySelector('.btn-del-guru');
