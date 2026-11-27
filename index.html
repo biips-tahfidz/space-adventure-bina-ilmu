@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Space Adventure CBT & Manajemen Sekolah - Bina Ilmu</title>
+  <title>Space Adventure CBT & Manajemen Sekolah - SD Bina Ilmu Blora</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -22,14 +22,14 @@
     #space-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
     .container {
       position: relative; z-index: 2; max-width: 1060px; margin: 0 auto;
-      background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px);
+      background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(10px);
       border: 1px solid rgba(99, 102, 241, 0.35); padding: 22px 26px;
       border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
       transition: opacity 0.25s ease;
     }
     body.exploding .container { opacity: 0.08; pointer-events: none; }
 
-    /* OVERLAY PERINGATAN KUNCI LAYAR UJIAN */
+    /* OVERLAY KUNCI LAYAR UJIAN */
     .lock-overlay-alert {
       position: fixed; inset: 0; z-index: 10000;
       background: rgba(127, 29, 29, 0.96); backdrop-filter: blur(8px);
@@ -41,19 +41,15 @@
       padding: 28px; max-width: 480px; box-shadow: 0 25px 60px rgba(0,0,0,0.8);
     }
 
-    /* STAGE LEDAKAN 3 DETIK PENUH TANPA TERTUTUP SOAL */
+    /* STAGE LEDAKAN 3 DETIK */
     .explosion-stage {
       position: fixed; inset: 0; z-index: 9999;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       pointer-events: none;
       animation: screenShake 0.45s ease-in-out 4;
     }
-    .explosion-stage.success-blast {
-      background: radial-gradient(circle, rgba(251, 146, 60, 0.32) 0%, rgba(2, 6, 23, 0.82) 75%);
-    }
-    .explosion-stage.damage-blast {
-      background: radial-gradient(circle, rgba(220, 38, 38, 0.45) 0%, rgba(15, 2, 2, 0.88) 75%);
-    }
+    .explosion-stage.success-blast { background: radial-gradient(circle, rgba(251, 146, 60, 0.32) 0%, rgba(2, 6, 23, 0.82) 75%); }
+    .explosion-stage.damage-blast { background: radial-gradient(circle, rgba(220, 38, 38, 0.45) 0%, rgba(15, 2, 2, 0.88) 75%); }
     .explosion-core { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .fireball {
       width: 200px; height: 200px; border-radius: 50%;
@@ -80,29 +76,10 @@
       background: rgba(15, 23, 42, 0.85); padding: 8px 18px; border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.25); text-align: center; max-width: 90vw;
     }
-    @keyframes fireballPulse {
-      0% { transform: scale(0.1); opacity: 1; }
-      20% { transform: scale(1.5); opacity: 1; }
-      75% { transform: scale(1.2); opacity: 0.95; }
-      100% { transform: scale(1.85); opacity: 0; }
-    }
-    @keyframes shockwaveExpand {
-      0% { transform: scale(0.2); opacity: 1; }
-      100% { transform: scale(4.4); opacity: 0; }
-    }
-    @keyframes captionZoom {
-      0% { transform: scale(0.5); opacity: 0; }
-      15% { transform: scale(1.1); opacity: 1; }
-      85% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(0.95); opacity: 0; }
-    }
-    @keyframes screenShake {
-      0%, 100% { transform: translate(0, 0); }
-      20% { transform: translate(-12px, 7px); }
-      40% { transform: translate(12px, -7px); }
-      60% { transform: translate(-9px, -5px); }
-      80% { transform: translate(9px, 5px); }
-    }
+    @keyframes fireballPulse { 0% { transform: scale(0.1); opacity: 1; } 20% { transform: scale(1.5); opacity: 1; } 75% { transform: scale(1.2); opacity: 0.95; } 100% { transform: scale(1.85); opacity: 0; } }
+    @keyframes shockwaveExpand { 0% { transform: scale(0.2); opacity: 1; } 100% { transform: scale(4.4); opacity: 0; } }
+    @keyframes captionZoom { 0% { transform: scale(0.5); opacity: 0; } 15% { transform: scale(1.1); opacity: 1; } 85% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.95); opacity: 0; } }
+    @keyframes screenShake { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-12px, 7px); } 40% { transform: translate(12px, -7px); } 60% { transform: translate(-9px, -5px); } 80% { transform: translate(9px, 5px); } }
 
     /* HEADER & STATUS DB */
     .app-header {
@@ -124,24 +101,15 @@
     h1, h2, h3, h4 { font-family: 'Fredoka', sans-serif; color: #ffffff; }
     h1 { font-size: 1.6rem; }
 
-    /* LOGIN PORTAL 3 ROLE */
-    .login-portal-wrapper { max-width: 780px; margin: 10px auto; }
-    .role-selector-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 14px; margin: 16px 0 20px;
+    /* LOGIN PORTAL OTOMATIS */
+    .login-portal-wrapper { max-width: 520px; margin: 18px auto; }
+    .role-badge-info {
+      display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 14px 0 18px;
     }
-    .role-card-btn {
-      background: rgba(15, 23, 42, 0.92); border: 2px solid #334155; border-radius: 16px;
-      padding: 18px 14px; text-align: center; cursor: pointer; transition: all 0.2s ease; color: #f8fafc;
+    .role-chip-info {
+      background: rgba(15, 23, 42, 0.9); border: 1px solid #334155;
+      padding: 6px 12px; border-radius: 999px; font-size: 0.78rem; color: #cbd5e1;
     }
-    .role-card-btn:hover { border-color: #38bdf8; transform: translateY(-3px); }
-    .role-card-btn.selected {
-      border-color: #facc15; background: linear-gradient(145deg, rgba(59, 130, 246, 0.22), rgba(139, 92, 246, 0.22));
-      box-shadow: 0 0 24px rgba(250, 204, 21, 0.25);
-    }
-    .role-icon-big { font-size: 2.3rem; display: block; margin-bottom: 8px; }
-    .role-title { font-family: 'Fredoka', sans-serif; font-size: 1.08rem; color: #fff; }
-    .role-desc { font-size: 0.78rem; color: #94a3b8; margin-top: 4px; }
 
     button {
       cursor: pointer; border: none; border-radius: 10px; padding: 9px 15px;
@@ -170,7 +138,7 @@
 
     label { display: block; font-weight: 600; margin-top: 10px; margin-bottom: 5px; font-size: 0.85rem; color: #cbd5e1; }
     select, textarea, input[type="text"], input[type="number"], input[type="password"] {
-      width: 100%; padding: 9px 12px; background: #0f172a; color: #f8fafc;
+      width: 100%; padding: 10px 12px; background: #0f172a; color: #f8fafc;
       border: 1px solid #334155; border-radius: 10px; font-size: 0.9rem; outline: none;
     }
     select:focus, textarea:focus, input:focus { border-color: #38bdf8; }
@@ -185,6 +153,7 @@
     }
     .badge-kelas { background: rgba(16, 185, 129, 0.2); color: #34d399; }
     .badge-warn { background: rgba(245, 158, 11, 0.22); color: #fbbf24; }
+    .badge-cred { background: rgba(56, 189, 248, 0.16); color: #7dd3fc; font-family: monospace; }
 
     /* PLANET GRID SISWA */
     .planet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 14px; margin: 10px 0 18px; }
@@ -202,86 +171,42 @@
     .planet-name { font-family: 'Fredoka', sans-serif; font-size: 0.96rem; color: #fff; }
     .planet-sub { font-size: 0.76rem; color: #94a3b8; margin-top: 3px; }
 
-    /* CHECKBOX MATRIX MAPEL LINTAS KELAS */
-    .kelas-matrix-group {
-      background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px;
-    }
-    .kelas-matrix-header {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-      gap: 8px; margin-bottom: 10px; padding-bottom: 7px; border-bottom: 1px dashed #334155;
-    }
+    /* MATRIX MAPEL */
+    .kelas-matrix-group { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
+    .kelas-matrix-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; padding-bottom: 7px; border-bottom: 1px dashed #334155; }
     .kelas-matrix-title { font-weight: 700; color: #38bdf8; font-size: 0.92rem; }
     .checkbox-mapel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
-    .chk-mapel-item {
-      display: flex; align-items: center; justify-content: space-between; gap: 6px;
-      background: #1e293b; border: 1px solid #334155;
-      padding: 6px 9px; border-radius: 8px; margin-top: 0; font-size: 0.81rem;
-    }
+    .chk-mapel-item { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: #1e293b; border: 1px solid #334155; padding: 6px 9px; border-radius: 8px; margin-top: 0; font-size: 0.81rem; }
     .chk-mapel-item:has(input:checked) { border-color: #10b981; background: rgba(16, 185, 129, 0.18); color: #fff; }
     .chk-mapel-left { display: flex; align-items: center; gap: 7px; cursor: pointer; flex: 1; margin-top: 0; }
     .mapel-actions-mini { display: flex; gap: 4px; flex-shrink: 0; }
-    .btn-icon-mini {
-      background: rgba(15, 23, 42, 0.75); color: #cbd5e1; border: 1px solid #475569;
-      padding: 2px 6px; border-radius: 6px; font-size: 0.72rem; line-height: 1.2;
-    }
+    .btn-icon-mini { background: rgba(15, 23, 42, 0.75); color: #cbd5e1; border: 1px solid #475569; padding: 2px 6px; border-radius: 6px; font-size: 0.72rem; line-height: 1.2; }
     .btn-icon-mini:hover { border-color: #38bdf8; color: #fff; }
     .btn-icon-mini.del:hover { border-color: #ef4444; background: #ef4444; color: #fff; }
 
-    .item-card {
-      background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(99, 102, 241, 0.32);
-      border-radius: 14px; padding: 15px 18px; margin-bottom: 12px;
-    }
-    .item-header {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-      gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed rgba(148, 163, 184, 0.25);
-    }
+    .item-card { background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(99, 102, 241, 0.32); border-radius: 14px; padding: 15px 18px; margin-bottom: 12px; }
+    .item-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed rgba(148, 163, 184, 0.25); }
     .soal-img-display { max-width: 100%; max-height: 230px; border-radius: 10px; margin: 10px 0; border: 1px solid #334155; display: block; }
     .opsi-img-display { max-width: 155px; max-height: 105px; border-radius: 8px; margin-top: 6px; display: block; }
 
-    /* LOCK SCREEN BAR & ARENA SISWA */
-    .lock-banner {
-      background: linear-gradient(90deg, rgba(220, 38, 38, 0.3), rgba(245, 158, 11, 0.25));
-      border: 1px solid #ef4444; color: #fecaca; padding: 10px 14px; border-radius: 10px;
-      font-size: 0.82rem; font-weight: 600; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
-    }
-    .ujian-topbar {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-      gap: 10px; background: rgba(15, 23, 42, 0.92); padding: 12px 15px; border-radius: 12px;
-      margin-bottom: 14px; border: 1px solid rgba(56, 189, 248, 0.35);
-    }
+    /* ARENA UJIAN SISWA */
+    .lock-banner { background: linear-gradient(90deg, rgba(220, 38, 38, 0.3), rgba(245, 158, 11, 0.25)); border: 1px solid #ef4444; color: #fecaca; padding: 10px 14px; border-radius: 10px; font-size: 0.82rem; font-weight: 600; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .ujian-topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: rgba(15, 23, 42, 0.92); padding: 12px 15px; border-radius: 12px; margin-bottom: 14px; border: 1px solid rgba(56, 189, 248, 0.35); }
     .opsi-ammo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 14px; }
-    .btn-ammo-pg {
-      display: flex; flex-direction: column; align-items: flex-start; text-align: left;
-      background: rgba(30, 41, 59, 0.95); border: 2px solid #334155; color: #f8fafc;
-      padding: 13px; border-radius: 12px; font-weight: 500;
-    }
+    .btn-ammo-pg { display: flex; flex-direction: column; align-items: flex-start; text-align: left; background: rgba(30, 41, 59, 0.95); border: 2px solid #334155; color: #f8fafc; padding: 13px; border-radius: 12px; font-weight: 500; }
     .btn-ammo-pg:hover:not(:disabled) { border-color: #38bdf8; }
     .btn-ammo-pg.selected-correct { border-color: #10b981; background: rgba(16, 185, 129, 0.22); }
     .btn-ammo-pg.selected-wrong { border-color: #ef4444; background: rgba(239, 68, 68, 0.22); }
 
-    .isian-dropdown-box {
-      background: #0f172a; border: 2px solid #38bdf8; border-radius: 12px; padding: 14px; margin-top: 12px;
-    }
+    .isian-dropdown-box { background: #0f172a; border: 2px solid #38bdf8; border-radius: 12px; padding: 14px; margin-top: 12px; }
     .isian-preview-gallery { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-    .isian-opt-thumb {
-      background: #1e293b; border: 1px solid #475569; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; text-align: center;
-    }
+    .isian-opt-thumb { background: #1e293b; border: 1px solid #475569; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; text-align: center; }
 
-    .uraian-target-box {
-      background: #020617; border: 2px dashed #38bdf8; border-radius: 12px; padding: 13px;
-      min-height: 72px; margin: 10px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-    }
+    .uraian-target-box { background: #020617; border: 2px dashed #38bdf8; border-radius: 12px; padding: 13px; min-height: 72px; margin: 10px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .uraian-ammo-pool { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 10px; }
-    .btn-ammo-chip {
-      background: linear-gradient(135deg, #1e293b, #334155); border: 1px solid #6366f1;
-      color: #f8fafc; padding: 8px 13px; border-radius: 10px; font-size: 0.86rem;
-      display: inline-flex; align-items: center; gap: 8px;
-    }
+    .btn-ammo-chip { background: linear-gradient(135deg, #1e293b, #334155); border: 1px solid #6366f1; color: #f8fafc; padding: 8px 13px; border-radius: 10px; font-size: 0.86rem; display: inline-flex; align-items: center; gap: 8px; }
     .btn-ammo-chip.used { opacity: 0.35; border-style: dashed; }
-    .chip-selected-item {
-      background: linear-gradient(135deg, #059669, #10b981); color: #fff; padding: 7px 12px;
-      border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
-    }
+    .chip-selected-item { background: linear-gradient(135deg, #059669, #10b981); color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
 
     .nav-soal-bawah { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; gap: 10px; flex-wrap: wrap; }
     .nomor-dots { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
@@ -291,14 +216,8 @@
     .dot-num.active { border: 2px solid #facc15; color: #fff; }
 
     /* MODAL */
-    .modal {
-      position: fixed; inset: 0; background: rgba(2, 6, 23, 0.88); backdrop-filter: blur(6px);
-      display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 12px;
-    }
-    .modal-content {
-      background: #1e293b; border: 1px solid rgba(99, 102, 241, 0.45); width: 100%; max-width: 780px;
-      max-height: 92vh; overflow-y: auto; padding: 22px; border-radius: 18px;
-    }
+    .modal { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.88); backdrop-filter: blur(6px); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 12px; }
+    .modal-content { background: #1e293b; border: 1px solid rgba(99, 102, 241, 0.45); width: 100%; max-width: 780px; max-height: 92vh; overflow-y: auto; padding: 22px; border-radius: 18px; }
     .modal-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #334155; }
     .btn-close-icon { background: transparent; color: #94a3b8; font-size: 1.2rem; padding: 4px 10px; }
     .section-box { background: rgba(15, 23, 42, 0.7); border: 1px solid #334155; border-radius: 12px; padding: 13px; margin-top: 12px; }
@@ -313,25 +232,15 @@
     .opsi-badge { background: #6366f1; color: #fff; font-weight: 700; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .aksi-form-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 18px; padding-top: 12px; border-top: 1px solid #334155; }
     .skor-box { background: rgba(16, 185, 129, 0.16); border: 1px solid #10b981; color: #34d399; font-size: 1.2rem; font-weight: 700; padding: 15px; border-radius: 12px; margin-bottom: 14px; text-align: center; }
-    .profile-banner {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
-      border: 1px solid rgba(99, 102, 241, 0.45); border-radius: 14px; padding: 14px 18px; margin-bottom: 16px;
-    }
-    .mapel-pill-card {
-      display: inline-flex; align-items: center; gap: 8px; background: #1e293b;
-      border: 1px solid #475569; padding: 7px 11px; border-radius: 10px; margin: 4px 6px 4px 0; font-size: 0.85rem;
-    }
-    pre.sql-box {
-      background: #020617; border: 1px solid #334155; color: #38bdf8; padding: 10px;
-      border-radius: 8px; font-size: 0.76rem; overflow-x: auto; margin-top: 8px; user-select: all;
-    }
+    .profile-banner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2)); border: 1px solid rgba(99, 102, 241, 0.45); border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; }
+    .mapel-pill-card { display: inline-flex; align-items: center; gap: 8px; background: #1e293b; border: 1px solid #475569; padding: 7px 11px; border-radius: 10px; margin: 4px 6px 4px 0; font-size: 0.85rem; }
+    pre.sql-box { background: #020617; border: 1px solid #334155; color: #38bdf8; padding: 10px; border-radius: 8px; font-size: 0.76rem; overflow-x: auto; margin-top: 8px; user-select: all; }
   </style>
 </head>
 <body>
   <canvas id="space-canvas"></canvas>
 
-  <!-- OVERLAY PERINGATAN SAAT SISWA MENCOBA KELUAR DARI SOAL -->
+  <!-- OVERLAY KUNCI LAYAR UJIAN -->
   <div id="lock-overlay-alert" class="lock-overlay-alert hidden">
     <div class="lock-overlay-card">
       <div style="font-size:3rem;margin-bottom:8px;">🚨🔒</div>
@@ -345,7 +254,7 @@
     </div>
   </div>
 
-  <!-- EFEK LEDAKAN PENUH 3 DETIK TANPA TERTUTUP SOAL -->
+  <!-- EFEK LEDAKAN 3 DETIK -->
   <div id="explosion-stage" class="explosion-stage hidden" aria-hidden="true">
     <div class="explosion-core">
       <div class="shockwave"></div>
@@ -367,94 +276,53 @@
         <h1>Arena Ujian &amp; Manajemen Sekolah</h1>
       </div>
 
-      <!-- INFO SESI LOGIN AKTIF & TOMBOL GANTI ROLE / LOGOUT -->
+      <!-- INFO SESI LOGIN AKTIF -->
       <div id="session-bar" class="hidden" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <div style="text-align:right;">
           <div id="session-user-name" style="font-weight:700;font-size:0.9rem;color:#fff;">-</div>
           <div id="session-user-role" style="font-size:0.75rem;color:#38bdf8;">Role: -</div>
         </div>
-        <button id="btn-logout-role" type="button" class="btn-secondary">🚪 Ganti Role / Keluar</button>
+        <button id="btn-edit-akun-sendiri" type="button" class="btn-warning" style="padding:7px 11px;font-size:0.8rem;">🔑 Edit Akun</button>
+        <button id="btn-logout-role" type="button" class="btn-secondary">🚪 Keluar</button>
       </div>
     </header>
 
-    <!-- ==================== 0. GERBANG LOGIN BERBASIS 3 ROLE ==================== -->
+    <!-- ==================== 0. PORTAL LOGIN OTOMATIS BERBASIS USERNAME & PASSWORD ==================== -->
     <section id="view-login" class="login-portal-wrapper">
       <div class="card-panel">
         <div style="text-align:center;">
           <h2>🔐 Portal Masuk Sistem Sekolah &amp; CBT</h2>
-          <p class="subtitle">Silakan pilih peran (Role) Anda untuk masuk ke ruang kerja yang sesuai.</p>
+          <p class="subtitle">Masukkan <b>Username</b> dan <b>Password</b> Anda. Sistem otomatis mendeteksi peran (Admin, Guru, atau Murid) sesuai akun terdaftar.</p>
         </div>
 
-        <div class="role-selector-grid">
-          <div class="role-card-btn selected" data-role="murid">
-            <span class="role-icon-big">🧑‍🚀</span>
-            <div class="role-title">Murid / Siswa</div>
-            <div class="role-desc">Masuk ke Arena Misi Planet &amp; Ujian Terkunci</div>
-          </div>
-          <div class="role-card-btn" data-role="guru">
-            <span class="role-icon-big">👨‍🏫</span>
-            <div class="role-title">Ustadz / Guru</div>
-            <div class="role-desc">Kelola Bank Soal, Mapel Diampu &amp; Rekap Nilai</div>
-          </div>
-          <div class="role-card-btn" data-role="admin">
-            <span class="role-icon-big">🏫</span>
-            <div class="role-title">Admin / Kepala Sekolah</div>
-            <div class="role-desc">Kelola Profil Sekolah, Guru, Siswa &amp; Database</div>
-          </div>
+        <div class="role-badge-info">
+          <span class="role-chip-info">🏫 Admin / Kepsek</span>
+          <span class="role-chip-info">👨‍🏫 Ustadz / Guru</span>
+          <span class="role-chip-info">🧑‍🚀 Murid / Siswa</span>
         </div>
 
-        <!-- FORM LOGIN MURID -->
-        <form id="form-login-murid">
-          <div class="grid-2">
-            <div>
-              <label for="login-murid-kelas">Pilih Jenjang Kelas</label>
-              <select id="login-murid-kelas" required>
-                <option value="Kelas 1">Kelas 1</option>
-                <option value="Kelas 2">Kelas 2</option>
-                <option value="Kelas 3">Kelas 3</option>
-                <option value="Kelas 4">Kelas 4</option>
-                <option value="Kelas 5">Kelas 5</option>
-                <option value="Kelas 6">Kelas 6</option>
-              </select>
-            </div>
-            <div>
-              <label for="login-murid-nama">Pilih Nama Murid Terdaftar</label>
-              <select id="login-murid-nama"></select>
-              <input type="text" id="login-murid-manual" class="hidden" placeholder="Ketik nama lengkap murid..." style="margin-top:6px;" />
-            </div>
-          </div>
-          <button type="submit" class="btn-primary-rocket" style="width:100%;margin-top:16px;padding:12px;">
-            🚀 Masuk sebagai Murid
-          </button>
-        </form>
-
-        <!-- FORM LOGIN GURU -->
-        <form id="form-login-guru" class="hidden">
-          <div class="grid-2">
-            <div>
-              <label for="login-guru-akun">Pilih Nama Ustadz / Guru</label>
-              <select id="login-guru-akun" required></select>
-            </div>
-            <div>
-              <label for="login-guru-pin">PIN Akses Guru <span class="subtitle-sm">(Default: <b>1234</b>)</span></label>
-              <input type="password" id="login-guru-pin" placeholder="Masukkan PIN Guru..." required />
-            </div>
-          </div>
-          <button type="submit" class="btn-primary-rocket" style="width:100%;margin-top:16px;padding:12px;">
-            👨‍🏫 Masuk ke Panel Ustadz / Guru
-          </button>
-        </form>
-
-        <!-- FORM LOGIN ADMIN -->
-        <form id="form-login-admin" class="hidden">
+        <form id="form-login-otomatis">
           <div>
-            <label for="login-admin-pin">PIN Administrator / Kepala Sekolah <span class="subtitle-sm">(Default: <b>admin123</b>)</span></label>
-            <input type="password" id="login-admin-pin" placeholder="Masukkan PIN Kepala Sekolah..." required />
+            <label for="login-username">Username</label>
+            <input type="text" id="login-username" autocomplete="username" placeholder="Masukkan username terdaftar..." required />
           </div>
-          <button type="submit" class="btn-warning" style="width:100%;margin-top:16px;padding:12px;">
-            🏫 Masuk ke Panel Kepala Sekolah / Admin
+          <div>
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" autocomplete="current-password" placeholder="Masukkan password..." required />
+          </div>
+
+          <button type="submit" id="btn-submit-login" class="btn-primary-rocket" style="width:100%;margin-top:18px;padding:12px;font-size:0.98rem;">
+            🚀 Masuk ke Sistem Otomatis
           </button>
         </form>
+
+        <div class="section-box" style="margin-top:16px;font-size:0.8rem;color:#94a3b8;">
+          <b>Info Akun Default:</b>
+          <ul style="margin-left:18px;margin-top:4px;line-height:1.5;">
+            <li><b>Admin Utama:</b> username <code>admin</code> • password <code>admin</code></li>
+            <li><b>Guru / Murid:</b> gunakan username &amp; password yang dibuat oleh Admin (atau otomatis dibuat dari nama terdaftar).</li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -466,7 +334,9 @@
             <h2>🚀 Briefing Misi Astronaut (<span id="briefing-nama-murid">-</span>)</h2>
             <p class="subtitle">Pilih planet mata pelajaran yang diujikan. Layar akan <b>terkunci otomatis</b> begitu Anda masuk ke soal.</p>
           </div>
-          <span id="briefing-kelas-badge" class="badge-tag badge-kelas" style="font-size:0.9rem;padding:6px 12px;">Kelas 1</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span id="briefing-kelas-badge" class="badge-tag badge-kelas" style="font-size:0.9rem;padding:6px 12px;">Kelas 1</span>
+          </div>
         </div>
 
         <form id="form-mulai-misi">
@@ -518,7 +388,7 @@
       </div>
     </main>
 
-    <!-- ==================== 2. PANEL USTADZ / GURU ==================== -->
+    <!-- ==================== 2. PANEL USTADZ / GURU (BISA MELIHAT PROFIL MURID) ==================== -->
     <main id="view-guru" class="hidden">
       <div class="profile-banner">
         <div>
@@ -527,13 +397,14 @@
           <p id="guru-info-display" class="subtitle-sm">NIP/ID: -</p>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <button id="btn-edit-profil-guru" type="button" class="btn-warning">✏️ Edit Profil, PIN &amp; Mapel Saya</button>
+          <button id="btn-edit-profil-guru" type="button" class="btn-warning">✏️ Edit Profil, Username &amp; Password</button>
         </div>
       </div>
 
       <div class="sub-tabs">
         <button id="subtab-guru-soal" type="button" class="btn-subtab active">📚 Bank Soal (<span id="jumlah-soal">0</span>)</button>
-        <button id="subtab-guru-mapel" type="button" class="btn-subtab">🪐 Pilih Mapel &amp; Kelas Diampu</button>
+        <button id="subtab-guru-mapel" type="button" class="btn-subtab">🪐 Mapel &amp; Kelas Diampu</button>
+        <button id="subtab-guru-murid" type="button" class="btn-subtab">🧑‍🎓 Profil Murid</button>
         <button id="subtab-guru-nilai" type="button" class="btn-subtab">📊 Rekap Hasil Siswa</button>
       </div>
 
@@ -559,69 +430,89 @@
         <div id="daftar-soal"></div>
       </div>
 
-      <!-- SUB-PANEL B: CHECKBOX MAPEL LINTAS KELAS -->
+      <!-- SUB-PANEL B: CHECKBOX MAPEL -->
       <div id="panel-guru-mapel" class="card-panel hidden">
         <div class="flex-between" style="margin-bottom:12px;">
           <div>
             <h3>Centang &amp; Kelola Mata Pelajaran per Kelas (Kelas 1 – 6)</h3>
-            <p class="subtitle-sm">Semua perubahan mapel otomatis disimpan ke Database &amp; Cache.</p>
+            <p class="subtitle-sm">Semua perubahan mapel otomatis disimpan ke Database Supabase.</p>
           </div>
           <button id="btn-simpan-mapel-guru" type="button" class="btn-success">💾 Simpan Pilihan Mapel</button>
         </div>
         <div id="matrix-mapel-guru"></div>
       </div>
 
-      <!-- SUB-PANEL C: REKAP NILAI -->
+      <!-- SUB-PANEL C: PROFIL MURID (AKSES KHUSUS GURU) -->
+      <div id="panel-guru-murid" class="card-panel hidden">
+        <div class="flex-between" style="margin-bottom:12px;">
+          <div>
+            <h3>🧑‍🎓 Daftar Profil Murid Terdaftar</h3>
+            <p class="subtitle-sm">Guru dapat melihat profil murid serta membantu memperbarui username &amp; password murid.</p>
+          </div>
+          <select id="guru-filter-kelas-murid" style="width:auto;">
+            <option value="ALL">Semua Kelas (1–6)</option>
+            <option value="Kelas 1">Kelas 1</option>
+            <option value="Kelas 2">Kelas 2</option>
+            <option value="Kelas 3">Kelas 3</option>
+            <option value="Kelas 4">Kelas 4</option>
+            <option value="Kelas 5">Kelas 5</option>
+            <option value="Kelas 6">Kelas 6</option>
+          </select>
+        </div>
+        <div id="daftar-murid-view-guru"></div>
+      </div>
+
+      <!-- SUB-PANEL D: REKAP NILAI -->
       <div id="panel-guru-nilai" class="card-panel hidden">
         <div class="flex-between" style="margin-bottom:12px;">
           <h3>Rekap Hasil Ujian Siswa</h3>
-          <button id="btn-refresh-nilai" type="button" class="btn-secondary">🔄 Tarik Data Terbaru dari Database</button>
+          <button id="btn-refresh-nilai" type="button" class="btn-secondary">🔄 Tarik Data Terbaru</button>
         </div>
         <div id="daftar-hasil-siswa"></div>
       </div>
     </main>
 
-    <!-- ==================== 3. PANEL ADMIN / KEPALA SEKOLAH ==================== -->
+    <!-- ==================== 3. PANEL ADMIN / KEPALA SEKOLAH (ROLE TERTINGGI: PROFIL GURU & MURID) ==================== -->
     <main id="view-admin" class="hidden">
       <div class="profile-banner">
         <div>
-          <span class="badge-tag badge-warn">🏫 Administrator / Kepala Sekolah</span>
+          <span class="badge-tag badge-warn">🏫 Administrator / Kepala Sekolah (Role Tertinggi)</span>
           <h3 id="admin-nama-display" style="margin-top:4px;">Kepala Sekolah SD Bina Ilmu Blora</h3>
           <p id="admin-sekolah-display" class="subtitle-sm">Blora, Jawa Tengah</p>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button id="btn-sync-cache-to-db" type="button" class="btn-primary-rocket">☁️ Amankan Cache ke Database</button>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button id="btn-sync-cache-to-db" type="button" class="btn-primary-rocket">☁️ Simpan ke Supabase</button>
           <button id="btn-export-data" type="button" class="btn-success">⬇️ Backup JSON</button>
           <label class="btn-secondary" style="margin:0;cursor:pointer;display:inline-flex;align-items:center;">⬆️ Restore<input type="file" id="inp-import-data" accept=".json" hidden /></label>
-          <button id="btn-edit-profil-admin" type="button" class="btn-warning">✏️ Edit Profil &amp; PIN Admin</button>
+          <button id="btn-edit-profil-admin" type="button" class="btn-warning">✏️ Edit Profil &amp; Akun Admin</button>
         </div>
       </div>
 
       <div class="sub-tabs">
-        <button id="subtab-admin-guru" type="button" class="btn-subtab active">👨‍🏫 Kelola Ustadz / Guru</button>
-        <button id="subtab-admin-siswa" type="button" class="btn-subtab">🧑‍🎓 Kelola Siswa &amp; Kelas (1–6)</button>
-        <button id="subtab-admin-mapel" type="button" class="btn-subtab">🪐 Kelola Daftar Mapel per Kelas</button>
-        <button id="subtab-admin-db" type="button" class="btn-subtab">🗄️ Status &amp; Migrasi Database</button>
+        <button id="subtab-admin-guru" type="button" class="btn-subtab active">👨‍🏫 Profil &amp; Akun Guru</button>
+        <button id="subtab-admin-siswa" type="button" class="btn-subtab">🧑‍🎓 Profil &amp; Akun Murid</button>
+        <button id="subtab-admin-mapel" type="button" class="btn-subtab">🪐 Kelola Mapel per Kelas</button>
+        <button id="subtab-admin-db" type="button" class="btn-subtab">🗄️ Database Supabase</button>
       </div>
 
-      <!-- KELOLA GURU -->
+      <!-- KELOLA PROFIL GURU -->
       <div id="panel-admin-guru" class="card-panel">
         <div class="flex-between" style="margin-bottom:12px;">
           <div>
-            <h3>Daftar Ustadz / Guru &amp; Mapel Ampuan</h3>
-            <p class="subtitle-sm">Tambahkan guru baru, atur PIN login guru, dan mapel lintas kelas yang diampu.</p>
+            <h3>Profil Ustadz / Guru &amp; Kredensial Login</h3>
+            <p class="subtitle-sm">Admin dapat melihat seluruh profil guru, menambah guru baru, serta mengedit username &amp; password guru.</p>
           </div>
           <button id="btn-tambah-guru" type="button" class="btn-primary-rocket">+ Tambah Guru Baru</button>
         </div>
         <div id="daftar-guru-admin"></div>
       </div>
 
-      <!-- KELOLA SISWA & KELAS 1-6 -->
+      <!-- KELOLA PROFIL MURID -->
       <div id="panel-admin-siswa" class="card-panel hidden">
         <div class="flex-between" style="margin-bottom:12px;">
           <div>
-            <h3>Manajemen Siswa per Jenjang Kelas (Kelas 1 – 6)</h3>
-            <p class="subtitle-sm">Tambahkan siswa ke kelas, pindahkan kelas, atau keluarkan siswa dari kelas.</p>
+            <h3>Profil Murid &amp; Kredensial Login (Kelas 1 – 6)</h3>
+            <p class="subtitle-sm">Admin dapat melihat seluruh profil murid, menambah murid, memindahkan kelas, serta mengedit username &amp; password murid.</p>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <select id="admin-filter-kelas-siswa" style="width:auto;">
@@ -633,13 +524,13 @@
               <option value="Kelas 5">Kelas 5</option>
               <option value="Kelas 6">Kelas 6</option>
             </select>
-            <button id="btn-tambah-siswa" type="button" class="btn-primary-rocket">+ Tambah Siswa</button>
+            <button id="btn-tambah-siswa" type="button" class="btn-primary-rocket">+ Tambah Murid</button>
           </div>
         </div>
         <div id="daftar-siswa-admin"></div>
       </div>
 
-      <!-- KELOLA DAFTAR MAPEL PER KELAS (ADMIN) -->
+      <!-- KELOLA DAFTAR MAPEL PER KELAS -->
       <div id="panel-admin-mapel" class="card-panel hidden">
         <div class="flex-between" style="margin-bottom:12px;">
           <div>
@@ -650,28 +541,68 @@
         <div id="daftar-mapel-per-kelas-admin"></div>
       </div>
 
-      <!-- STATUS & MIGRASI DATABASE SUPABASE -->
+      <!-- STATUS & SQL DATABASE SUPABASE -->
       <div id="panel-admin-db" class="card-panel hidden">
-        <h3>🗄️ Sinkronisasi &amp; Pengamanan Data ke Database Supabase</h3>
+        <h3>🗄️ Status &amp; Skrip SQL Supabase (Aman Tanpa Menghapus Data Lama)</h3>
         <p class="subtitle-sm" id="db-detail-info">Memeriksa koneksi Supabase...</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;">
-          <button type="button" id="btn-force-push-db" class="btn-primary-rocket">⬆️ Unggah Seluruh Data Cache ke Database Sekarang</button>
-          <button type="button" id="btn-force-pull-db" class="btn-secondary">⬇️ Tarik Data Terbaru dari Database</button>
+          <button type="button" id="btn-force-push-db" class="btn-primary-rocket">⬆️ Simpan Seluruh Data ke Supabase Sekarang</button>
+          <button type="button" id="btn-force-pull-db" class="btn-secondary">⬇️ Tarik &amp; Gabungkan Data dari Supabase</button>
         </div>
         <div class="section-box">
           <p style="font-size:0.84rem;color:#cbd5e1;">
-            <b>Catatan Teknis Database:</b> Aplikasi ini otomatis menyimpan seluruh data (Profil Sekolah, Guru, Siswa, Mapel, Bank Soal, dan Nilai) ke tabel <code>school_kv_store</code>, <code>soal</code>, dan <code>hasil_ujian</code> di Supabase Anda. Jika tabel <code>school_kv_store</code> belum dibuat di SQL Editor Supabase, jalankan perintah SQL berikut sekali saja:
+            <b>Skrip SQL Aman (Jalankan di SQL Editor Supabase jika tabel belum tersedia):</b>
           </p>
           <pre class="sql-box">CREATE TABLE IF NOT EXISTS public.school_kv_store (
   key TEXT PRIMARY KEY,
   data JSONB NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-ALTER TABLE public.school_kv_store ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL USING (true) WITH CHECK (true);</pre>
+CREATE TABLE IF NOT EXISTS public.users_cbt (
+  id TEXT PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  nama_lengkap TEXT NOT NULL,
+  role TEXT NOT NULL,
+  kelas TEXT,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+INSERT INTO public.users_cbt (id, username, password, nama_lengkap, role)
+VALUES ('admin_utama', 'admin', 'admin', 'Kepala Sekolah SD Bina Ilmu Blora', 'admin')
+ON CONFLICT (id) DO NOTHING;
+ALTER TABLE public.school_kv_store DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.users_cbt DISABLE ROW LEVEL SECURITY;</pre>
         </div>
       </div>
     </main>
+  </div>
+
+  <!-- ==================== MODAL EDIT USERNAME & PASSWORD CEPAT ==================== -->
+  <div id="modal-edit-kredensial" class="modal hidden" style="z-index:1300;">
+    <div class="modal-content" style="max-width:440px;">
+      <div class="modal-header-bar">
+        <h3 id="judul-modal-kredensial">🔑 Edit Username &amp; Password</h3>
+        <button type="button" class="btn-close-icon" data-close="modal-edit-kredensial">✕</button>
+      </div>
+      <form id="form-edit-kredensial">
+        <input type="hidden" id="cred-target-role" />
+        <input type="hidden" id="cred-target-id" />
+
+        <label for="cred-nama-display">Nama Pengguna</label>
+        <input type="text" id="cred-nama-display" readonly style="opacity:0.75;" />
+
+        <label for="cred-username-baru">Username Baru</label>
+        <input type="text" id="cred-username-baru" required placeholder="Ketik username baru (tanpa spasi)..." />
+
+        <label for="cred-password-baru">Password Baru</label>
+        <input type="text" id="cred-password-baru" required placeholder="Ketik password baru..." />
+
+        <div class="aksi-form-between">
+          <button type="button" class="btn-secondary" data-close="modal-edit-kredensial">Batal</button>
+          <button type="submit" class="btn-success">💾 Simpan ke Supabase</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- ==================== MODAL TAMBAH / EDIT MATA PELAJARAN PER KELAS ==================== -->
@@ -720,11 +651,11 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
     </div>
   </div>
 
-  <!-- ==================== MODAL EDIT PROFIL KEPALA SEKOLAH ==================== -->
+  <!-- ==================== MODAL EDIT PROFIL & AKUN KEPALA SEKOLAH ==================== -->
   <div id="modal-profil-admin" class="modal hidden">
     <div class="modal-content" style="max-width:520px;">
       <div class="modal-header-bar">
-        <h3>🏫 Edit Profil &amp; PIN Kepala Sekolah</h3>
+        <h3>🏫 Edit Profil, Username &amp; Password Admin</h3>
         <button type="button" class="btn-close-icon" data-close="modal-profil-admin">✕</button>
       </div>
       <form id="form-profil-admin">
@@ -732,21 +663,29 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         <input type="text" id="inp-admin-nama" required />
         <div class="grid-2">
           <div>
+            <label for="inp-admin-username">Username Admin</label>
+            <input type="text" id="inp-admin-username" required />
+          </div>
+          <div>
+            <label for="inp-admin-password">Password Admin</label>
+            <input type="text" id="inp-admin-password" required />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
             <label for="inp-admin-nip">NIP / NUPTK</label>
             <input type="text" id="inp-admin-nip" placeholder="Opsional" />
           </div>
           <div>
-            <label for="inp-admin-pin">PIN Login Admin</label>
-            <input type="text" id="inp-admin-pin" required placeholder="Minimal 4 karakter" />
+            <label for="inp-admin-sekolah">Nama Satuan Pendidikan</label>
+            <input type="text" id="inp-admin-sekolah" required />
           </div>
         </div>
-        <label for="inp-admin-sekolah">Nama Satuan Pendidikan</label>
-        <input type="text" id="inp-admin-sekolah" required />
         <label for="inp-admin-alamat">Alamat / Kota</label>
         <input type="text" id="inp-admin-alamat" />
         <div class="aksi-form-between">
           <button type="button" class="btn-secondary" data-close="modal-profil-admin">Batal</button>
-          <button type="submit" class="btn-success">💾 Simpan Profil ke Database</button>
+          <button type="submit" class="btn-success">💾 Simpan Profil ke Supabase</button>
         </div>
       </form>
     </div>
@@ -756,12 +695,12 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
   <div id="modal-guru" class="modal hidden">
     <div class="modal-content">
       <div class="modal-header-bar">
-        <h3 id="judul-modal-guru">👨‍🏫 Tambah / Edit Data Guru</h3>
+        <h3 id="judul-modal-guru">👨‍🏫 Tambah / Edit Profil &amp; Akun Guru</h3>
         <button type="button" class="btn-close-icon" data-close="modal-guru">✕</button>
       </div>
       <form id="form-guru">
         <input type="hidden" id="guru-edit-id" />
-        <div class="grid-3">
+        <div class="grid-2">
           <div>
             <label for="inp-guru-nama">Nama Lengkap Ustadz / Guru</label>
             <input type="text" id="inp-guru-nama" required placeholder="Contoh: Ustadz Ahmad, S.Pd" />
@@ -770,47 +709,69 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
             <label for="inp-guru-nip">NIP / Kode Guru</label>
             <input type="text" id="inp-guru-nip" placeholder="Contoh: GR-01" />
           </div>
+        </div>
+        <div class="grid-2">
           <div>
-            <label for="inp-guru-pin">PIN Login Guru</label>
-            <input type="text" id="inp-guru-pin" required placeholder="Contoh: 1234" />
+            <label for="inp-guru-username">Username Login Guru</label>
+            <input type="text" id="inp-guru-username" required placeholder="Contoh: ahmad" />
+          </div>
+          <div>
+            <label for="inp-guru-password">Password Login Guru</label>
+            <input type="text" id="inp-guru-password" required placeholder="Contoh: guru123" />
           </div>
         </div>
         <label>Pilih Mata Pelajaran &amp; Kelas yang Diampu (Bisa Lintas Kelas):</label>
-        <div id="modal-guru-matrix" style="max-height:320px;overflow-y:auto;margin-top:6px;"></div>
+        <div id="modal-guru-matrix" style="max-height:300px;overflow-y:auto;margin-top:6px;"></div>
         <div class="aksi-form-between">
           <button type="button" class="btn-secondary" data-close="modal-guru">Batal</button>
-          <button type="submit" class="btn-success">💾 Simpan Data Guru ke Database</button>
+          <button type="submit" class="btn-success">💾 Simpan Guru ke Supabase</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ==================== MODAL TAMBAH / PINDAH KELAS SISWA ==================== -->
+  <!-- ==================== MODAL TAMBAH / EDIT PROFIL MURID ==================== -->
   <div id="modal-siswa" class="modal hidden">
     <div class="modal-content" style="max-width:500px;">
       <div class="modal-header-bar">
-        <h3 id="judul-modal-siswa">🧑‍🎓 Tambah / Atur Kelas Siswa</h3>
+        <h3 id="judul-modal-siswa">🧑‍🎓 Tambah / Edit Profil &amp; Akun Murid</h3>
         <button type="button" class="btn-close-icon" data-close="modal-siswa">✕</button>
       </div>
       <form id="form-siswa">
         <input type="hidden" id="siswa-edit-id" />
-        <label for="inp-siswa-nama">Nama Lengkap Siswa</label>
-        <input type="text" id="inp-siswa-nama" required placeholder="Ketik nama siswa..." />
-        <label for="inp-siswa-nis">NIS / Nomor Induk</label>
-        <input type="text" id="inp-siswa-nis" placeholder="Opsional" />
-        <label for="inp-siswa-kelas">Penempatan Kelas (Kelas 1 – 6)</label>
-        <select id="inp-siswa-kelas" required>
-          <option value="Kelas 1">Kelas 1</option>
-          <option value="Kelas 2">Kelas 2</option>
-          <option value="Kelas 3">Kelas 3</option>
-          <option value="Kelas 4">Kelas 4</option>
-          <option value="Kelas 5">Kelas 5</option>
-          <option value="Kelas 6">Kelas 6</option>
-          <option value="">-- Keluarkan dari Kelas (Non-Aktif) --</option>
-        </select>
+        <label for="inp-siswa-nama">Nama Lengkap Murid</label>
+        <input type="text" id="inp-siswa-nama" required placeholder="Ketik nama murid..." />
+        <div class="grid-2">
+          <div>
+            <label for="inp-siswa-nis">NIS / Nomor Induk</label>
+            <input type="text" id="inp-siswa-nis" placeholder="Opsional" />
+          </div>
+          <div>
+            <label for="inp-siswa-kelas">Penempatan Kelas (1 – 6)</label>
+            <select id="inp-siswa-kelas" required>
+              <option value="Kelas 1">Kelas 1</option>
+              <option value="Kelas 2">Kelas 2</option>
+              <option value="Kelas 3">Kelas 3</option>
+              <option value="Kelas 4">Kelas 4</option>
+              <option value="Kelas 5">Kelas 5</option>
+              <option value="Kelas 6">Kelas 6</option>
+              <option value="">-- Non-Aktif / Lulus --</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <label for="inp-siswa-username">Username Login Murid</label>
+            <input type="text" id="inp-siswa-username" required placeholder="Contoh: fauzan" />
+          </div>
+          <div>
+            <label for="inp-siswa-password">Password Login Murid</label>
+            <input type="text" id="inp-siswa-password" required placeholder="Contoh: 123456" />
+          </div>
+        </div>
         <div class="aksi-form-between">
           <button type="button" class="btn-secondary" data-close="modal-siswa">Batal</button>
-          <button type="submit" class="btn-success">💾 Simpan Siswa ke Database</button>
+          <button type="submit" class="btn-success">💾 Simpan Murid ke Supabase</button>
         </div>
       </form>
     </div>
@@ -842,2190 +803,3 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
           <div>
             <label for="soal-mapel">Mata Pelajaran</label>
             <select id="soal-mapel" required></select>
-          </div>
-          <div>
-            <label for="tipe-soal">Tipe Misi Soal</label>
-            <select id="tipe-soal" required>
-              <option value="pg">Pilihan Ganda (Langsung Eksekusi)</option>
-              <option value="isian">Isian Singkat (Dropdown Tak Terbatas)</option>
-              <option value="uraian">Uraian (Susun Tombol Amunisi)</option>
-            </select>
-          </div>
-        </div>
-
-        <label for="pertanyaan">Pertanyaan / Misi Soal</label>
-        <textarea id="pertanyaan" rows="3" required placeholder="Ketik pertanyaan di sini... (Bisa langsung Paste gambar dari clipboard dengan Ctrl+V)"></textarea>
-
-        <div class="image-upload-bar">
-          <label class="btn-upload-mini" for="file-gambar-soal">🖼️ Unggah Gambar Soal</label>
-          <input type="file" id="file-gambar-soal" accept="image/*" hidden />
-          <span class="subtitle-sm">atau tekan <b>Ctrl+V</b> di kolom pertanyaan untuk paste gambar</span>
-          <button type="button" id="btn-hapus-gambar-soal" class="btn-danger-xs hidden">Hapus Gambar</button>
-        </div>
-        <div id="preview-gambar-soal" class="img-preview-box"></div>
-        <input type="hidden" id="data-gambar-soal" />
-
-        <!-- BAGIAN 1: PILIHAN GANDA -->
-        <div id="bagian-pg" class="section-box">
-          <label>Opsi Pilihan Ganda (Teks &amp; Gambar Opsional per Opsi)</label>
-          <div class="opsi-pg-editor">
-            <div class="opsi-row">
-              <span class="opsi-badge">A</span>
-              <input type="text" id="opsi-a" placeholder="Teks Pilihan A (bisa paste gambar Ctrl+V)" />
-              <label class="btn-upload-mini" for="file-opsi-a">🖼️</label>
-              <input type="file" id="file-opsi-a" class="file-opsi-img" data-target="a" accept="image/*" hidden />
-            </div>
-            <div id="prev-img-a" class="img-preview-mini"></div>
-            <input type="hidden" id="data-gambar-a" />
-          </div>
-
-          <div class="opsi-pg-editor">
-            <div class="opsi-row">
-              <span class="opsi-badge">B</span>
-              <input type="text" id="opsi-b" placeholder="Teks Pilihan B (bisa paste gambar Ctrl+V)" />
-              <label class="btn-upload-mini" for="file-opsi-b">🖼️</label>
-              <input type="file" id="file-opsi-b" class="file-opsi-img" data-target="b" accept="image/*" hidden />
-            </div>
-            <div id="prev-img-b" class="img-preview-mini"></div>
-            <input type="hidden" id="data-gambar-b" />
-          </div>
-
-          <div class="opsi-pg-editor">
-            <div class="opsi-row">
-              <span class="opsi-badge">C</span>
-              <input type="text" id="opsi-c" placeholder="Teks Pilihan C (bisa paste gambar Ctrl+V)" />
-              <label class="btn-upload-mini" for="file-opsi-c">🖼️</label>
-              <input type="file" id="file-opsi-c" class="file-opsi-img" data-target="c" accept="image/*" hidden />
-            </div>
-            <div id="prev-img-c" class="img-preview-mini"></div>
-            <input type="hidden" id="data-gambar-c" />
-          </div>
-
-          <div class="opsi-pg-editor">
-            <div class="opsi-row">
-              <span class="opsi-badge">D</span>
-              <input type="text" id="opsi-d" placeholder="Teks Pilihan D (bisa paste gambar Ctrl+V)" />
-              <label class="btn-upload-mini" for="file-opsi-d">🖼️</label>
-              <input type="file" id="file-opsi-d" class="file-opsi-img" data-target="d" accept="image/*" hidden />
-            </div>
-            <div id="prev-img-d" class="img-preview-mini"></div>
-            <input type="hidden" id="data-gambar-d" />
-          </div>
-
-          <label for="kunci-pg">Kunci Jawaban Benar</label>
-          <select id="kunci-pg">
-            <option value="A">Pilihan A</option>
-            <option value="B">Pilihan B</option>
-            <option value="C">Pilihan C</option>
-            <option value="D">Pilihan D</option>
-          </select>
-        </div>
-
-        <!-- BAGIAN 2: ISIAN SINGKAT (DROPDOWN TAK TERBATAS) -->
-        <div id="bagian-isian" class="section-box hidden">
-          <div class="flex-between">
-            <label>Daftar Pilihan Dropdown Isian Singkat (Tak Terbatas)</label>
-            <button type="button" id="btn-tambah-amunisi-isian" class="btn-primary-xs">+ Tambah Pilihan Dropdown</button>
-          </div>
-          <p class="subtitle-sm">Pilih radio button pada jawaban yang benar. Anda dapat menambah atau menghapus pilihan sebanyak yang dibutuhkan.</p>
-          <div id="list-amunisi-isian"></div>
-        </div>
-
-        <!-- BAGIAN 3: URAIAN SUSUN TOMBOL AMUNISI -->
-        <div id="bagian-uraian" class="section-box hidden">
-          <div class="flex-between">
-            <label>Daftar Tombol Amunisi Jawaban Uraian</label>
-            <div class="inline-generator">
-              <input type="number" id="jumlah-slot-uraian" min="2" max="20" value="4" class="input-num-sm" />
-              <button type="button" id="btn-set-jumlah-uraian" class="btn-secondary-xs">Set Jumlah</button>
-              <button type="button" id="btn-tambah-amunisi-uraian" class="btn-primary-xs">+ Tambah Amunisi</button>
-            </div>
-          </div>
-          <p class="subtitle-sm">Centang item yang termasuk <b>kunci jawaban benar</b>. Siswa akan mengklik tombol-tombol amunisi ini untuk menyusun jawabannya.</p>
-          <div id="list-amunisi-uraian"></div>
-        </div>
-
-        <div class="aksi-form-between">
-          <button type="button" id="btn-preview-soal" class="btn-warning">👁️ Preview Tampilan Siswa</button>
-          <div style="display:flex;gap:8px;">
-            <button type="button" class="btn-secondary" data-close="modal-soal">Batal</button>
-            <button type="submit" id="btn-simpan-soal" class="btn-primary-rocket">💾 Simpan Soal ke Database</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ==================== MODAL PREVIEW TAMPILAN SISWA ==================== -->
-  <div id="modal-preview" class="modal hidden">
-    <div class="modal-content">
-      <div class="modal-header-bar">
-        <h3>👁️ Simulasi Tampilan di Layar Siswa</h3>
-        <button type="button" class="btn-close-icon" data-close="modal-preview">✕</button>
-      </div>
-      <div id="kontainer-preview-siswa"></div>
-      <div style="text-align:right;margin-top:14px;">
-        <button type="button" class="btn-primary-rocket" data-close="modal-preview">Tutup Preview</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- JEMBATAN KONEKSI SUPABASE -->
-  <script type="module">
-    try {
-      const mod = await import('./js/supabase.js');
-      const client = mod.supabase || mod.default || window.supabaseClient;
-      if (client && typeof client.from === 'function') {
-        window.__SB_CLIENT__ = client;
-        window.dispatchEvent(new Event('sb-ready'));
-      }
-    } catch (_) {}
-  </script>
-
-  <!-- SCRIPT UTAMA APLIKASI -->
-  <script>
-    (function () {
-      const DAFTAR_KELAS = ['Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas 4', 'Kelas 5', 'Kelas 6'];
-      const WARNA_PLANET_PALETTE = [
-        'linear-gradient(135deg, #f59e0b, #d97706)',
-        'linear-gradient(135deg, #10b981, #047857)',
-        'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-        'linear-gradient(135deg, #8b5cf6, #6d28d9)',
-        'linear-gradient(135deg, #14b8a6, #0f766e)',
-        'linear-gradient(135deg, #ec4899, #be18d9)',
-        'linear-gradient(135deg, #eab308, #a16207)',
-        'linear-gradient(135deg, #06b6d4, #0e7490)',
-        'linear-gradient(135deg, #ef4444, #b91c1c)',
-        'linear-gradient(135deg, #a855f7, #7e22ce)',
-      ];
-
-      function buatDefaultMapelPerKelas() {
-        const base = [
-          { nama: 'Matematika', ikon: '🪐' },
-          { nama: 'IPA / Sains', ikon: '🌍' },
-          { nama: 'Bahasa Indonesia', ikon: '🌕' },
-          { nama: 'Bahasa Inggris', ikon: '🛸' },
-          { nama: 'PAI / Tahfidz', ikon: '🌙' },
-          { nama: 'IPS / Sosial', ikon: '☄️' },
-          { nama: 'PKn / Karakter', ikon: '⭐' },
-          { nama: 'Informatika / TIK', ikon: '🛰️' },
-          { nama: 'PJOK / Olahraga', ikon: '🔥' },
-          { nama: 'Seni Budaya', ikon: '🌌' },
-        ];
-        const obj = {};
-        DAFTAR_KELAS.forEach((k) => {
-          obj[k] = base.map((m, idx) => ({
-            nama: m.nama,
-            ikon: m.ikon,
-            warna: WARNA_PLANET_PALETTE[idx % WARNA_PLANET_PALETTE.length],
-          }));
-        });
-        return obj;
-      }
-
-      const STORAGE_KEY = 'space_cbt_master_data_permanen';
-      const LEGACY_KEYS = ['space_cbt_backup_cadangan', 'space_cbt_school_state_v4', 'space_cbt_school_state_v3', 'space_cbt_school_state_v2', 'space_cbt_school_state_v1'];
-      const DB_STATE_ROW_KEY = 'bina_ilmu_school_master_v1';
-
-      let state = {
-        updatedAt: 0,
-        adminProfile: {
-          nama: 'Kepala Sekolah SD Bina Ilmu Blora',
-          nip: 'KS-001',
-          pin: 'admin123',
-          sekolah: 'SD Bina Ilmu Blora',
-          alamat: 'Blora, Jawa Tengah',
-        },
-        mapelPerKelas: buatDefaultMapelPerKelas(),
-        teachers: [
-          {
-            id: 'guru_1',
-            nama: 'Ustadz Pengampu Utama',
-            nip: 'GR-001',
-            pin: '1234',
-            assignments: [
-              { kelas: 'Kelas 1', mapel: 'Matematika' },
-              { kelas: 'Kelas 1', mapel: 'PAI / Tahfidz' },
-              { kelas: 'Kelas 2', mapel: 'Matematika' },
-              { kelas: 'Kelas 3', mapel: 'IPA / Sains' },
-            ],
-          },
-        ],
-        activeGuruId: 'guru_1',
-        students: [
-          { id: 'sis_1', nama: 'Ahmad Fauzan', nis: '1001', kelas: 'Kelas 1' },
-          { id: 'sis_2', nama: 'Aisyah Putri', nis: '1002', kelas: 'Kelas 1' },
-          { id: 'sis_3', nama: 'Zaidan Alfarizi', nis: '2001', kelas: 'Kelas 2' },
-        ],
-        soalList: [],
-        hasilList: [],
-      };
-
-      // Sesi Login Aktif
-      let currentSession = null; // { role: 'murid'|'guru'|'admin', nama, kelas?, guruId? }
-
-      function gabungkanDataAman(saved, timpaPenuh = false) {
-        if (!saved || typeof saved !== 'object') return;
-        if (saved.updatedAt) state.updatedAt = Math.max(state.updatedAt || 0, saved.updatedAt);
-
-        if (saved.adminProfile && typeof saved.adminProfile === 'object') {
-          state.adminProfile = { ...state.adminProfile, ...saved.adminProfile };
-          if (!state.adminProfile.pin) state.adminProfile.pin = 'admin123';
-        }
-        if (saved.mapelPerKelas && typeof saved.mapelPerKelas === 'object') {
-          DAFTAR_KELAS.forEach((k) => {
-            if (Array.isArray(saved.mapelPerKelas[k])) {
-              state.mapelPerKelas[k] = saved.mapelPerKelas[k];
-            }
-          });
-        }
-        if (Array.isArray(saved.teachers) && saved.teachers.length > 0) {
-          state.teachers = saved.teachers.map((t) => ({ ...t, pin: t.pin || '1234' }));
-        }
-        if (saved.activeGuruId) state.activeGuruId = saved.activeGuruId;
-
-        if (Array.isArray(saved.students)) {
-          if (timpaPenuh) {
-            state.students = saved.students;
-          } else {
-            const mapSis = new Map(state.students.map((s) => [s.id, s]));
-            saved.students.forEach((s) => mapSis.set(s.id, s));
-            state.students = Array.from(mapSis.values());
-          }
-        }
-        if (Array.isArray(saved.soalList)) {
-          if (timpaPenuh) {
-            state.soalList = saved.soalList;
-          } else {
-            const mapSoal = new Map(state.soalList.map((s) => [String(s.id), s]));
-            saved.soalList.forEach((s) => mapSoal.set(String(s.id), s));
-            state.soalList = Array.from(mapSoal.values());
-          }
-        }
-        if (Array.isArray(saved.hasilList)) {
-          if (timpaPenuh) {
-            state.hasilList = saved.hasilList;
-          } else {
-            const mapHasil = new Map(state.hasilList.map((h) => [String(h.id), h]));
-            saved.hasilList.forEach((h) => mapHasil.set(String(h.id), h));
-            state.hasilList = Array.from(mapHasil.values());
-          }
-        }
-      }
-
-      function loadStateFromCache() {
-        try {
-          let raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) {
-            for (const oldKey of LEGACY_KEYS) {
-              const legacyRaw = localStorage.getItem(oldKey);
-              if (legacyRaw) {
-                raw = legacyRaw;
-                break;
-              }
-            }
-          }
-          if (raw) {
-            gabungkanDataAman(JSON.parse(raw), true);
-            simpanKeCacheLokal();
-          }
-        } catch (_) {}
-      }
-
-      function simpanKeCacheLokal() {
-        try {
-          const serialized = JSON.stringify(state);
-          localStorage.setItem(STORAGE_KEY, serialized);
-          localStorage.setItem('space_cbt_backup_cadangan', serialized);
-        } catch (_) {}
-      }
-
-      function getSupabase() {
-        if (window.__SB_CLIENT__ && typeof window.__SB_CLIENT__.from === 'function') return window.__SB_CLIENT__;
-        if (window.supabaseClient && typeof window.supabaseClient.from === 'function') return window.supabaseClient;
-        return null;
-      }
-
-      function setDbBadge(status, text) {
-        const el = document.getElementById('btn-db-status');
-        const info = document.getElementById('db-detail-info');
-        if (el) {
-          el.classList.remove('online', 'syncing');
-          if (status === 'online') el.classList.add('online');
-          if (status === 'syncing') el.classList.add('syncing');
-          el.textContent = text;
-        }
-        if (info) info.textContent = text;
-      }
-
-      // ==================== SINKRONISASI DATABASE SUPABASE ====================
-      async function pushStateKeDatabase(tampilkanAlert = false) {
-        const sb = getSupabase();
-        if (!sb) {
-          setDbBadge('offline', '🟡 Cache Lokal (Supabase belum aktif)');
-          if (tampilkanAlert) alert('Koneksi Supabase belum terdeteksi. Pastikan konfigurasi di js/supabase.js aktif.');
-          return false;
-        }
-
-        setDbBadge('syncing', '🔄 Menyimpan ke Database...');
-        try {
-          // 1. Simpan master state lengkap ke tabel school_kv_store
-          const { error: kvErr } = await sb
-            .from('school_kv_store')
-            .upsert({ key: DB_STATE_ROW_KEY, data: state, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-
-          // 2. Amankan juga bank soal ke tabel 'soal' bawaan agar terjamin di 2 tempat
-          if (state.soalList.length > 0) {
-            const { data: existingSoal } = await sb.from('soal').select('id, pertanyaan, mapel');
-            const existingSet = new Set((existingSoal || []).map((r) => `${r.mapel}::${r.pertanyaan}`));
-
-            const soalBaruUntukInsert = state.soalList
-              .filter((s) => !existingSet.has(`${s.mapel} (${s.kelas})::${s.pertanyaan}`))
-              .map((s) => ({
-                mapel: `${s.mapel} (${s.kelas})`,
-                tipe: s.tipe,
-                pertanyaan: s.pertanyaan,
-                gambar_soal: s.gambar_soal || null,
-                opsi_a: s.opsi_a || null,
-                gambar_a: s.gambar_a || null,
-                opsi_b: s.opsi_b || null,
-                gambar_b: s.gambar_b || null,
-                opsi_c: s.opsi_c || null,
-                gambar_c: s.gambar_c || null,
-                opsi_d: s.opsi_d || null,
-                gambar_d: s.gambar_d || null,
-                opsi_tambahan: s.opsi_tambahan || [],
-                kunci: s.kunci || '',
-              }));
-
-            if (soalBaruUntukInsert.length > 0) {
-              await sb.from('soal').insert(soalBaruUntukInsert);
-            }
-          }
-
-          if (kvErr) {
-            setDbBadge('syncing', '⚠️ Tabel KV belum dibuat (Soal tersimpan di tabel soal)');
-            if (tampilkanAlert) {
-              alert('⚠️ Data soal sudah diamankan ke tabel `soal`, namun tabel `school_kv_store` belum dibuat di Supabase.
-Buka Panel Admin -> Tab Status Database untuk menyalin skrip SQL-nya.');
-            }
-            return false;
-          }
-
-          setDbBadge('online', '🟢 Tersimpan di Database Supabase');
-          if (tampilkanAlert) {
-            alert('✅ SELURUH DATA BERHASIL DIAMANKAN KE DATABASE SUPABASE!
-(Profil Sekolah, Guru, Siswa, Mapel, Bank Soal, dan Rekap Nilai)');
-          }
-          return true;
-        } catch (err) {
-          setDbBadge('offline', '🟡 Gagal Sync DB (Tersimpan di Cache)');
-          return false;
-        }
-      }
-
-      async function sinkronisasiAwalDatabase() {
-        const sb = getSupabase();
-        if (!sb) {
-          setDbBadge('offline', '🟡 Mode Cache Lokal');
-          return;
-        }
-
-        setDbBadge('syncing', '🔄 Sinkronisasi Database...');
-        try {
-          const hasLocalData = Boolean(localStorage.getItem(STORAGE_KEY) || LEGACY_KEYS.some((k) => localStorage.getItem(k)));
-
-          // Tarik data master dari school_kv_store
-          const { data: kvRow, error: kvErr } = await sb
-            .from('school_kv_store')
-            .select('data')
-            .eq('key', DB_STATE_ROW_KEY)
-            .maybeSingle();
-
-          if (!kvErr && kvRow && kvRow.data) {
-            const dbData = kvRow.data;
-            // Jika cache lokal lebih baru atau memiliki data tambahan yang belum masuk DB, gabungkan lalu push!
-            if (hasLocalData && (state.updatedAt || 0) >= (dbData.updatedAt || 0)) {
-              gabungkanDataAman(dbData, false);
-              simpanKeCacheLokal();
-              await pushStateKeDatabase(false);
-            } else {
-              gabungkanDataAman(dbData, true);
-              simpanKeCacheLokal();
-              setDbBadge('online', '🟢 Tersinkron dengan Database');
-            }
-          } else {
-            // Database masih kosong -> segera amankan data cache lokal ke database!
-            await pushStateKeDatabase(false);
-          }
-
-          // Tarik juga nilai ujian dari tabel hasil_ujian jika ada yang baru
-          const { data: dbHasil } = await sb.from('hasil_ujian').select('*').order('created_at', { ascending: false }).limit(200);
-          if (Array.isArray(dbHasil) && dbHasil.length > 0) {
-            const existingKeys = new Set(state.hasilList.map((h) => `${h.nama_siswa}::${h.mapel}::${h.skor_otomatis}`));
-            dbHasil.forEach((r) => {
-              const key = `${r.nama_siswa}::${r.mapel}::${r.skor_otomatis}`;
-              if (!existingKeys.has(key)) {
-                state.hasilList.push({
-                  id: 'db_' + (r.id || Date.now() + Math.random()),
-                  nama_siswa: r.nama_siswa,
-                  kelas: r.kelas || 'Kelas 1',
-                  mapel: r.mapel,
-                  skor_otomatis: r.skor_otomatis,
-                  created_at: r.created_at || new Date().toISOString(),
-                });
-              }
-            });
-            simpanKeCacheLokal();
-          }
-
-          refreshSemuaTampilan();
-        } catch (_) {
-          setDbBadge('offline', '🟡 Mode Cache Lokal');
-        }
-      }
-
-      async function saveState() {
-        state.updatedAt = Date.now();
-        simpanKeCacheLokal();
-        await pushStateKeDatabase(false);
-      }
-
-      function escapeHtml(str) {
-        if (!str) return '';
-        return String(str)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-      }
-
-      // ==================== AUDIO & LEDAKAN 3 DETIK ====================
-      let audioCtx = null;
-      function getAudioContext() {
-        if (!audioCtx) {
-          const AC = window.AudioContext || window.webkitAudioContext;
-          if (AC) audioCtx = new AC();
-        }
-        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-        return audioCtx;
-      }
-
-      function mainkanSuaraLaser() {
-        try {
-          const ctx = getAudioContext();
-          if (!ctx) return;
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(920, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(130, ctx.currentTime + 0.18);
-          gain.gain.setValueAtTime(0.22, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.18);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.19);
-        } catch (_) {}
-      }
-
-      function mainkanSuaraLedakanMenggelegar(isDamage = false) {
-        try {
-          const ctx = getAudioContext();
-          if (!ctx) return;
-          const durasi = 2.95;
-          const now = ctx.currentTime;
-
-          const osc = ctx.createOscillator();
-          const bassGain = ctx.createGain();
-          osc.type = isDamage ? 'sawtooth' : 'sine';
-          osc.frequency.setValueAtTime(isDamage ? 160 : 140, now);
-          osc.frequency.exponentialRampToValueAtTime(22, now + durasi);
-          bassGain.gain.setValueAtTime(0.95, now);
-          bassGain.gain.exponentialRampToValueAtTime(0.01, now + durasi);
-          osc.connect(bassGain);
-          bassGain.connect(ctx.destination);
-          osc.start(now);
-          osc.stop(now + durasi);
-
-          const bufferSize = ctx.sampleRate * durasi;
-          const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-          const data = buffer.getChannelData(0);
-          for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 1.15));
-          }
-          const noise = ctx.createBufferSource();
-          noise.buffer = buffer;
-          const filter = ctx.createBiquadFilter();
-          filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(980, now);
-          filter.frequency.exponentialRampToValueAtTime(100, now + durasi);
-          const noiseGain = ctx.createGain();
-          noiseGain.gain.setValueAtTime(0.92, now);
-          noiseGain.gain.exponentialRampToValueAtTime(0.01, now + durasi);
-          noise.connect(filter);
-          filter.connect(noiseGain);
-          noiseGain.connect(ctx.destination);
-          noise.start(now);
-          noise.stop(now + durasi);
-        } catch (_) {}
-      }
-
-      let sedangMeledak = false;
-      function picuLedakan3Detik(isBenar, judul, detailPesan, selesaiCallback) {
-        if (sedangMeledak) return;
-        sedangMeledak = true;
-        const stage = document.getElementById('explosion-stage');
-        stage.classList.remove('success-blast', 'damage-blast', 'hidden');
-        stage.classList.add(isBenar ? 'success-blast' : 'damage-blast');
-
-        document.getElementById('explosion-text').textContent = judul;
-        document.getElementById('explosion-subtext').textContent = detailPesan;
-
-        document.body.classList.add('exploding');
-        mainkanSuaraLaser();
-        setTimeout(() => mainkanSuaraLedakanMenggelegar(!isBenar), 120);
-
-        setTimeout(() => {
-          stage.classList.add('hidden');
-          document.body.classList.remove('exploding');
-          sedangMeledak = false;
-          if (typeof selesaiCallback === 'function') selesaiCallback();
-        }, 3000);
-      }
-
-      function initSpaceCanvas() {
-        const canvas = document.getElementById('space-canvas');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        let stars = [];
-        function resize() {
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
-          stars = Array.from({ length: 65 }, () => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            r: Math.random() * 1.7 + 0.4,
-            s: Math.random() * 0.35 + 0.1,
-          }));
-        }
-        function loop() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = '#e2e8f0';
-          for (const st of stars) {
-            st.y += st.s;
-            if (st.y > canvas.height) st.y = 0;
-            ctx.beginPath();
-            ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
-            ctx.fill();
-          }
-          requestAnimationFrame(loop);
-        }
-        window.addEventListener('resize', resize);
-        resize();
-        loop();
-      }
-
-      // ==================== KOMPRESI GAMBAR RINGAN ====================
-      function prosesFileGambarKeBase64(file, maxLebar = 680, kualitas = 0.7) {
-        return new Promise((resolve, reject) => {
-          if (!file || !file.type.startsWith('image/')) return reject(new Error('File bukan gambar.'));
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-              let w = img.width, h = img.height;
-              if (w > maxLebar) { h = Math.round((h * maxLebar) / w); w = maxLebar; }
-              const c = document.createElement('canvas');
-              c.width = w; c.height = h;
-              c.getContext('2d').drawImage(img, 0, 0, w, h);
-              resolve(c.toDataURL('image/webp', kualitas));
-            };
-            img.onerror = () => reject(new Error('Gagal memproses gambar.'));
-            img.src = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        });
-      }
-
-      async function ambilGambarDariPaste(clipboardEvent) {
-        const items = clipboardEvent.clipboardData?.items;
-        if (!items) return null;
-        for (const item of items) {
-          if (item.type.startsWith('image/')) {
-            const file = item.getAsFile();
-            if (file) return await prosesFileGambarKeBase64(file);
-          }
-        }
-        return null;
-      }
-
-      // ==================== KUNCI LAYAR OTOMATIS SAAT MASUK SOAL ====================
-      let ujianSedangTerkunci = false;
-      let pelanggaranKeluar = 0;
-
-      function mintaMasukFullscreen() {
-        try {
-          const el = document.documentElement;
-          if (!document.fullscreenElement) {
-            if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
-            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-          }
-        } catch (_) {}
-      }
-
-      function aktifkanKunciLayarOtomatis() {
-        ujianSedangTerkunci = true;
-        pelanggaranKeluar = 0;
-        document.getElementById('lock-warning-count').textContent = 'Pelanggaran Keluar: 0';
-        document.getElementById('session-bar').classList.add('hidden');
-        document.getElementById('btn-db-status').classList.add('hidden');
-
-        // 1. Langsung masuk Fullscreen otomatis saat masuk ke soal
-        mintaMasukFullscreen();
-
-        // 2. Kunci tombol Back browser dengan history trap
-        try {
-          window.history.pushState({ lockedExam: true }, '', window.location.href);
-        } catch (_) {}
-      }
-
-      function nonaktifkanKunciLayarOtomatis() {
-        ujianSedangTerkunci = false;
-        document.getElementById('lock-overlay-alert').classList.add('hidden');
-        document.getElementById('session-bar').classList.remove('hidden');
-        document.getElementById('btn-db-status').classList.remove('hidden');
-        try {
-          if (document.fullscreenElement && document.exitFullscreen) {
-            document.exitFullscreen().catch(() => {});
-          }
-        } catch (_) {}
-      }
-
-      function catatPelanggaranKunciLayar(alasan) {
-        if (!ujianSedangTerkunci) return;
-        pelanggaranKeluar++;
-        document.getElementById('lock-warning-count').textContent = `Pelanggaran Keluar: ${pelanggaranKeluar}`;
-        document.getElementById('lock-overlay-msg').textContent =
-          `${alasan} (Total pelanggaran tercatat: ${pelanggaranKeluar}x). Klik tombol di bawah untuk kembali mengunci layar penuh.`;
-        document.getElementById('lock-overlay-alert').classList.remove('hidden');
-      }
-
-      document.getElementById('btn-kembali-kunci-layar').addEventListener('click', () => {
-        document.getElementById('lock-overlay-alert').classList.add('hidden');
-        mintaMasukFullscreen();
-      });
-
-      document.getElementById('btn-paksa-fullscreen').addEventListener('click', mintaMasukFullscreen);
-
-      // Pastikan setiap klik pada area soal otomatis mengaktifkan kembali fullscreen jika sempat keluar
-      document.addEventListener('click', () => {
-        if (ujianSedangTerkunci && !document.fullscreenElement && document.getElementById('lock-overlay-alert').classList.contains('hidden')) {
-          mintaMasukFullscreen();
-        }
-      });
-
-      window.addEventListener('popstate', () => {
-        if (ujianSedangTerkunci) {
-          try { window.history.pushState({ lockedExam: true }, '', window.location.href); } catch (_) {}
-          catatPelanggaranKunciLayar('Tombol Kembali (Back) browser diblokir selama ujian berlangsung!');
-        }
-      });
-
-      window.addEventListener('beforeunload', (e) => {
-        if (ujianSedangTerkunci) {
-          e.preventDefault();
-          e.returnValue = 'Ujian sedang terkunci! Selesaikan semua misi terlebih dahulu.';
-        }
-      });
-
-      document.addEventListener('visibilitychange', () => {
-        if (ujianSedangTerkunci && document.hidden) {
-          catatPelanggaranKunciLayar('Anda terdeteksi meninggalkan tab atau membuka aplikasi lain saat ujian berlangsung!');
-        }
-      });
-
-      document.addEventListener('fullscreenchange', () => {
-        if (ujianSedangTerkunci && !document.fullscreenElement) {
-          catatPelanggaranKunciLayar('Anda keluar dari mode Layar Penuh (Fullscreen) saat mengerjakan soal!');
-        }
-      });
-
-      document.addEventListener('contextmenu', (e) => {
-        if (ujianSedangTerkunci) e.preventDefault();
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (!ujianSedangTerkunci) return;
-        if (e.key === 'F12' || (e.ctrlKey && ['c', 'v', 'u', 's', 'p', 'a', 't', 'w'].includes(e.key.toLowerCase())) || (e.altKey && e.key === 'Tab')) {
-          e.preventDefault();
-        }
-      });
-
-      // ==================== PORTAL LOGIN & MANAJEMEN SESI ROLE ====================
-      let selectedLoginRole = 'murid';
-
-      function populateFormLoginOptions() {
-        // Isi dropdown siswa sesuai kelas di form login murid
-        const kelas = document.getElementById('login-murid-kelas').value;
-        const selMurid = document.getElementById('login-murid-nama');
-        const inpManual = document.getElementById('login-murid-manual');
-        const listSiswa = state.students.filter((s) => s.kelas === kelas);
-
-        selMurid.innerHTML = '';
-        listSiswa.forEach((s) => {
-          const opt = document.createElement('option');
-          opt.value = s.nama;
-          opt.textContent = `${s.nama} ${s.nis ? `(NIS: ${s.nis})` : ''}`;
-          selMurid.appendChild(opt);
-        });
-        const optManual = document.createElement('option');
-        optManual.value = '__MANUAL__';
-        optManual.textContent = '+ Ketik Nama Siswa Manual...';
-        selMurid.appendChild(optManual);
-
-        if (listSiswa.length === 0) {
-          selMurid.value = '__MANUAL__';
-          inpManual.classList.remove('hidden');
-        } else {
-          inpManual.classList.add('hidden');
-        }
-
-        // Isi dropdown akun guru di form login guru
-        const selGuru = document.getElementById('login-guru-akun');
-        selGuru.innerHTML = '';
-        state.teachers.forEach((g) => {
-          const opt = document.createElement('option');
-          opt.value = g.id;
-          opt.textContent = `👨‍🏫 ${g.nama} (${g.nip || 'Guru'})`;
-          selGuru.appendChild(opt);
-        });
-      }
-
-      document.querySelectorAll('.role-card-btn').forEach((card) => {
-        card.addEventListener('click', () => {
-          document.querySelectorAll('.role-card-btn').forEach((c) => c.classList.remove('selected'));
-          card.classList.add('selected');
-          selectedLoginRole = card.dataset.role;
-
-          document.getElementById('form-login-murid').classList.toggle('hidden', selectedLoginRole !== 'murid');
-          document.getElementById('form-login-guru').classList.toggle('hidden', selectedLoginRole !== 'guru');
-          document.getElementById('form-login-admin').classList.toggle('hidden', selectedLoginRole !== 'admin');
-        });
-      });
-
-      document.getElementById('login-murid-kelas').addEventListener('change', populateFormLoginOptions);
-      document.getElementById('login-murid-nama').addEventListener('change', (e) => {
-        document.getElementById('login-murid-manual').classList.toggle('hidden', e.target.value !== '__MANUAL__');
-      });
-
-      function masukKeSesiRole(sessionObj) {
-        currentSession = sessionObj;
-        document.getElementById('view-login').classList.add('hidden');
-        document.getElementById('session-bar').classList.remove('hidden');
-        document.getElementById('session-user-name').textContent = sessionObj.nama;
-
-        ['view-siswa', 'view-guru', 'view-admin'].forEach((id) => document.getElementById(id).classList.add('hidden'));
-
-        if (sessionObj.role === 'murid') {
-          document.getElementById('session-user-role').textContent = `Role: Murid (${sessionObj.kelas})`;
-          document.getElementById('view-siswa').classList.remove('hidden');
-          document.getElementById('siswa-mulai-card').classList.remove('hidden');
-          document.getElementById('siswa-ujian-area').classList.add('hidden');
-          document.getElementById('siswa-selesai-card').classList.add('hidden');
-          renderBriefingSiswa();
-        } else if (sessionObj.role === 'guru') {
-          state.activeGuruId = sessionObj.guruId;
-          document.getElementById('session-user-role').textContent = 'Role: Ustadz / Guru';
-          document.getElementById('view-guru').classList.remove('hidden');
-          renderPanelGuru();
-        } else if (sessionObj.role === 'admin') {
-          document.getElementById('session-user-role').textContent = 'Role: Admin / Kepala Sekolah';
-          document.getElementById('view-admin').classList.remove('hidden');
-          renderPanelAdmin();
-        }
-      }
-
-      document.getElementById('form-login-murid').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const kelas = document.getElementById('login-murid-kelas').value;
-        const sel = document.getElementById('login-murid-nama').value;
-        const nama = sel === '__MANUAL__' ? document.getElementById('login-murid-manual').value.trim() : sel;
-        if (!nama) {
-          alert('Silakan pilih atau ketik nama murid terlebih dahulu.');
-          return;
-        }
-        masukKeSesiRole({ role: 'murid', nama, kelas });
-      });
-
-      document.getElementById('form-login-guru').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const guruId = document.getElementById('login-guru-akun').value;
-        const pinInput = document.getElementById('login-guru-pin').value.trim();
-        const guru = state.teachers.find((t) => t.id === guruId);
-        if (!guru) return;
-        if (pinInput !== (guru.pin || '1234')) {
-          alert('❌ PIN Guru salah! (Default PIN guru adalah 1234 kecuali sudah diubah oleh Admin/Guru).');
-          return;
-        }
-        document.getElementById('login-guru-pin').value = '';
-        masukKeSesiRole({ role: 'guru', nama: guru.nama, guruId: guru.id });
-      });
-
-      document.getElementById('form-login-admin').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const pinInput = document.getElementById('login-admin-pin').value.trim();
-        if (pinInput !== (state.adminProfile.pin || 'admin123')) {
-          alert('❌ PIN Kepala Sekolah / Admin salah! (Default PIN adalah admin123).');
-          return;
-        }
-        document.getElementById('login-admin-pin').value = '';
-        masukKeSesiRole({ role: 'admin', nama: state.adminProfile.nama });
-      });
-
-      document.getElementById('btn-logout-role').addEventListener('click', () => {
-        if (ujianSedangTerkunci) {
-          alert('🔒 Layar terkunci selama ujian berlangsung!');
-          return;
-        }
-        currentSession = null;
-        ['view-siswa', 'view-guru', 'view-admin'].forEach((id) => document.getElementById(id).classList.add('hidden'));
-        document.getElementById('session-bar').classList.add('hidden');
-        document.getElementById('view-login').classList.remove('hidden');
-        populateFormLoginOptions();
-      });
-
-      // ==================== MODAL CLOSE ====================
-      document.querySelectorAll('[data-close]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          document.getElementById(btn.dataset.close).classList.add('hidden');
-        });
-      });
-
-      // ==================== CRUD MATA PELAJARAN PER KELAS ====================
-      function bukaModalMapelKelas(kelas, indexEdit = -1) {
-        const modalEl = document.getElementById('modal-mapel-kelas');
-        if (!modalEl) return;
-        document.getElementById('mapel-kelas-target').value = kelas;
-        document.getElementById('mapel-edit-index').value = String(indexEdit);
-        document.getElementById('inp-mapel-kelas-display').value = kelas;
-
-        if (indexEdit >= 0 && state.mapelPerKelas[kelas]?.[indexEdit]) {
-          const item = state.mapelPerKelas[kelas][indexEdit];
-          document.getElementById('judul-modal-mapel').textContent = `✏️ Edit Mata Pelajaran (${kelas})`;
-          document.getElementById('inp-mapel-ikon').value = item.ikon || '🪐';
-          document.getElementById('inp-mapel-nama').value = item.nama;
-        } else {
-          document.getElementById('judul-modal-mapel').textContent = `➕ Tambah Mata Pelajaran di ${kelas}`;
-          document.getElementById('inp-mapel-ikon').value = '🪐';
-          document.getElementById('inp-mapel-nama').value = '';
-        }
-        modalEl.classList.remove('hidden');
-      }
-
-      async function hapusMapelDiKelas(kelas, indexHapus) {
-        const list = state.mapelPerKelas[kelas] || [];
-        const target = list[indexHapus];
-        if (!target) return;
-        if (!confirm(`Hapus mata pelajaran "${target.nama}" dari ${kelas}?`)) return;
-
-        list.splice(indexHapus, 1);
-        state.teachers.forEach((t) => {
-          t.assignments = (t.assignments || []).filter((a) => !(a.kelas === kelas && a.mapel === target.nama));
-        });
-        await saveState();
-        refreshSemuaTampilan();
-      }
-
-      document.getElementById('form-mapel-kelas').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const kelas = document.getElementById('mapel-kelas-target').value;
-        const indexEdit = parseInt(document.getElementById('mapel-edit-index').value, 10);
-        const ikon = document.getElementById('inp-mapel-ikon').value;
-        const namaBaru = document.getElementById('inp-mapel-nama').value.trim();
-        if (!namaBaru) return;
-
-        const list = state.mapelPerKelas[kelas] || [];
-        const duplikat = list.some((m, idx) => idx !== indexEdit && m.nama.toLowerCase() === namaBaru.toLowerCase());
-        if (duplikat) {
-          alert(`Mata pelajaran "${namaBaru}" sudah ada di ${kelas}.`);
-          return;
-        }
-
-        if (indexEdit >= 0 && list[indexEdit]) {
-          const namaLama = list[indexEdit].nama;
-          list[indexEdit] = { ...list[indexEdit], nama: namaBaru, ikon };
-          state.teachers.forEach((t) => {
-            t.assignments = (t.assignments || []).map((a) =>
-              a.kelas === kelas && a.mapel === namaLama ? { ...a, mapel: namaBaru } : a
-            );
-          });
-          state.soalList = state.soalList.map((s) =>
-            s.kelas === kelas && s.mapel === namaLama ? { ...s, mapel: namaBaru } : s
-          );
-        } else {
-          const warna = WARNA_PLANET_PALETTE[list.length % WARNA_PLANET_PALETTE.length];
-          list.push({ nama: namaBaru, ikon, warna });
-        }
-
-        state.mapelPerKelas[kelas] = list;
-        await saveState();
-        document.getElementById('modal-mapel-kelas').classList.add('hidden');
-        refreshSemuaTampilan();
-        alert(`✅ Mata pelajaran "${namaBaru}" (${kelas}) berhasil disimpan ke Database!`);
-      });
-
-      function refreshSemuaTampilan() {
-        renderProfilAdminHeader();
-        populateFormLoginOptions();
-        if (currentSession?.role === 'guru') renderPanelGuru();
-        if (currentSession?.role === 'admin') renderPanelAdmin();
-        if (currentSession?.role === 'murid') renderBriefingSiswa();
-        if (!document.getElementById('modal-guru').classList.contains('hidden')) {
-          const curChecked = ambilAssignmentsDariMatrix(document.getElementById('modal-guru-matrix'), 'modal_guru_assign');
-          renderMatrixCheckboxes(document.getElementById('modal-guru-matrix'), curChecked, 'modal_guru_assign');
-        }
-      }
-
-      // ==================== MATRIX MAPEL LINTAS KELAS ====================
-      function renderMatrixCheckboxes(containerEl, selectedAssignments, inputName) {
-        containerEl.innerHTML = '';
-        DAFTAR_KELAS.forEach((kelas) => {
-          const daftarMapelKelas = state.mapelPerKelas[kelas] || [];
-          const group = document.createElement('div');
-          group.className = 'kelas-matrix-group';
-          group.innerHTML = `
-            <div class="kelas-matrix-header">
-              <span class="kelas-matrix-title">📘 ${kelas} (${daftarMapelKelas.length} Mapel)</span>
-              <button type="button" class="btn-primary-xs btn-add-mapel-kelas">+ Tambah Mapel ${kelas}</button>
-            </div>
-            <div class="checkbox-mapel-grid"></div>
-          `;
-
-          group.querySelector('.btn-add-mapel-kelas').addEventListener('click', () => {
-            bukaModalMapelKelas(kelas, -1);
-          });
-
-          const grid = group.querySelector('.checkbox-mapel-grid');
-          if (!daftarMapelKelas.length) {
-            grid.innerHTML = `<span class="subtitle-sm">Belum ada mapel di ${kelas}. Klik <b>+ Tambah Mapel ${kelas}</b>.</span>`;
-          } else {
-            daftarMapelKelas.forEach((m, idx) => {
-              const isChecked = selectedAssignments.some((a) => a.kelas === kelas && a.mapel === m.nama);
-              const itemDiv = document.createElement('div');
-              itemDiv.className = 'chk-mapel-item';
-              itemDiv.innerHTML = `
-                <label class="chk-mapel-left">
-                  <input type="checkbox" name="${inputName}" data-kelas="${kelas}" data-mapel="${escapeHtml(m.nama)}" ${isChecked ? 'checked' : ''} />
-                  <span>${m.ikon} ${escapeHtml(m.nama)}</span>
-                </label>
-                <div class="mapel-actions-mini">
-                  <button type="button" class="btn-icon-mini edit" title="Edit Mapel">✏️</button>
-                  <button type="button" class="btn-icon-mini del" title="Hapus Mapel">🗑️</button>
-                </div>
-              `;
-              itemDiv.querySelector('.edit').addEventListener('click', (ev) => {
-                ev.stopPropagation();
-                bukaModalMapelKelas(kelas, idx);
-              });
-              itemDiv.querySelector('.del').addEventListener('click', (ev) => {
-                ev.stopPropagation();
-                hapusMapelDiKelas(kelas, idx);
-              });
-              grid.appendChild(itemDiv);
-            });
-          }
-          containerEl.appendChild(group);
-        });
-      }
-
-      function ambilAssignmentsDariMatrix(containerEl, inputName) {
-        const result = [];
-        containerEl.querySelectorAll(`input[name="${inputName}"]:checked`).forEach((chk) => {
-          result.push({ kelas: chk.dataset.kelas, mapel: chk.dataset.mapel });
-        });
-        return result;
-      }
-
-      // ==================== PANEL ADMIN / KEPALA SEKOLAH ====================
-      function renderProfilAdminHeader() {
-        document.getElementById('header-nama-sekolah').textContent = `🚀 ${state.adminProfile.sekolah} — Space CBT`;
-        document.getElementById('admin-nama-display').textContent = state.adminProfile.nama;
-        document.getElementById('admin-sekolah-display').textContent =
-          `${state.adminProfile.sekolah} • NIP: ${state.adminProfile.nip || '-'} • ${state.adminProfile.alamat || '-'}`;
-      }
-
-      document.getElementById('btn-edit-profil-admin').addEventListener('click', () => {
-        document.getElementById('inp-admin-nama').value = state.adminProfile.nama;
-        document.getElementById('inp-admin-nip').value = state.adminProfile.nip || '';
-        document.getElementById('inp-admin-pin').value = state.adminProfile.pin || 'admin123';
-        document.getElementById('inp-admin-sekolah').value = state.adminProfile.sekolah;
-        document.getElementById('inp-admin-alamat').value = state.adminProfile.alamat || '';
-        document.getElementById('modal-profil-admin').classList.remove('hidden');
-      });
-
-      document.getElementById('form-profil-admin').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        state.adminProfile = {
-          nama: document.getElementById('inp-admin-nama').value.trim(),
-          nip: document.getElementById('inp-admin-nip').value.trim(),
-          pin: document.getElementById('inp-admin-pin').value.trim() || 'admin123',
-          sekolah: document.getElementById('inp-admin-sekolah').value.trim(),
-          alamat: document.getElementById('inp-admin-alamat').value.trim(),
-        };
-        await saveState();
-        renderProfilAdminHeader();
-        if (currentSession?.role === 'admin') {
-          document.getElementById('session-user-name').textContent = state.adminProfile.nama;
-        }
-        document.getElementById('modal-profil-admin').classList.add('hidden');
-        alert('✅ Profil & PIN Kepala Sekolah berhasil disimpan ke Database!');
-      });
-
-      ['guru', 'siswa', 'mapel', 'db'].forEach((sub) => {
-        document.getElementById(`subtab-admin-${sub}`).addEventListener('click', () => {
-          ['guru', 'siswa', 'mapel', 'db'].forEach((x) => {
-            document.getElementById(`subtab-admin-${x}`).classList.remove('active');
-            document.getElementById(`panel-admin-${x}`).classList.add('hidden');
-          });
-          document.getElementById(`subtab-admin-${sub}`).classList.add('active');
-          document.getElementById(`panel-admin-${sub}`).classList.remove('hidden');
-          if (sub === 'siswa') renderDaftarSiswaAdmin();
-          if (sub === 'mapel') renderDaftarMapelAdmin();
-        });
-      });
-
-      function renderPanelAdmin() {
-        renderProfilAdminHeader();
-        renderDaftarGuruAdmin();
-        renderDaftarSiswaAdmin();
-        renderDaftarMapelAdmin();
-      }
-
-      function renderDaftarMapelAdmin() {
-        const container = document.getElementById('daftar-mapel-per-kelas-admin');
-        if (!container) return;
-        container.innerHTML = '';
-
-        DAFTAR_KELAS.forEach((kelas) => {
-          const list = state.mapelPerKelas[kelas] || [];
-          const box = document.createElement('div');
-          box.className = 'kelas-matrix-group';
-          box.innerHTML = `
-            <div class="kelas-matrix-header">
-              <span class="kelas-matrix-title">📘 Daftar Mata Pelajaran ${kelas} (${list.length} Mapel)</span>
-              <button type="button" class="btn-primary-xs btn-add-mapel-admin">+ Tambah Mapel ${kelas}</button>
-            </div>
-            <div class="list-pills"></div>
-          `;
-          box.querySelector('.btn-add-mapel-admin').addEventListener('click', () => {
-            bukaModalMapelKelas(kelas, -1);
-          });
-
-          const pills = box.querySelector('.list-pills');
-          if (!list.length) {
-            pills.innerHTML = `<span class="subtitle-sm">Belum ada mata pelajaran di ${kelas}.</span>`;
-          } else {
-            list.forEach((m, idx) => {
-              const pill = document.createElement('div');
-              pill.className = 'mapel-pill-card';
-              pill.innerHTML = `
-                <span>${m.ikon} <b>${escapeHtml(m.nama)}</b></span>
-                <button type="button" class="btn-icon-mini edit" title="Edit Mapel">✏️</button>
-                <button type="button" class="btn-icon-mini del" title="Hapus Mapel">🗑️</button>
-              `;
-              pill.querySelector('.edit').addEventListener('click', () => bukaModalMapelKelas(kelas, idx));
-              pill.querySelector('.del').addEventListener('click', () => hapusMapelDiKelas(kelas, idx));
-              pills.appendChild(pill);
-            });
-          }
-          container.appendChild(box);
-        });
-      }
-
-      function renderDaftarGuruAdmin() {
-        const box = document.getElementById('daftar-guru-admin');
-        box.innerHTML = '';
-        if (!state.teachers.length) {
-          box.innerHTML = '<p class="subtitle-sm">Belum ada data guru.</p>';
-          return;
-        }
-        state.teachers.forEach((g) => {
-          const div = document.createElement('div');
-          div.className = 'item-card';
-          const tags = (g.assignments || [])
-            .map((a) => `<span class="badge-tag">${escapeHtml(a.mapel)} (${escapeHtml(a.kelas)})</span>`)
-            .join('');
-          div.innerHTML = `
-            <div class="item-header">
-              <div>
-                <strong>👨‍🏫 ${escapeHtml(g.nama)}</strong>
-                <span class="subtitle-sm" style="margin-left:8px;">NIP: ${escapeHtml(g.nip || '-')} • PIN Login: <b>${escapeHtml(g.pin || '1234')}</b></span>
-              </div>
-              <div>
-                <button type="button" class="btn-warning btn-edit-guru" style="padding:5px 11px;font-size:0.8rem;">✏️ Edit Guru &amp; Mapel</button>
-                ${state.teachers.length > 1 ? '<button type="button" class="btn-danger-xs btn-del-guru" style="margin-left:5px;">🗑️ Hapus</button>' : ''}
-              </div>
-            </div>
-            <div>${tags || '<span class="subtitle-sm">Belum ada mapel dipilih</span>'}</div>
-          `;
-          div.querySelector('.btn-edit-guru').addEventListener('click', () => bukaModalGuru(g));
-          const delBtn = div.querySelector('.btn-del-guru');
-          if (delBtn) {
-            delBtn.addEventListener('click', async () => {
-              if (!confirm(`Hapus guru ${g.nama}?`)) return;
-              state.teachers = state.teachers.filter((t) => t.id !== g.id);
-              if (state.activeGuruId === g.id) state.activeGuruId = state.teachers[0].id;
-              await saveState();
-              renderDaftarGuruAdmin();
-              populateFormLoginOptions();
-            });
-          }
-          box.appendChild(div);
-        });
-      }
-
-      function bukaModalGuru(guru = null) {
-        document.getElementById('guru-edit-id').value = guru ? guru.id : '';
-        document.getElementById('judul-modal-guru').textContent = guru ? '✏️ Edit Profil Guru, PIN & Mapel Diampu' : '➕ Tambah Ustadz / Guru Baru';
-        document.getElementById('inp-guru-nama').value = guru ? guru.nama : '';
-        document.getElementById('inp-guru-nip').value = guru ? (guru.nip || '') : '';
-        document.getElementById('inp-guru-pin').value = guru ? (guru.pin || '1234') : '1234';
-        renderMatrixCheckboxes(
-          document.getElementById('modal-guru-matrix'),
-          guru ? (guru.assignments || []) : [],
-          'modal_guru_assign'
-        );
-        document.getElementById('modal-guru').classList.remove('hidden');
-      }
-
-      document.getElementById('btn-tambah-guru').addEventListener('click', () => bukaModalGuru(null));
-
-      document.getElementById('form-guru').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('guru-edit-id').value;
-        const nama = document.getElementById('inp-guru-nama').value.trim();
-        const nip = document.getElementById('inp-guru-nip').value.trim();
-        const pin = document.getElementById('inp-guru-pin').value.trim() || '1234';
-        const assignments = ambilAssignmentsDariMatrix(document.getElementById('modal-guru-matrix'), 'modal_guru_assign');
-
-        if (id) {
-          state.teachers = state.teachers.map((t) => (t.id === id ? { ...t, nama, nip, pin, assignments } : t));
-        } else {
-          const newId = 'guru_' + Date.now();
-          state.teachers.push({ id: newId, nama, nip, pin, assignments });
-          state.activeGuruId = newId;
-        }
-        await saveState();
-        document.getElementById('modal-guru').classList.add('hidden');
-        if (currentSession?.role === 'guru' && currentSession.guruId === id) {
-          document.getElementById('session-user-name').textContent = nama;
-        }
-        refreshSemuaTampilan();
-        alert('✅ Data Guru, PIN & Mata Pelajaran berhasil disimpan ke Database!');
-      });
-
-      // KELOLA SISWA ADMIN
-      function renderDaftarSiswaAdmin() {
-        const filterKelas = document.getElementById('admin-filter-kelas-siswa').value;
-        const box = document.getElementById('daftar-siswa-admin');
-        box.innerHTML = '';
-
-        const list = state.students.filter((s) => filterKelas === 'ALL' || s.kelas === filterKelas);
-        if (!list.length) {
-          box.innerHTML = '<p class="subtitle-sm">Belum ada siswa pada filter kelas ini.</p>';
-          return;
-        }
-
-        list.forEach((s) => {
-          const div = document.createElement('div');
-          div.className = 'item-card';
-          const statusKelas = s.kelas
-            ? `<span class="badge-tag badge-kelas">📘 ${escapeHtml(s.kelas)}</span>`
-            : `<span class="badge-tag badge-warn">⚠️ Dikeluarkan / Belum Masuk Kelas</span>`;
-          div.innerHTML = `
-            <div class="item-header" style="margin-bottom:0;padding-bottom:0;border:none;">
-              <div>
-                <strong>🧑‍🚀 ${escapeHtml(s.nama)}</strong>
-                <span class="subtitle-sm" style="margin-left:6px;">NIS: ${escapeHtml(s.nis || '-')}</span>
-                ${statusKelas}
-              </div>
-              <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button type="button" class="btn-warning btn-edit-sis" style="padding:5px 10px;font-size:0.78rem;">✏️ Pindah / Edit</button>
-                ${s.kelas ? '<button type="button" class="btn-secondary-xs btn-kick-sis">🚪 Keluarkan</button>' : ''}
-                <button type="button" class="btn-danger-xs btn-del-sis">🗑️ Hapus</button>
-              </div>
-            </div>
-          `;
-          div.querySelector('.btn-edit-sis').addEventListener('click', () => bukaModalSiswa(s));
-          const kickBtn = div.querySelector('.btn-kick-sis');
-          if (kickBtn) {
-            kickBtn.addEventListener('click', async () => {
-              if (!confirm(`Keluarkan ${s.nama} dari ${s.kelas}?`)) return;
-              state.students = state.students.map((st) => (st.id === s.id ? { ...st, kelas: '' } : st));
-              await saveState();
-              renderDaftarSiswaAdmin();
-              populateFormLoginOptions();
-            });
-          }
-          div.querySelector('.btn-del-sis').addEventListener('click', async () => {
-            if (!confirm(`Hapus permanen siswa ${s.nama}?`)) return;
-            state.students = state.students.filter((st) => st.id !== s.id);
-            await saveState();
-            renderDaftarSiswaAdmin();
-            populateFormLoginOptions();
-          });
-          box.appendChild(div);
-        });
-      }
-
-      document.getElementById('admin-filter-kelas-siswa').addEventListener('change', renderDaftarSiswaAdmin);
-
-      function bukaModalSiswa(siswa = null) {
-        document.getElementById('siswa-edit-id').value = siswa ? siswa.id : '';
-        document.getElementById('judul-modal-siswa').textContent = siswa ? '✏️ Edit / Pindah Kelas Siswa' : '➕ Tambah Siswa Baru';
-        document.getElementById('inp-siswa-nama').value = siswa ? siswa.nama : '';
-        document.getElementById('inp-siswa-nis').value = siswa ? (siswa.nis || '') : '';
-        document.getElementById('inp-siswa-kelas').value = siswa ? (siswa.kelas || '') : 'Kelas 1';
-        document.getElementById('modal-siswa').classList.remove('hidden');
-      }
-
-      document.getElementById('btn-tambah-siswa').addEventListener('click', () => bukaModalSiswa(null));
-
-      document.getElementById('form-siswa').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('siswa-edit-id').value;
-        const nama = document.getElementById('inp-siswa-nama').value.trim();
-        const nis = document.getElementById('inp-siswa-nis').value.trim();
-        const kelas = document.getElementById('inp-siswa-kelas').value;
-
-        if (id) {
-          state.students = state.students.map((s) => (s.id === id ? { ...s, nama, nis, kelas } : s));
-        } else {
-          state.students.push({ id: 'sis_' + Date.now(), nama, nis, kelas });
-        }
-        await saveState();
-        document.getElementById('modal-siswa').classList.add('hidden');
-        renderDaftarSiswaAdmin();
-        populateFormLoginOptions();
-        alert('✅ Data Siswa berhasil disimpan ke Database!');
-      });
-
-      // ==================== PANEL GURU / USTADZ ====================
-      function getGuruAktif() {
-        return state.teachers.find((t) => t.id === state.activeGuruId) || state.teachers[0];
-      }
-
-      function renderPanelGuru() {
-        const guru = getGuruAktif();
-        if (!guru) return;
-
-        document.getElementById('guru-nama-display').textContent = guru.nama;
-        const ringkasanMapel = [...new Set((guru.assignments || []).map((a) => `${a.mapel} (${a.kelas})`))].join(', ');
-        document.getElementById('guru-info-display').textContent =
-          `NIP/ID: ${guru.nip || '-'} • Diampu: ${ringkasanMapel || 'Belum ada mapel'}`;
-
-        const filterMapel = document.getElementById('filter-mapel-guru');
-        const mapelUnik = [...new Set((guru.assignments || []).map((a) => a.mapel))];
-        filterMapel.innerHTML = '<option value="ALL">Semua Mapel Diampu</option>';
-        mapelUnik.forEach((m) => {
-          const opt = document.createElement('option');
-          opt.value = m; opt.textContent = m;
-          filterMapel.appendChild(opt);
-        });
-
-        renderMatrixCheckboxes(
-          document.getElementById('matrix-mapel-guru'),
-          guru.assignments || [],
-          'guru_panel_assign'
-        );
-
-        renderDaftarSoalGuru();
-      }
-
-      document.getElementById('btn-edit-profil-guru').addEventListener('click', () => {
-        const guru = getGuruAktif();
-        if (guru) bukaModalGuru(guru);
-      });
-
-      ['soal', 'mapel', 'nilai'].forEach((sub) => {
-        document.getElementById(`subtab-guru-${sub}`).addEventListener('click', () => {
-          ['soal', 'mapel', 'nilai'].forEach((x) => {
-            document.getElementById(`subtab-guru-${x}`).classList.remove('active');
-            document.getElementById(`panel-guru-${x}`).classList.add('hidden');
-          });
-          document.getElementById(`subtab-guru-${sub}`).classList.add('active');
-          document.getElementById(`panel-guru-${sub}`).classList.remove('hidden');
-          if (sub === 'nilai') renderRekapNilaiGuru();
-        });
-      });
-
-      document.getElementById('btn-simpan-mapel-guru').addEventListener('click', async () => {
-        const guru = getGuruAktif();
-        if (!guru) return;
-        const assignments = ambilAssignmentsDariMatrix(document.getElementById('matrix-mapel-guru'), 'guru_panel_assign');
-        state.teachers = state.teachers.map((t) => (t.id === guru.id ? { ...t, assignments } : t));
-        await saveState();
-        renderPanelGuru();
-        alert('✅ Pilihan mata pelajaran & kelas berhasil disimpan ke Database!');
-      });
-
-      function renderDaftarSoalGuru() {
-        const guru = getGuruAktif();
-        const fKelas = document.getElementById('filter-kelas-guru').value;
-        const fMapel = document.getElementById('filter-mapel-guru').value;
-
-        const filtered = state.soalList.filter((s) => {
-          const cocokGuru = !guru || (guru.assignments || []).some((a) => a.kelas === s.kelas && a.mapel === s.mapel);
-          if (!cocokGuru) return false;
-          if (fKelas !== 'ALL' && s.kelas !== fKelas) return false;
-          if (fMapel !== 'ALL' && s.mapel !== fMapel) return false;
-          return true;
-        });
-
-        document.getElementById('jumlah-soal').textContent = filtered.length;
-        const box = document.getElementById('daftar-soal');
-        box.innerHTML = '';
-
-        if (!filtered.length) {
-          box.innerHTML = '<div class="card-panel"><p class="subtitle-sm">Belum ada soal pada filter kelas/mapel ini. Klik <b>+ Buat Soal Baru</b> untuk menambahkan.</p></div>';
-          return;
-        }
-
-        const labelTipe = {
-          pg: 'Pilihan Ganda',
-          isian: 'Isian Singkat (Dropdown)',
-          uraian: 'Uraian (Susun Amunisi)',
-        };
-
-        filtered.forEach((soal, idx) => {
-          const div = document.createElement('div');
-          div.className = 'item-card';
-          div.innerHTML = `
-            <div class="item-header">
-              <div>
-                <strong>Misi #${idx + 1}</strong>
-                <span class="badge-tag badge-kelas">📘 ${escapeHtml(soal.kelas)}</span>
-                <span class="badge-tag">🪐 ${escapeHtml(soal.mapel)}</span>
-                <span class="badge-tag badge-warn">${labelTipe[soal.tipe] || soal.tipe}</span>
-              </div>
-              <div>
-                <button type="button" class="btn-warning btn-edit-soal" style="padding:5px 11px;font-size:0.8rem;">✏️ Edit</button>
-                <button type="button" class="btn-danger-xs btn-del-soal" style="margin-left:5px;">🗑️ Hapus</button>
-              </div>
-            </div>
-            <p style="line-height:1.5;margin-bottom:6px;">${escapeHtml(soal.pertanyaan)}</p>
-            ${soal.gambar_soal ? `<img src="${soal.gambar_soal}" class="soal-img-display" />` : ''}
-            <p class="subtitle-sm" style="color:#34d399;"><b>Kunci Jawaban:</b> ${escapeHtml(soal.kunci)}</p>
-          `;
-          div.querySelector('.btn-edit-soal').addEventListener('click', () => bukaModalSoal(soal));
-          div.querySelector('.btn-del-soal').addEventListener('click', async () => {
-            if (!confirm('Hapus soal ini?')) return;
-            state.soalList = state.soalList.filter((item) => item.id !== soal.id);
-            await saveState();
-            const sb = getSupabase();
-            if (sb && !String(soal.id).startsWith('local_')) {
-              try { await sb.from('soal').delete().eq('id', soal.id); } catch (_) {}
-            }
-            renderDaftarSoalGuru();
-          });
-          box.appendChild(div);
-        });
-      }
-
-      document.getElementById('filter-kelas-guru').addEventListener('change', renderDaftarSoalGuru);
-      document.getElementById('filter-mapel-guru').addEventListener('change', renderDaftarSoalGuru);
-
-      // ==================== EDITOR SOAL ====================
-      const modalSoal = document.getElementById('modal-soal');
-      const formSoal = document.getElementById('form-soal');
-      const selectTipe = document.getElementById('tipe-soal');
-
-      function setPreviewGambarEditor(previewBoxId, hiddenInputId, base64Data) {
-        const box = document.getElementById(previewBoxId);
-        const inp = document.getElementById(hiddenInputId);
-        if (inp) inp.value = base64Data || '';
-        if (box) box.innerHTML = base64Data ? `<img src="${base64Data}" alt="Preview" />` : '';
-      }
-
-      function perbaruiDropdownMapelFormSoal() {
-        const guru = getGuruAktif();
-        const kelasDipilih = document.getElementById('soal-kelas').value;
-        const selMapel = document.getElementById('soal-mapel');
-        const mapelKelasIni = (guru?.assignments || [])
-          .filter((a) => a.kelas === kelasDipilih)
-          .map((a) => a.mapel);
-
-        const semuaMapelKelas = (state.mapelPerKelas[kelasDipilih] || []).map((m) => m.nama);
-        const sumber = mapelKelasIni.length ? mapelKelasIni : semuaMapelKelas;
-
-        selMapel.innerHTML = '';
-        sumber.forEach((m) => {
-          const opt = document.createElement('option');
-          opt.value = m; opt.textContent = m;
-          selMapel.appendChild(opt);
-        });
-      }
-
-      document.getElementById('soal-kelas').addEventListener('change', perbaruiDropdownMapelFormSoal);
-
-      function sesuaikanFormTipe(tipe) {
-        document.getElementById('bagian-pg').classList.toggle('hidden', tipe !== 'pg');
-        document.getElementById('bagian-isian').classList.toggle('hidden', tipe !== 'isian');
-        document.getElementById('bagian-uraian').classList.toggle('hidden', tipe !== 'uraian');
-
-        if (tipe === 'isian' && document.getElementById('list-amunisi-isian').children.length === 0) {
-          tambahBarisAmunisiIsian({ teks: '', gambar: '', benar: true });
-          tambahBarisAmunisiIsian({ teks: '', gambar: '', benar: false });
-          tambahBarisAmunisiIsian({ teks: '', gambar: '', benar: false });
-        }
-        if (tipe === 'uraian' && document.getElementById('list-amunisi-uraian').children.length === 0) {
-          for (let i = 0; i < 4; i++) tambahBarisAmunisiUraian({ teks: '', gambar: '', benar: i < 2 });
-        }
-      }
-
-      function tambahBarisAmunisiIsian(data = { teks: '', gambar: '', benar: false }) {
-        const list = document.getElementById('list-amunisi-isian');
-        const idx = list.children.length + 1;
-        const card = document.createElement('div');
-        card.className = 'dynamic-item-card';
-        card.innerHTML = `
-          <div class="dynamic-item-row">
-            <input type="radio" name="kunci_isian_radio" ${data.benar ? 'checked' : ''} title="Pilih sebagai jawaban benar" />
-            <input type="text" class="inp-teks-isian" placeholder="Opsi Dropdown #${idx} (bisa paste gambar Ctrl+V)" value="${escapeHtml(data.teks)}" />
-            <label class="btn-upload-mini">🖼️<input type="file" class="file-img-isian" accept="image/*" hidden /></label>
-            <button type="button" class="btn-danger-xs btn-del-row">✕</button>
-          </div>
-          <div class="img-preview-mini prev-img-isian">${data.gambar ? `<img src="${data.gambar}" />` : ''}</div>
-          <input type="hidden" class="data-img-isian" value="${data.gambar || ''}" />
-        `;
-        card.querySelector('.file-img-isian').addEventListener('change', async (e) => {
-          if (e.target.files[0]) {
-            const b64 = await prosesFileGambarKeBase64(e.target.files[0]);
-            card.querySelector('.data-img-isian').value = b64;
-            card.querySelector('.prev-img-isian').innerHTML = `<img src="${b64}" />`;
-          }
-        });
-        card.querySelector('.inp-teks-isian').addEventListener('paste', async (e) => {
-          const b64 = await ambilGambarDariPaste(e);
-          if (b64) {
-            e.preventDefault();
-            card.querySelector('.data-img-isian').value = b64;
-            card.querySelector('.prev-img-isian').innerHTML = `<img src="${b64}" />`;
-          }
-        });
-        card.querySelector('.btn-del-row').addEventListener('click', () => card.remove());
-        list.appendChild(card);
-      }
-
-      function tambahBarisAmunisiUraian(data = { teks: '', gambar: '', benar: false }) {
-        const list = document.getElementById('list-amunisi-uraian');
-        const idx = list.children.length + 1;
-        const card = document.createElement('div');
-        card.className = 'dynamic-item-card';
-        card.innerHTML = `
-          <div class="dynamic-item-row">
-            <input type="checkbox" class="chk-kunci-uraian" ${data.benar ? 'checked' : ''} title="Centang jika bagian dari jawaban benar" />
-            <input type="text" class="inp-teks-uraian" placeholder="Tombol Amunisi #${idx} (bisa paste gambar Ctrl+V)" value="${escapeHtml(data.teks)}" />
-            <label class="btn-upload-mini">🖼️<input type="file" class="file-img-uraian" accept="image/*" hidden /></label>
-            <button type="button" class="btn-danger-xs btn-del-row">✕</button>
-          </div>
-          <div class="img-preview-mini prev-img-uraian">${data.gambar ? `<img src="${data.gambar}" />` : ''}</div>
-          <input type="hidden" class="data-img-uraian" value="${data.gambar || ''}" />
-        `;
-        card.querySelector('.file-img-uraian').addEventListener('change', async (e) => {
-          if (e.target.files[0]) {
-            const b64 = await prosesFileGambarKeBase64(e.target.files[0]);
-            card.querySelector('.data-img-uraian').value = b64;
-            card.querySelector('.prev-img-uraian').innerHTML = `<img src="${b64}" />`;
-          }
-        });
-        card.querySelector('.inp-teks-uraian').addEventListener('paste', async (e) => {
-          const b64 = await ambilGambarDariPaste(e);
-          if (b64) {
-            e.preventDefault();
-            card.querySelector('.data-img-uraian').value = b64;
-            card.querySelector('.prev-img-uraian').innerHTML = `<img src="${b64}" />`;
-          }
-        });
-        card.querySelector('.btn-del-row').addEventListener('click', () => card.remove());
-        list.appendChild(card);
-      }
-
-      function bukaModalSoal(soal = null) {
-        formSoal.reset();
-        document.getElementById('list-amunisi-isian').innerHTML = '';
-        document.getElementById('list-amunisi-uraian').innerHTML = '';
-
-        if (soal) {
-          document.getElementById('soal-id').value = soal.id;
-          document.getElementById('judul-modal').textContent = '✏️ Edit Soal Misi';
-          document.getElementById('soal-kelas').value = soal.kelas || 'Kelas 1';
-          perbaruiDropdownMapelFormSoal();
-          document.getElementById('soal-mapel').value = soal.mapel || '';
-          selectTipe.value = soal.tipe;
-          document.getElementById('pertanyaan').value = soal.pertanyaan || '';
-          setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', soal.gambar_soal || '');
-          document.getElementById('btn-hapus-gambar-soal').classList.toggle('hidden', !soal.gambar_soal);
-
-          if (soal.tipe === 'pg') {
-            ['a', 'b', 'c', 'd'].forEach((h) => {
-              document.getElementById(`opsi-${h}`).value = soal[`opsi_${h}`] || '';
-              setPreviewGambarEditor(`prev-img-${h}`, `data-gambar-${h}`, soal[`gambar_${h}`] || '');
-            });
-            document.getElementById('kunci-pg').value = soal.kunci || 'A';
-          } else if (soal.tipe === 'isian') {
-            (soal.opsi_tambahan || []).forEach((it) => tambahBarisAmunisiIsian(it));
-          } else if (soal.tipe === 'uraian') {
-            (soal.opsi_tambahan || []).forEach((it) => tambahBarisAmunisiUraian(it));
-          }
-          sesuaikanFormTipe(soal.tipe);
-        } else {
-          document.getElementById('soal-id').value = '';
-          document.getElementById('judul-modal').textContent = 'Buat Soal Baru';
-          const guru = getGuruAktif();
-          const firstAssign = guru?.assignments?.[0];
-          document.getElementById('soal-kelas').value = firstAssign ? firstAssign.kelas : 'Kelas 1';
-          perbaruiDropdownMapelFormSoal();
-          if (firstAssign) document.getElementById('soal-mapel').value = firstAssign.mapel;
-          setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', '');
-          document.getElementById('btn-hapus-gambar-soal').classList.add('hidden');
-          ['a', 'b', 'c', 'd'].forEach((k) => setPreviewGambarEditor(`prev-img-${k}`, `data-gambar-${k}`, ''));
-          selectTipe.value = 'pg';
-          sesuaikanFormTipe('pg');
-        }
-        modalSoal.classList.remove('hidden');
-      }
-
-      document.getElementById('btn-tambah-baru').addEventListener('click', () => bukaModalSoal(null));
-      selectTipe.addEventListener('change', (e) => sesuaikanFormTipe(e.target.value));
-
-      document.getElementById('file-gambar-soal').addEventListener('change', async (e) => {
-        if (e.target.files[0]) {
-          const b64 = await prosesFileGambarKeBase64(e.target.files[0]);
-          setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', b64);
-          document.getElementById('btn-hapus-gambar-soal').classList.remove('hidden');
-        }
-      });
-
-      document.getElementById('pertanyaan').addEventListener('paste', async (e) => {
-        const b64 = await ambilGambarDariPaste(e);
-        if (b64) {
-          e.preventDefault();
-          setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', b64);
-          document.getElementById('btn-hapus-gambar-soal').classList.remove('hidden');
-        }
-      });
-
-      document.getElementById('btn-hapus-gambar-soal').addEventListener('click', () => {
-        setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', '');
-        document.getElementById('btn-hapus-gambar-soal').classList.add('hidden');
-      });
-
-      document.querySelectorAll('.file-opsi-img').forEach((inp) => {
-        inp.addEventListener('change', async (e) => {
-          const target = e.target.dataset.target;
-          if (e.target.files[0]) {
-            const b64 = await prosesFileGambarKeBase64(e.target.files[0]);
-            setPreviewGambarEditor(`prev-img-${target}`, `data-gambar-${target}`, b64);
-          }
-        });
-      });
-
-      ['a', 'b', 'c', 'd'].forEach((huruf) => {
-        document.getElementById(`opsi-${huruf}`).addEventListener('paste', async (e) => {
-          const b64 = await ambilGambarDariPaste(e);
-          if (b64) {
-            e.preventDefault();
-            setPreviewGambarEditor(`prev-img-${huruf}`, `data-gambar-${huruf}`, b64);
-          }
-        });
-      });
-
-      document.getElementById('btn-tambah-amunisi-isian').addEventListener('click', () => tambahBarisAmunisiIsian());
-      document.getElementById('btn-tambah-amunisi-uraian').addEventListener('click', () => tambahBarisAmunisiUraian());
-      document.getElementById('btn-set-jumlah-uraian').addEventListener('click', () => {
-        const targetJml = parseInt(document.getElementById('jumlah-slot-uraian').value || '4', 10);
-        const list = document.getElementById('list-amunisi-uraian');
-        while (list.children.length < targetJml) tambahBarisAmunisiUraian();
-        while (list.children.length > targetJml && list.children.length > 1) list.lastElementChild.remove();
-      });
-
-      function rakitPayloadDariForm() {
-        const tipe = selectTipe.value;
-        const payload = {
-          kelas: document.getElementById('soal-kelas').value,
-          mapel: document.getElementById('soal-mapel').value,
-          tipe,
-          pertanyaan: document.getElementById('pertanyaan').value.trim(),
-          gambar_soal: document.getElementById('data-gambar-soal').value || null,
-          opsi_a: null, gambar_a: null, opsi_b: null, gambar_b: null,
-          opsi_c: null, gambar_c: null, opsi_d: null, gambar_d: null,
-          opsi_tambahan: [], kunci: '',
-        };
-
-        if (tipe === 'pg') {
-          payload.opsi_a = document.getElementById('opsi-a').value.trim();
-          payload.gambar_a = document.getElementById('data-gambar-a').value || null;
-          payload.opsi_b = document.getElementById('opsi-b').value.trim();
-          payload.gambar_b = document.getElementById('data-gambar-b').value || null;
-          payload.opsi_c = document.getElementById('opsi-c').value.trim();
-          payload.gambar_c = document.getElementById('data-gambar-c').value || null;
-          payload.opsi_d = document.getElementById('opsi-d').value.trim();
-          payload.gambar_d = document.getElementById('data-gambar-d').value || null;
-          payload.kunci = document.getElementById('kunci-pg').value;
-        } else if (tipe === 'isian') {
-          const items = [];
-          let kunciBenar = '';
-          document.querySelectorAll('#list-amunisi-isian .dynamic-item-card').forEach((r, i) => {
-            const teks = r.querySelector('.inp-teks-isian').value.trim();
-            const gambar = r.querySelector('.data-img-isian').value || '';
-            const benar = r.querySelector('input[type="radio"]').checked;
-            if (teks || gambar) {
-              const label = teks || `Opsi Gambar #${i + 1}`;
-              items.push({ teks: label, gambar, benar });
-              if (benar) kunciBenar = label;
-            }
-          });
-          payload.opsi_tambahan = items;
-          payload.kunci = kunciBenar || (items[0]?.teks || '');
-        } else if (tipe === 'uraian') {
-          const items = [];
-          const kunciList = [];
-          document.querySelectorAll('#list-amunisi-uraian .dynamic-item-card').forEach((r, i) => {
-            const teks = r.querySelector('.inp-teks-uraian').value.trim();
-            const gambar = r.querySelector('.data-img-uraian').value || '';
-            const benar = r.querySelector('.chk-kunci-uraian').checked;
-            if (teks || gambar) {
-              const label = teks || `Amunisi Gambar #${i + 1}`;
-              items.push({ teks: label, gambar, benar });
-              if (benar) kunciList.push(label);
-            }
-          });
-          payload.opsi_tambahan = items;
-          payload.kunci = JSON.stringify(kunciList);
-        }
-        return payload;
-      }
-
-      document.getElementById('btn-preview-soal').addEventListener('click', () => {
-        const draft = rakitPayloadDariForm();
-        if (!draft.pertanyaan) {
-          alert('Tuliskan pertanyaan terlebih dahulu sebelum preview.');
-          return;
-        }
-        const box = document.getElementById('kontainer-preview-siswa');
-        box.innerHTML = '';
-        renderKartuInteraktifSiswa(box, draft, 1, null, true, () => {});
-        document.getElementById('modal-preview').classList.remove('hidden');
-      });
-
-      formSoal.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('soal-id').value;
-        const payload = rakitPayloadDariForm();
-
-        if (!payload.mapel) {
-          alert('Pilih atau tambahkan mata pelajaran untuk kelas ini terlebih dahulu.');
-          return;
-        }
-        if ((payload.tipe === 'isian' || payload.tipe === 'uraian') && payload.opsi_tambahan.length === 0) {
-          alert('Tambahkan minimal 1 pilihan jawaban terlebih dahulu.');
-          return;
-        }
-
-        if (id) {
-          state.soalList = state.soalList.map((s) => (s.id === id ? { ...s, ...payload } : s));
-        } else {
-          state.soalList.push({ id: 'local_' + Date.now(), ...payload });
-        }
-        await saveState();
-
-        modalSoal.classList.add('hidden');
-        renderDaftarSoalGuru();
-        alert('✅ Soal berhasil disimpan ke Database!');
-      });
-
-      // ==================== RENDER KARTU SOAL INTERAKTIF SISWA ====================
-      function renderKartuInteraktifSiswa(container, soal, nomor, recordJawaban, isPreview, onEksekusiSelesai) {
-        const card = document.createElement('div');
-        card.className = 'card-panel';
-        card.innerHTML = `
-          <div class="item-header">
-            <div>
-              <strong>🎯 Target Misi #${nomor}</strong>
-              <span class="badge-tag badge-kelas">📘 ${escapeHtml(soal.kelas || '')}</span>
-              <span class="badge-tag">🪐 ${escapeHtml(soal.mapel || '')}</span>
-            </div>
-            ${isPreview ? '<span class="badge-tag badge-warn">MODE SIMULASI PREVIEW</span>' : ''}
-          </div>
-          <p style="font-size:1.08rem;line-height:1.55;margin-bottom:10px;">${escapeHtml(soal.pertanyaan)}</p>
-          ${soal.gambar_soal ? `<img src="${soal.gambar_soal}" class="soal-img-display" />` : ''}
-          <div class="zona-interaksi"></div>
-        `;
-
-        const zona = card.querySelector('.zona-interaksi');
-
-        if (soal.tipe === 'pg') {
-          const grid = document.createElement('div');
-          grid.className = 'opsi-ammo-grid';
-          ['A', 'B', 'C', 'D'].forEach((huruf) => {
-            const k = huruf.toLowerCase();
-            const teks = soal[`opsi_${k}`];
-            const gbr = soal[`gambar_${k}`];
-            if (!teks && !gbr) return;
-
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'btn-ammo-pg';
-            if (recordJawaban && recordJawaban.jawaban === huruf) {
-              btn.classList.add(recordJawaban.benar ? 'selected-correct' : 'selected-wrong');
-            }
-            btn.innerHTML = `
-              <div><strong style="color:#38bdf8;">[${huruf}]</strong> ${escapeHtml(teks || '')}</div>
-              ${gbr ? `<img src="${gbr}" class="opsi-img-display" />` : ''}
-            `;
-
-            btn.addEventListener('click', () => {
-              const isBenar = huruf === soal.kunci;
-              grid.querySelectorAll('.btn-ammo-pg').forEach((b) => b.classList.remove('selected-correct', 'selected-wrong'));
-              btn.classList.add(isBenar ? 'selected-correct' : 'selected-wrong');
-
-              const judul = isBenar
-                ? '💥 RINTANGAN HANCUR BERKEPING-KEPING!'
-                : '⚠️ WARNING! PERISAI PESAWAT RUSAK!';
-              const sub = isBenar
-                ? `Tembakan Amunisi [${huruf}] tepat sasaran! Pertahanan musuh hancur total.`
-                : `Amunisi [${huruf}] meleset! Laser balik musuh mengenai lambung pesawat (Kunci tepat: ${soal.kunci}).`;
-
-              picuLedakan3Detik(isBenar, judul, sub, () => {
-                onEksekusiSelesai({ jawaban: huruf, benar: isBenar });
-              });
-            });
-            grid.appendChild(btn);
-          });
-          zona.appendChild(grid);
-        } else if (soal.tipe === 'isian') {
-          const items = Array.isArray(soal.opsi_tambahan) ? soal.opsi_tambahan : [];
-          const box = document.createElement('div');
-          box.className = 'isian-dropdown-box';
-          box.innerHTML = `
-            <label for="dd-jawaban-isian" style="margin-top:0;color:#38bdf8;">🔽 Pilih Jawaban dari Dropdown Amunisi:</label>
-            <select id="dd-jawaban-isian">
-              <option value="">-- Pilih Jawaban Anda --</option>
-              ${items.map((it) => `<option value="${escapeHtml(it.teks)}" ${recordJawaban?.jawaban === it.teks ? 'selected' : ''}>${escapeHtml(it.teks)}</option>`).join('')}
-            </select>
-          `;
-
-          const bergambar = items.filter((it) => it.gambar);
-          if (bergambar.length > 0) {
-            const gal = document.createElement('div');
-            gal.className = 'isian-preview-gallery';
-            bergambar.forEach((it) => {
-              const th = document.createElement('div');
-              th.className = 'isian-opt-thumb';
-              th.innerHTML = `<img src="${it.gambar}" style="max-height:70px;border-radius:6px;display:block;margin:0 auto 4px;" /><span>${escapeHtml(it.teks)}</span>`;
-              gal.appendChild(th);
-            });
-            box.appendChild(gal);
-          }
-
-          const btnLanjut = document.createElement('button');
-          btnLanjut.type = 'button';
-          btnLanjut.className = 'btn-primary-rocket';
-          btnLanjut.style.marginTop = '14px';
-          btnLanjut.textContent = '🚀 Eksekusi Jawaban & Lanjut';
-          btnLanjut.addEventListener('click', () => {
-            const val = box.querySelector('#dd-jawaban-isian').value;
-            if (!val) {
-              alert('Pilih salah satu jawaban di dropdown terlebih dahulu!');
-              return;
-            }
-            const isBenar = String(val).toLowerCase() === String(soal.kunci).toLowerCase();
-            const judul = isBenar
-              ? '💥 TARGET ISIAN HANCUR SPEKTAKULER!'
-              : '⚠️ WARNING! KERUSAKAN SISTEM NAVIGASI!';
-            const sub = isBenar
-              ? `Jawaban "${val}" tepat menghancurkan asteroid penghalang!`
-              : `Jawaban "${val}" kurang tepat! Terjadi benturan meteor (Jawaban benar: ${soal.kunci}).`;
-
-            picuLedakan3Detik(isBenar, judul, sub, () => {
-              onEksekusiSelesai({ jawaban: val, benar: isBenar });
-            });
-          });
-
-          box.appendChild(btnLanjut);
-          zona.appendChild(box);
-        } else if (soal.tipe === 'uraian') {
-          const items = Array.isArray(soal.opsi_tambahan) ? soal.opsi_tambahan : [];
-          let terpilih = Array.isArray(recordJawaban?.jawaban) ? [...recordJawaban.jawaban] : [];
-
-          const lblTarget = document.createElement('p');
-          lblTarget.className = 'subtitle-sm';
-          lblTarget.innerHTML = '🛸 <b>Kotak Susunan Jawaban Anda</b> (Klik chip untuk melepas kembali):';
-          const targetBox = document.createElement('div');
-          targetBox.className = 'uraian-target-box';
-
-          const lblPool = document.createElement('p');
-          lblPool.className = 'subtitle-sm';
-          lblPool.innerHTML = '🔫 <b>Ambil Tombol Amunisi di Bawah untuk Dimasukkan ke Jawaban:</b>';
-          const poolBox = document.createElement('div');
-          poolBox.className = 'uraian-ammo-pool';
-
-          function refreshUraian() {
-            targetBox.innerHTML = '';
-            if (!terpilih.length) {
-              targetBox.innerHTML = '<span style="color:#64748b;font-size:0.84rem;">Klik tombol amunisi di bawah untuk menyusun jawaban...</span>';
-            } else {
-              terpilih.forEach((teksItem, idx) => {
-                const chip = document.createElement('span');
-                chip.className = 'chip-selected-item';
-                chip.innerHTML = `${idx + 1}. ${escapeHtml(teksItem)} ✕`;
-                chip.addEventListener('click', () => {
-                  terpilih.splice(idx, 1);
-                  refreshUraian();
-                });
-                targetBox.appendChild(chip);
-              });
-            }
-
-            poolBox.innerHTML = '';
-            items.forEach((it) => {
-              const sudahDipakai = terpilih.includes(it.teks);
-              const btn = document.createElement('button');
-              btn.type = 'button';
-              btn.className = `btn-ammo-chip ${sudahDipakai ? 'used' : ''}`;
-              btn.disabled = sudahDipakai;
-              btn.innerHTML = `
-                <span>⚡ ${escapeHtml(it.teks)}</span>
-                ${it.gambar ? `<img src="${it.gambar}" style="max-height:42px;border-radius:4px;" />` : ''}
-              `;
-              btn.addEventListener('click', () => {
-                terpilih.push(it.teks);
-                mainkanSuaraLaser();
-                refreshUraian();
-              });
-              poolBox.appendChild(btn);
-            });
-          }
-
-          refreshUraian();
-
-          const btnLanjut = document.createElement('button');
-          btnLanjut.type = 'button';
-          btnLanjut.className = 'btn-primary-rocket';
-          btnLanjut.style.marginTop = '14px';
-          btnLanjut.textContent = '🚀 Eksekusi Rangkaian Uraian & Lanjut';
-          btnLanjut.addEventListener('click', () => {
-            if (!terpilih.length) {
-              alert('Ambil minimal 1 tombol amunisi jawaban terlebih dahulu!');
-              return;
-            }
-            let kunciArr = [];
-            try { kunciArr = JSON.parse(soal.kunci || '[]'); } catch (_) {}
-            const isBenar =
-              kunciArr.length > 0 &&
-              kunciArr.length === terpilih.length &&
-              kunciArr.every((k) => terpilih.includes(k));
-
-            const judul = isBenar
-              ? '💥 BENTENG URAIAN MELEDAK DAHSYAT!'
-              : '⚠️ WARNING! KOMBINASI AMUNISI TIDAK COCOK!';
-            const sub = isBenar
-              ? 'Seluruh elemen amunisi jawaban tepat! Benteng utama hancur berkeping-keping.'
-              : `Susunan jawaban belum tepat sehingga memicu ledakan balik! (Kunci: ${kunciArr.join(', ')})`;
-
-            picuLedakan3Detik(isBenar, judul, sub, () => {
-              onEksekusiSelesai({ jawaban: [...terpilih], benar: isBenar });
-            });
-          });
-
-          zona.appendChild(lblTarget);
-          zona.appendChild(targetBox);
-          zona.appendChild(lblPool);
-          zona.appendChild(poolBox);
-          zona.appendChild(btnLanjut);
-        }
-
-        container.appendChild(card);
-      }
-
-      // ==================== ALUR UJIAN SISWA ====================
-      let soalMisiSiswa = [];
-      let indexSoalAktif = 0;
-      let rekamanJawabanSiswa = {};
-      let pesertaAktif = null;
-
-      function renderBriefingSiswa() {
-        const kelasDipilih = currentSession?.kelas || 'Kelas 1';
-        const namaMurid = currentSession?.nama || 'Astronaut';
-
-        document.getElementById('briefing-nama-murid').textContent = namaMurid;
-        document.getElementById('briefing-kelas-badge').textContent = `📘 ${kelasDipilih}`;
-        document.getElementById('label-kelas-planet').textContent = kelasDipilih;
-
-        const mapelAktifKelasIni = new Set();
-        state.teachers.forEach((t) => {
-          (t.assignments || []).forEach((a) => {
-            if (a.kelas === kelasDipilih) mapelAktifKelasIni.add(a.mapel);
-          });
-        });
-
-        const grid = document.getElementById('grid-planet-mapel');
-        const hiddenMapel = document.getElementById('siswa-mapel-terpilih');
-        grid.innerHTML = '';
-        hiddenMapel.value = '';
-
-        const masterKelasIni = state.mapelPerKelas[kelasDipilih] || [];
-        const planetList = masterKelasIni.filter((m) => mapelAktifKelasIni.has(m.nama));
-
-        if (!planetList.length) {
-          grid.innerHTML = `<p class="subtitle-sm">Belum ada mata pelajaran yang diaktifkan Ustadz/Guru untuk ${kelasDipilih}.</p>`;
-          return;
-        }
-
-        planetList.forEach((m, idx) => {
-          const jmlSoal = state.soalList.filter((s) => s.kelas === kelasDipilih && s.mapel === m.nama).length;
-          const card = document.createElement('div');
-          card.className = 'planet-card' + (idx === 0 ? ' selected' : '');
-          if (idx === 0) hiddenMapel.value = m.nama;
-
-          card.innerHTML = `
-            <div class="planet-orb" style="background:${m.warna || WARNA_PLANET_PALETTE[idx % WARNA_PLANET_PALETTE.length]};">${m.ikon}</div>
-            <div class="planet-name">${escapeHtml(m.nama)}</div>
-            <div class="planet-sub">${kelasDipilih} • ${jmlSoal} Misi</div>
-          `;
-          card.addEventListener('click', () => {
-            document.querySelectorAll('.planet-card').forEach((c) => c.classList.remove('selected'));
-            card.classList.add('selected');
-            hiddenMapel.value = m.nama;
-          });
-          grid.appendChild(card);
-        });
-      }
-
-      document.getElementById('form-mulai-misi').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const kelas = currentSession?.kelas || 'Kelas 1';
-        const nama = currentSession?.nama || 'Astronaut';
-        const mapel = document.getElementById('siswa-mapel-terpilih').value;
-
-        if (!mapel) {
-          alert('Pilih planet mata pelajaran terlebih dahulu.');
-          return;
-        }
-
-        soalMisiSiswa = state.soalList.filter((s) => s.kelas === kelas && s.mapel === mapel);
-        if (!soalMisiSiswa.length) {
-          alert(`Belum ada soal yang dibuat guru untuk ${mapel} (${kelas}).`);
-          return;
-        }
-
-        pesertaAktif = { nama, kelas, mapel };
-        rekamanJawabanSiswa = {};
-        indexSoalAktif = 0;
-
-        // LANGSUNG AKTIFKAN KUNCI LAYAR OTOMATIS SAAT MASUK KE SOAL
-        aktifkanKunciLayarOtomatis();
-
-        document.getElementById('siswa-mulai-card').classList.add('hidden');
-        document.getElementById('siswa-ujian-area').classList.remove('hidden');
-        document.getElementById('info-peserta').textContent = `🧑‍🚀 ${nama} (${kelas})`;
-        document.getElementById('badge-planet-aktif').textContent = `🪐 ${mapel}`;
-        renderSoalAktifSiswa();
-      });
-
-      function renderSoalAktifSiswa() {
-        const arena = document.getElementById('arena-soal-aktif');
-        arena.innerHTML = '';
-        const soal = soalMisiSiswa[indexSoalAktif];
-        document.getElementById('progress-soal').textContent = `Misi ${indexSoalAktif + 1} / ${soalMisiSiswa.length}`;
-
-        renderKartuInteraktifSiswa(
-          arena,
-          soal,
-          indexSoalAktif + 1,
-          rekamanJawabanSiswa[soal.id],
-          false,
-          (hasilEksekusi) => {
-            rekamanJawabanSiswa[soal.id] = hasilEksekusi;
-            renderIndikatorNomor();
-            if (indexSoalAktif < soalMisiSiswa.length - 1) {
-              indexSoalAktif++;
-              renderSoalAktifSiswa();
-            } else {
-              selesaikanMisiSiswa(true);
-            }
-          }
-        );
-
-        document.getElementById('btn-prev-soal').disabled = indexSoalAktif === 0;
-        document.getElementById('btn-next-soal').disabled = indexSoalAktif === soalMisiSiswa.length - 1;
-        renderIndikatorNomor();
-      }
-
-      function renderIndikatorNomor() {
-        const dots = document.getElementById('indikator-nomor-soal');
-        dots.innerHTML = '';
-        soalMisiSiswa.forEach((s, idx) => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          const rec = rekamanJawabanSiswa[s.id];
-          let cls = 'dot-num';
-          if (rec) cls += rec.benar ? ' answered-ok' : ' answered-err';
-          if (idx === indexSoalAktif) cls += ' active';
-          btn.className = cls;
-          btn.textContent = idx + 1;
-          btn.addEventListener('click', () => {
-            indexSoalAktif = idx;
-            renderSoalAktifSiswa();
-          });
-          dots.appendChild(btn);
-        });
-      }
-
-      document.getElementById('btn-prev-soal').addEventListener('click', () => {
-        if (indexSoalAktif > 0) { indexSoalAktif--; renderSoalAktifSiswa(); }
-      });
-      document.getElementById('btn-next-soal').addEventListener('click', () => {
-        if (indexSoalAktif < soalMisiSiswa.length - 1) { indexSoalAktif++; renderSoalAktifSiswa(); }
-      });
-
-      async function selesaikanMisiSiswa(otomatis = false) {
-        if (!otomatis && !confirm('Selesaikan seluruh misi dan buka kunci layar?')) return;
-
-        let benar = 0;
-        soalMisiSiswa.forEach((s) => {
-          if (rekamanJawabanSiswa[s.id]?.benar) benar++;
-        });
-        const skor = soalMisiSiswa.length > 0 ? Math.round((benar / soalMisiSiswa.length) * 100) : 0;
-
-        const hasilBaru = {
-          id: 'res_' + Date.now(),
-          nama_siswa: pesertaAktif.nama,
-          kelas: pesertaAktif.kelas,
-          mapel: pesertaAktif.mapel,
-          skor_otomatis: skor,
-          benar,
-          total: soalMisiSiswa.length,
-          pelanggaran: pelanggaranKeluar,
-          created_at: new Date().toISOString(),
-        };
-        state.hasilList.unshift(hasilBaru);
-        await saveState();
-
-        const sb = getSupabase();
-        if (sb) {
-          try {
-            await sb.from('hasil_ujian').insert([{
-              nama_siswa: hasilBaru.nama_siswa,
-              kelas: hasilBaru.kelas,
-              mapel: hasilBaru.mapel,
-              skor_otomatis: hasilBaru.skor_otomatis,
-              detail_jawaban: rekamanJawabanSiswa,
-            }]);
-          } catch (_) {}
-        }
-
-        nonaktifkanKunciLayarOtomatis();
-        document.getElementById('siswa-ujian-area').classList.add('hidden');
-        document.getElementById('siswa-selesai-card').classList.remove('hidden');
-        document.getElementById('pesan-hasil-siswa').textContent =
-          `Astronaut ${pesertaAktif.nama} (${pesertaAktif.kelas}) telah menyelesaikan Planet ${pesertaAktif.mapel}. Nilai otomatis tersimpan ke Database.`;
-        document.getElementById('skor-akhir-box').textContent =
-          `Skor Akhir: ${skor} (${benar} dari ${soalMisiSiswa.length} Misi Tepat) • Pelanggaran Keluar: ${pelanggaranKeluar}x`;
-      }
-
-      document.getElementById('btn-kumpulkan-ujian').addEventListener('click', () => selesaikanMisiSiswa(false));
-
-      document.getElementById('btn-ujian-ulang').addEventListener('click', () => {
-        document.getElementById('siswa-selesai-card').classList.add('hidden');
-        document.getElementById('siswa-mulai-card').classList.remove('hidden');
-        renderBriefingSiswa();
-      });
-
-      function renderRekapNilaiGuru() {
-        const box = document.getElementById('daftar-hasil-siswa');
-        box.innerHTML = '';
-        if (!state.hasilList.length) {
-          box.innerHTML = '<p class="subtitle-sm">Belum ada siswa yang menyelesaikan ujian.</p>';
-          return;
-        }
-        state.hasilList.forEach((h) => {
-          const div = document.createElement('div');
-          div.className = 'item-card';
-          div.innerHTML = `
-            <div class="item-header" style="margin-bottom:0;padding-bottom:0;border:none;">
-              <div>
-                <strong>🧑‍🚀 ${escapeHtml(h.nama_siswa)}</strong>
-                <span class="badge-tag badge-kelas">${escapeHtml(h.kelas)}</span>
-                <span class="badge-tag">🪐 ${escapeHtml(h.mapel)}</span>
-                <div class="subtitle-sm">${new Date(h.created_at).toLocaleString('id-ID')} • Pelanggaran Keluar: ${h.pelanggaran || 0}x</div>
-              </div>
-              <span style="background:#059669;color:#fff;padding:6px 12px;border-radius:8px;font-weight:700;">Skor: ${h.skor_otomatis}</span>
-            </div>
-          `;
-          box.appendChild(div);
-        });
-      }
-
-      document.getElementById('btn-refresh-nilai').addEventListener('click', async () => {
-        await sinkronisasiAwalDatabase();
-        renderRekapNilaiGuru();
-      });
-
-      // ==================== BACKUP, RESTORE & SINKRONISASI MANUAL ====================
-      document.getElementById('btn-sync-cache-to-db').addEventListener('click', () => pushStateKeDatabase(true));
-      document.getElementById('btn-force-push-db').addEventListener('click', () => pushStateKeDatabase(true));
-      document.getElementById('btn-force-pull-db').addEventListener('click', async () => {
-        await sinkronisasiAwalDatabase();
-        alert('✅ Data terbaru berhasil ditarik dari Database Supabase!');
-      });
-      document.getElementById('btn-db-status').addEventListener('click', () => pushStateKeDatabase(true));
-
-      document.getElementById('btn-export-data').addEventListener('click', () => {
-        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `backup_cbt_${new Date().toISOString().slice(0, 10)}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-      });
-
-      document.getElementById('inp-import-data').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async (ev) => {
-          try {
-            const imported = JSON.parse(ev.target.result);
-            gabungkanDataAman(imported, true);
-            await saveState();
-            refreshSemuaTampilan();
-            alert('✅ Data sekolah berhasil dipulihkan dan diamankan ke Database!');
-          } catch (_) {
-            alert('❌ File JSON backup tidak valid.');
-          }
-        };
-        reader.readAsText(file);
-        e.target.value = '';
-      });
-
-      // ==================== STARTUP & EVENT SUPABASE ====================
-      loadStateFromCache();
-      initSpaceCanvas();
-      renderProfilAdminHeader();
-      populateFormLoginOptions();
-
-      window.addEventListener('sb-ready', () => {
-        sinkronisasiAwalDatabase();
-      });
-      // Cek juga jika sb sudah siap sebelum listener terpasang
-      setTimeout(() => {
-        if (getSupabase()) sinkronisasiAwalDatabase();
-      }, 600);
-    })();
-  </script>
-</body>
-</html>
