@@ -154,31 +154,64 @@
       font-size: 0.82rem; font-weight: 600; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
     }
 
-    /* EXPLOSION STAGE 3 SECONDS */
+    /* SCENE FEEDBACK 3 SECONDS: KILAUAN CAHAYA BINTANG (BENAR) VS LEDAKAN (SALAH) */
     .explosion-stage {
-      position: fixed; inset: 0; z-index: 2200; background: rgba(2, 6, 23, 0.86);
-      display: flex; justify-content: center; align-items: center; pointer-events: all;
+      position: fixed; inset: 0; z-index: 2200; background: rgba(2, 6, 23, 0.88);
+      display: flex; justify-content: center; align-items: center; pointer-events: all; overflow: hidden;
     }
-    .explosion-core { position: relative; text-align: center; padding: 24px; max-width: 520px; }
-    .shockwave {
+    .explosion-stage.success-blast {
+      background: radial-gradient(circle at center, rgba(16, 185, 129, 0.28) 0%, rgba(250, 204, 21, 0.14) 38%, rgba(2, 6, 23, 0.94) 100%);
+    }
+    .explosion-core { position: relative; text-align: center; padding: 28px; max-width: 560px; z-index: 3; }
+
+    /* Animasi Kilauan Cahaya & Bintang (Jawaban Benar) */
+    .starlight-particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+    .twinkle-star {
+      position: absolute; font-size: 1.5rem;
+      animation: starBurstFloat 2.8s ease-out forwards;
+      filter: drop-shadow(0 0 10px #fde047);
+    }
+    @keyframes starBurstFloat {
+      0% { transform: translate(0, 0) scale(0.2) rotate(0deg); opacity: 0; }
+      25% { opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(1.4) rotate(240deg); opacity: 0; }
+    }
+    .success-aura {
+      width: 125px; height: 125px; border-radius: 50%; margin: 0 auto 18px;
+      background: radial-gradient(circle, #ffffff 0%, #fef08a 35%, #34d399 70%, transparent 100%);
+      box-shadow: 0 0 45px #fde047, 0 0 85px #10b981;
+      display: flex; align-items: center; justify-content: center; font-size: 3.2rem;
+      animation: radiantGlow 0.9s ease-in-out infinite alternate;
+    }
+    @keyframes radiantGlow {
+      from { transform: scale(0.95); box-shadow: 0 0 35px #fde047, 0 0 65px #10b981; }
+      to { transform: scale(1.12); box-shadow: 0 0 60px #fef08a, 0 0 110px #34d399; }
+    }
+    .success-blast .shockwave {
+      position: absolute; top: 50%; left: 50%; width: 50px; height: 50px; border-radius: 50%;
+      transform: translate(-50%, -50%); border: 3px solid rgba(253, 224, 71, 0.85);
+      box-shadow: 0 0 30px #fde047; animation: shockExpand 1.4s ease-out infinite;
+    }
+
+    /* Animasi Ledakan Bahaya (Jawaban Salah) */
+    .damage-blast .shockwave {
       position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; border-radius: 50%;
-      transform: translate(-50%, -50%); animation: shockExpand 1.2s ease-out infinite;
+      transform: translate(-50%, -50%); border: 5px solid #f87171; box-shadow: 0 0 35px #ef4444;
+      animation: shockExpand 1.2s ease-out infinite;
     }
-    .success-blast .shockwave { border: 5px solid #34d399; box-shadow: 0 0 35px #10b981; }
-    .damage-blast .shockwave { border: 5px solid #f87171; box-shadow: 0 0 35px #ef4444; }
     @keyframes shockExpand {
       0% { width: 30px; height: 30px; opacity: 1; }
-      100% { width: 380px; height: 380px; opacity: 0; }
+      100% { width: 390px; height: 390px; opacity: 0; }
     }
     .fireball {
       width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 16px;
+      background: radial-gradient(circle, #fef08a, #ef4444, transparent 72%);
       animation: pulseBlast 0.55s ease-in-out infinite alternate;
     }
-    .success-blast .fireball { background: radial-gradient(circle, #fef08a, #10b981, transparent 72%); }
-    .damage-blast .fireball { background: radial-gradient(circle, #fef08a, #ef4444, transparent 72%); }
     @keyframes pulseBlast { from { transform: scale(0.9); } to { transform: scale(1.22); } }
-    .explosion-caption { position: relative; z-index: 2; font-size: 1.45rem; font-weight: 800; color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,0.8); }
-    .explosion-subcaption { position: relative; z-index: 2; font-size: 0.95rem; color: #e2e8f0; margin-top: 8px; }
+    .explosion-caption { position: relative; z-index: 2; font-size: 1.55rem; font-weight: 800; color: #fff; text-shadow: 0 2px 14px rgba(0,0,0,0.85); line-height: 1.35; }
+    .success-blast .explosion-caption { color: #fef08a; text-shadow: 0 0 18px rgba(250, 204, 21, 0.85), 0 2px 8px rgba(0,0,0,0.9); }
+    .explosion-subcaption { position: relative; z-index: 2; font-size: 1rem; color: #e2e8f0; margin-top: 10px; line-height: 1.5; }
 
     /* ARENA SISWA */
     .ujian-topbar {
@@ -282,12 +315,13 @@
     </div>
   </div>
 
-  <!-- EFEK LEDAKAN PENUH 3 DETIK -->
+  <!-- EFEK FEEDBACK PENUH 3 DETIK (KILAUAN BINTANG VS LEDAKAN) -->
   <div id="explosion-stage" class="explosion-stage hidden" aria-hidden="true">
+    <div id="starlight-particles" class="starlight-particles"></div>
     <div class="explosion-core">
       <div class="shockwave"></div>
-      <div class="fireball"></div>
-      <div id="explosion-text" class="explosion-caption">💥 TARGET HANCUR!</div>
+      <div id="feedback-visual-orb" class="fireball"></div>
+      <div id="explosion-text" class="explosion-caption">✨ Masya Allah!</div>
       <div id="explosion-subtext" class="explosion-subcaption"></div>
     </div>
   </div>
@@ -1283,7 +1317,29 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         } catch (_) {}
       }
 
-      function mainkanSuaraLedakanMenggelegar(isDamage = false) {
+      function mainkanSuaraKilauanBintang() {
+        try {
+          const ctx = getAudioContext();
+          if (!ctx) return;
+          const now = ctx.currentTime;
+          const nada = [523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98];
+          nada.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + i * 0.12);
+            gain.gain.setValueAtTime(0.001, now + i * 0.12);
+            gain.gain.exponentialRampToValueAtTime(0.28, now + i * 0.12 + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.85);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.12);
+            osc.stop(now + i * 0.12 + 0.9);
+          });
+        } catch (_) {}
+      }
+
+      function mainkanSuaraLedakanMenggelegar() {
         try {
           const ctx = getAudioContext();
           if (!ctx) return;
@@ -1292,8 +1348,8 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
 
           const osc = ctx.createOscillator();
           const bassGain = ctx.createGain();
-          osc.type = isDamage ? 'sawtooth' : 'sine';
-          osc.frequency.setValueAtTime(isDamage ? 160 : 140, now);
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(160, now);
           osc.frequency.exponentialRampToValueAtTime(22, now + durasi);
           bassGain.gain.setValueAtTime(0.95, now);
           bassGain.gain.exponentialRampToValueAtTime(0.01, now + durasi);
@@ -1325,27 +1381,70 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         } catch (_) {}
       }
 
+      function tebarkanPartikelBintang() {
+        const container = document.getElementById('starlight-particles');
+        if (!container) return;
+        container.innerHTML = '';
+        const simbolBintang = ['✨', '⭐', '🌟', '💫', '✦'];
+        for (let i = 0; i < 36; i++) {
+          const span = document.createElement('span');
+          span.className = 'twinkle-star';
+          span.textContent = simbolBintang[i % simbolBintang.length];
+          span.style.left = `${10 + Math.random() * 80}%`;
+          span.style.top = `${15 + Math.random() * 70}%`;
+          const angle = Math.random() * Math.PI * 2;
+          const dist = 70 + Math.random() * 190;
+          span.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
+          span.style.setProperty('--ty', `${Math.sin(angle) * dist - 40}px`);
+          span.style.animationDelay = `${Math.random() * 0.45}s`;
+          container.appendChild(span);
+        }
+      }
+
       let sedangMeledak = false;
       function picuLedakan3Detik(isBenar, judul, detailPesan, selesaiCallback) {
         if (sedangMeledak) return;
         sedangMeledak = true;
         const stage = document.getElementById('explosion-stage');
+        const orb = document.getElementById('feedback-visual-orb');
+        const starBox = document.getElementById('starlight-particles');
+
         stage.classList.remove('success-blast', 'damage-blast', 'hidden');
         stage.classList.add(isBenar ? 'success-blast' : 'damage-blast');
+
+        if (isBenar) {
+          orb.className = 'success-aura';
+          orb.textContent = '🌟';
+          tebarkanPartikelBintang();
+          mainkanSuaraKilauanBintang();
+        } else {
+          orb.className = 'fireball';
+          orb.textContent = '';
+          if (starBox) starBox.innerHTML = '';
+          document.body.classList.add('exploding');
+          mainkanSuaraLaser();
+          setTimeout(() => mainkanSuaraLedakanMenggelegar(), 120);
+        }
 
         document.getElementById('explosion-text').textContent = judul;
         document.getElementById('explosion-subtext').textContent = detailPesan;
 
-        document.body.classList.add('exploding');
-        mainkanSuaraLaser();
-        setTimeout(() => mainkanSuaraLedakanMenggelegar(!isBenar), 120);
-
         setTimeout(() => {
           stage.classList.add('hidden');
           document.body.classList.remove('exploding');
+          if (starBox) starBox.innerHTML = '';
           sedangMeledak = false;
           if (typeof selesaiCallback === 'function') selesaiCallback();
         }, 3000);
+      }
+
+      function acakArrayFisherYates(arr) {
+        const salinan = [...arr];
+        for (let i = salinan.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [salinan[i], salinan[j]] = [salinan[j], salinan[i]];
+        }
+        return salinan;
       }
 
       function initSpaceCanvas() {
@@ -1414,16 +1513,24 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         return null;
       }
 
-      // ==================== KUNCI LAYAR OTOMATIS SAAT MASUK SOAL ====================
+      // ==================== KUNCI LAYAR OTOMATIS SAAT MASUK PLANET SOAL ====================
       let ujianSedangTerkunci = false;
       let pelanggaranKeluar = 0;
+      let wakeLockSentinel = null;
 
-      function mintaMasukFullscreen() {
+      async function mintaMasukFullscreen() {
         try {
           const el = document.documentElement;
           if (!document.fullscreenElement) {
-            if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+            if (el.requestFullscreen) await el.requestFullscreen();
             else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+            else if (el.msRequestFullscreen) el.msRequestFullscreen();
+          }
+          if (navigator.keyboard && navigator.keyboard.lock) {
+            navigator.keyboard.lock(['Escape']).catch(() => {});
+          }
+          if ('wakeLock' in navigator && !wakeLockSentinel) {
+            wakeLockSentinel = await navigator.wakeLock.request('screen').catch(() => null);
           }
         } catch (_) {}
       }
@@ -1437,6 +1544,7 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         mintaMasukFullscreen();
         try {
           window.history.pushState({ lockedExam: true }, '', window.location.href);
+          window.history.pushState({ lockedExam: true }, '', window.location.href);
         } catch (_) {}
       }
 
@@ -1446,6 +1554,13 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         document.getElementById('session-bar').classList.remove('hidden');
         document.getElementById('btn-db-status').classList.remove('hidden');
         try {
+          if (navigator.keyboard && navigator.keyboard.unlock) {
+            navigator.keyboard.unlock();
+          }
+          if (wakeLockSentinel) {
+            wakeLockSentinel.release().catch(() => {});
+            wakeLockSentinel = null;
+          }
           if (document.fullscreenElement && document.exitFullscreen) {
             document.exitFullscreen().catch(() => {});
           }
@@ -1491,6 +1606,12 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
       document.addEventListener('visibilitychange', () => {
         if (ujianSedangTerkunci && document.hidden) {
           catatPelanggaranKunciLayar('Anda terdeteksi meninggalkan tab atau membuka aplikasi lain saat ujian berlangsung!');
+        }
+      });
+
+      window.addEventListener('blur', () => {
+        if (ujianSedangTerkunci && document.getElementById('lock-overlay-alert').classList.contains('hidden')) {
+          catatPelanggaranKunciLayar('Anda terdeteksi berpindah jendela atau keluar dari layar ujian!');
         }
       });
 
@@ -2632,11 +2753,11 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
               btn.classList.add(isBenar ? 'selected-correct' : 'selected-wrong');
 
               const judul = isBenar
-                ? '💥 RINTANGAN HANCUR BERKEPING-KEPING!'
+                ? '✨ Masya Allah, usaha yang bagus. lanjutkan!! ✨'
                 : '⚠️ WARNING! PERISAI PESAWAT RUSAK!';
               const sub = isBenar
-                ? `Tembakan Amunisi [${huruf}] tepat sasaran! Pertahanan musuh hancur total.`
-                : `Amunisi [${huruf}] meleset! Laser balik musuh mengenai lambung pesawat (Kunci tepat: ${soal.kunci}).`;
+                ? `Tembakan Amunisi [${huruf}] tepat sasaran! Cahaya bintang menerangi perjalanan misimu.`
+                : `Amunisi [${huruf}] meleset! Laser balik musuh mengenai lambung pesawat. Tetap fokus pada misi berikutnya!`;
 
               picuLedakan3Detik(isBenar, judul, sub, () => {
                 onEksekusiSelesai({ jawaban: huruf, benar: isBenar });
@@ -2646,7 +2767,7 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
           });
           zona.appendChild(grid);
         } else if (soal.tipe === 'isian') {
-          const items = Array.isArray(soal.opsi_tambahan) ? soal.opsi_tambahan : [];
+          const items = acakArrayFisherYates(Array.isArray(soal.opsi_tambahan) ? soal.opsi_tambahan : []);
           const box = document.createElement('div');
           box.className = 'isian-dropdown-box';
           box.innerHTML = `
@@ -2683,11 +2804,11 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
             }
             const isBenar = String(val).toLowerCase() === String(soal.kunci).toLowerCase();
             const judul = isBenar
-              ? '💥 TARGET ISIAN HANCUR SPEKTAKULER!'
+              ? '✨ Masya Allah, usaha yang bagus. lanjutkan!! ✨'
               : '⚠️ WARNING! KERUSAKAN SISTEM NAVIGASI!';
             const sub = isBenar
-              ? `Jawaban "${val}" tepat menghancurkan asteroid penghalang!`
-              : `Jawaban "${val}" kurang tepat! Terjadi benturan meteor (Jawaban benar: ${soal.kunci}).`;
+              ? `Jawaban "${val}" tepat sasaran! Bintang kemenangan bersinar terang.`
+              : `Jawaban "${val}" kurang tepat! Terjadi benturan meteor. Tetap semangat untuk misi berikutnya!`;
 
             picuLedakan3Detik(isBenar, judul, sub, () => {
               onEksekusiSelesai({ jawaban: val, benar: isBenar });
@@ -2697,7 +2818,7 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
           box.appendChild(btnLanjut);
           zona.appendChild(box);
         } else if (soal.tipe === 'uraian') {
-          const items = Array.isArray(soal.opsi_tambahan) ? soal.opsi_tambahan : [];
+          const items = acakArrayFisherYates(Array.isArray(soal.opsi_tambahan) ? soal.opsi_tambahan : []);
           let terpilih = Array.isArray(recordJawaban?.jawaban) ? [...recordJawaban.jawaban] : [];
 
           const lblTarget = document.createElement('p');
@@ -2769,11 +2890,11 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
               kunciArr.every((k) => terpilih.includes(k));
 
             const judul = isBenar
-              ? '💥 BENTENG URAIAN MELEDAK DAHSYAT!'
+              ? '✨ Masya Allah, usaha yang bagus. lanjutkan!! ✨'
               : '⚠️ WARNING! KOMBINASI AMUNISI TIDAK COCOK!';
             const sub = isBenar
-              ? 'Seluruh elemen amunisi jawaban tepat! Benteng utama hancur berkeping-keping.'
-              : `Susunan jawaban belum tepat sehingga memicu ledakan balik! (Kunci: ${kunciArr.join(', ')})`;
+              ? 'Seluruh elemen amunisi jawaban tepat! Kilauan bintang menyertai langkahmu.'
+              : 'Susunan jawaban belum tepat sehingga memicu ledakan balik! Tetap teliti pada soal selanjutnya!';
 
             picuLedakan3Detik(isBenar, judul, sub, () => {
               onEksekusiSelesai({ jawaban: [...terpilih], benar: isBenar });
@@ -2839,39 +2960,47 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
             document.querySelectorAll('.planet-card').forEach((c) => c.classList.remove('selected'));
             card.classList.add('selected');
             hiddenMapel.value = m.nama;
+            mulaiUjianPlanet(m.nama);
           });
           grid.appendChild(card);
         });
       }
 
-      document.getElementById('form-mulai-misi').addEventListener('submit', (e) => {
-        e.preventDefault();
+      function mulaiUjianPlanet(mapelDipilih) {
         const kelas = currentSession?.kelas || 'Kelas 1';
         const nama = currentSession?.nama || 'Astronaut';
-        const mapel = document.getElementById('siswa-mapel-terpilih').value;
 
-        if (!mapel) {
+        if (!mapelDipilih) {
           alert('Pilih planet mata pelajaran terlebih dahulu.');
           return;
         }
 
-        soalMisiSiswa = state.soalList.filter((s) => s.kelas === kelas && s.mapel === mapel);
-        if (!soalMisiSiswa.length) {
-          alert(`Belum ada soal yang dibuat guru untuk ${mapel} (${kelas}).`);
+        const daftarSoalAsli = state.soalList.filter((s) => s.kelas === kelas && s.mapel === mapelDipilih);
+        if (!daftarSoalAsli.length) {
+          alert(`Belum ada soal yang dibuat guru untuk ${mapelDipilih} (${kelas}).`);
           return;
         }
 
-        pesertaAktif = { nama, kelas, mapel };
+        // Acak urutan soal (Fisher-Yates) agar setiap murid mendapat urutan berbeda
+        soalMisiSiswa = acakArrayFisherYates(daftarSoalAsli);
+        pesertaAktif = { nama, kelas, mapel: mapelDipilih };
         rekamanJawabanSiswa = {};
         indexSoalAktif = 0;
 
+        // Langsung kunci layar otomatis saat masuk ke arena soal
         aktifkanKunciLayarOtomatis();
 
         document.getElementById('siswa-mulai-card').classList.add('hidden');
         document.getElementById('siswa-ujian-area').classList.remove('hidden');
         document.getElementById('info-peserta').textContent = `🧑‍🚀 ${nama} (${kelas})`;
-        document.getElementById('badge-planet-aktif').textContent = `🪐 ${mapel}`;
+        document.getElementById('badge-planet-aktif').textContent = `🪐 ${mapelDipilih}`;
         renderSoalAktifSiswa();
+      }
+
+      document.getElementById('form-mulai-misi').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const mapel = document.getElementById('siswa-mapel-terpilih').value;
+        mulaiUjianPlanet(mapel);
       });
 
       function renderSoalAktifSiswa() {
