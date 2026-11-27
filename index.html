@@ -456,13 +456,12 @@
           <p id="guru-info-display" class="subtitle-sm">NIP/ID: -</p>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <button id="btn-edit-profil-guru" type="button" class="btn-warning">✏️ Edit Profil, Akun &amp; Mapel Saya</button>
+          <span class="badge-tag badge-warn">🔒 Penugasan Mapel &amp; Kelas Diatur Admin</span>
         </div>
       </div>
 
       <div class="sub-tabs">
         <button id="subtab-guru-soal" type="button" class="btn-subtab active">📚 Bank Soal (<span id="jumlah-soal">0</span>)</button>
-        <button id="subtab-guru-mapel" type="button" class="btn-subtab">🪐 Pilih Mapel &amp; Kelas Diampu</button>
         <button id="subtab-guru-murid" type="button" class="btn-subtab">🧑‍🎓 Profil Murid</button>
         <button id="subtab-guru-nilai" type="button" class="btn-subtab">📊 Rekap Hasil Siswa</button>
       </div>
@@ -470,36 +469,16 @@
       <!-- SUB-PANEL A: BANK SOAL -->
       <div id="panel-guru-soal">
         <div class="flex-between" style="margin-bottom:14px;">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <select id="filter-kelas-guru" style="width:auto;">
-              <option value="ALL">Semua Kelas Diampu</option>
-              <option value="Kelas 1">Kelas 1</option>
-              <option value="Kelas 2">Kelas 2</option>
-              <option value="Kelas 3">Kelas 3</option>
-              <option value="Kelas 4">Kelas 4</option>
-              <option value="Kelas 5">Kelas 5</option>
-              <option value="Kelas 6">Kelas 6</option>
-            </select>
-            <select id="filter-mapel-guru" style="width:auto;">
-              <option value="ALL">Semua Mapel Diampu</option>
-            </select>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <select id="filter-kelas-guru" style="width:auto;border-color:#38bdf8;"></select>
+            <select id="filter-mapel-guru" style="width:auto;border-color:#10b981;"></select>
           </div>
           <button id="btn-tambah-baru" type="button" class="btn-primary-rocket">+ Buat Soal Baru</button>
         </div>
         <div id="daftar-soal"></div>
       </div>
 
-      <!-- SUB-PANEL B: CHECKBOX MAPEL LINTAS KELAS -->
-      <div id="panel-guru-mapel" class="card-panel hidden">
-        <div class="flex-between" style="margin-bottom:12px;">
-          <div>
-            <h3>Centang &amp; Kelola Mata Pelajaran per Kelas (Kelas 1 – 6)</h3>
-            <p class="subtitle-sm">Semua perubahan mapel otomatis disimpan ke Database Supabase.</p>
-          </div>
-          <button id="btn-simpan-mapel-guru" type="button" class="btn-success">💾 Simpan Pilihan Mapel</button>
-        </div>
-        <div id="matrix-mapel-guru"></div>
-      </div>
+
 
       <!-- SUB-PANEL C: PROFIL MURID (KHUSUS ROLE GURU) -->
       <div id="panel-guru-murid" class="card-panel hidden">
@@ -2271,6 +2250,72 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         return state.teachers.find((t) => t.id === state.activeGuruId) || state.teachers[0];
       }
 
+      function perbaruiDropdownFilterGuru(pertahankanPilihan = true) {
+        const guru = getGuruAktif();
+        const filterKelas = document.getElementById('filter-kelas-guru');
+        const filterMapel = document.getElementById('filter-mapel-guru');
+        if (!guru || !filterKelas || !filterMapel) return;
+
+        const assignments = guru.assignments || [];
+        const prevKelas = pertahankanPilihan ? filterKelas.value : '';
+        const prevMapel = pertahankanPilihan ? filterMapel.value : '';
+
+        const kelasUnik = DAFTAR_KELAS.filter((k) => assignments.some((a) => a.kelas === k));
+        filterKelas.innerHTML = '';
+
+        if (!kelasUnik.length) {
+          filterKelas.innerHTML = '<option value="">Belum ada kelas diampu</option>';
+          filterMapel.innerHTML = '<option value="">Belum ada mapel diampu</option>';
+          return;
+        }
+
+        kelasUnik.forEach((k) => {
+          const opt = document.createElement('option');
+          opt.value = k;
+          opt.textContent = `📘 ${k}`;
+          filterKelas.appendChild(opt);
+        });
+
+        if (prevKelas && kelasUnik.includes(prevKelas)) {
+          filterKelas.value = prevKelas;
+        } else {
+          filterKelas.value = kelasUnik[0];
+        }
+
+        perbaruiDropdownMapelDariKelasTerpilih(prevMapel);
+      }
+
+      function perbaruiDropdownMapelDariKelasTerpilih(preferMapel = '') {
+        const guru = getGuruAktif();
+        const filterKelas = document.getElementById('filter-kelas-guru');
+        const filterMapel = document.getElementById('filter-mapel-guru');
+        if (!guru || !filterKelas || !filterMapel) return;
+
+        const kelasAktif = filterKelas.value;
+        const mapelDiKelasIni = (guru.assignments || [])
+          .filter((a) => a.kelas === kelasAktif)
+          .map((a) => a.mapel);
+
+        filterMapel.innerHTML = '';
+        if (!mapelDiKelasIni.length) {
+          filterMapel.innerHTML = '<option value="">Tidak ada mapel di kelas ini</option>';
+          return;
+        }
+
+        mapelDiKelasIni.forEach((m) => {
+          const opt = document.createElement('option');
+          opt.value = m;
+          opt.textContent = `🪐 ${m}`;
+          filterMapel.appendChild(opt);
+        });
+
+        if (preferMapel && mapelDiKelasIni.includes(preferMapel)) {
+          filterMapel.value = preferMapel;
+        } else {
+          filterMapel.value = mapelDiKelasIni[0];
+        }
+      }
+
       function renderPanelGuru() {
         const guru = getGuruAktif();
         if (!guru) return;
@@ -2278,23 +2323,9 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         document.getElementById('guru-nama-display').textContent = guru.nama;
         const ringkasanMapel = [...new Set((guru.assignments || []).map((a) => `${a.mapel} (${a.kelas})`))].join(', ');
         document.getElementById('guru-info-display').textContent =
-          `Username: ${guru.username} • NIP/ID: ${guru.nip || '-'} • Diampu: ${ringkasanMapel || 'Belum ada mapel'}`;
+          `Username: ${guru.username} • NIP/ID: ${guru.nip || '-'} • Diampu: ${ringkasanMapel || 'Belum ada mapel (Hubungi Admin)'}`;
 
-        const filterMapel = document.getElementById('filter-mapel-guru');
-        const mapelUnik = [...new Set((guru.assignments || []).map((a) => a.mapel))];
-        filterMapel.innerHTML = '<option value="ALL">Semua Mapel Diampu</option>';
-        mapelUnik.forEach((m) => {
-          const opt = document.createElement('option');
-          opt.value = m; opt.textContent = m;
-          filterMapel.appendChild(opt);
-        });
-
-        renderMatrixCheckboxes(
-          document.getElementById('matrix-mapel-guru'),
-          guru.assignments || [],
-          'guru_panel_assign'
-        );
-
+        perbaruiDropdownFilterGuru(true);
         renderDaftarSoalGuru();
         renderProfilMuridUntukGuru();
       }
@@ -2331,14 +2362,9 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
 
       document.getElementById('guru-filter-kelas-murid').addEventListener('change', renderProfilMuridUntukGuru);
 
-      document.getElementById('btn-edit-profil-guru').addEventListener('click', () => {
-        const guru = getGuruAktif();
-        if (guru) bukaModalGuru(guru);
-      });
-
-      ['soal', 'mapel', 'murid', 'nilai'].forEach((sub) => {
+      ['soal', 'murid', 'nilai'].forEach((sub) => {
         document.getElementById(`subtab-guru-${sub}`).addEventListener('click', () => {
-          ['soal', 'mapel', 'murid', 'nilai'].forEach((x) => {
+          ['soal', 'murid', 'nilai'].forEach((x) => {
             document.getElementById(`subtab-guru-${x}`).classList.remove('active');
             document.getElementById(`panel-guru-${x}`).classList.add('hidden');
           });
@@ -2349,27 +2375,22 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         });
       });
 
-      document.getElementById('btn-simpan-mapel-guru').addEventListener('click', async () => {
-        const guru = getGuruAktif();
-        if (!guru) return;
-        const assignments = ambilAssignmentsDariMatrix(document.getElementById('matrix-mapel-guru'), 'guru_panel_assign');
-        state.teachers = state.teachers.map((t) => (t.id === guru.id ? { ...t, assignments } : t));
-        await saveState();
-        renderPanelGuru();
-        alert('✅ Pilihan mata pelajaran & kelas berhasil disimpan ke Database!');
-      });
-
       function renderDaftarSoalGuru() {
         const guru = getGuruAktif();
         const fKelas = document.getElementById('filter-kelas-guru').value;
         const fMapel = document.getElementById('filter-mapel-guru').value;
 
+        if (!fKelas || !fMapel) {
+          document.getElementById('jumlah-soal').textContent = '0';
+          document.getElementById('daftar-soal').innerHTML =
+            '<div class="card-panel"><p class="subtitle-sm">Anda belum memiliki penugasan kelas/mapel. Hubungi Admin untuk mengatur mata pelajaran yang diampu.</p></div>';
+          return;
+        }
+
         const filtered = state.soalList.filter((s) => {
           const cocokGuru = !guru || (guru.assignments || []).some((a) => a.kelas === s.kelas && a.mapel === s.mapel);
           if (!cocokGuru) return false;
-          if (fKelas !== 'ALL' && s.kelas !== fKelas) return false;
-          if (fMapel !== 'ALL' && s.mapel !== fMapel) return false;
-          return true;
+          return s.kelas === fKelas && s.mapel === fMapel;
         });
 
         document.getElementById('jumlah-soal').textContent = filtered.length;
@@ -2377,7 +2398,7 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         box.innerHTML = '';
 
         if (!filtered.length) {
-          box.innerHTML = '<div class="card-panel"><p class="subtitle-sm">Belum ada soal pada filter kelas/mapel ini. Klik <b>+ Buat Soal Baru</b> untuk menambahkan.</p></div>';
+          box.innerHTML = `<div class="card-panel"><p class="subtitle-sm">Belum ada soal untuk <b>${escapeHtml(fMapel)} (${escapeHtml(fKelas)})</b>. Klik <b>+ Buat Soal Baru</b> untuk menambahkan soal khusus mata pelajaran ini.</p></div>`;
           return;
         }
 
@@ -2418,7 +2439,10 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         });
       }
 
-      document.getElementById('filter-kelas-guru').addEventListener('change', renderDaftarSoalGuru);
+      document.getElementById('filter-kelas-guru').addEventListener('change', () => {
+        perbaruiDropdownMapelDariKelasTerpilih();
+        renderDaftarSoalGuru();
+      });
       document.getElementById('filter-mapel-guru').addEventListener('change', renderDaftarSoalGuru);
 
       // ==================== EDITOR SOAL ====================
@@ -2433,23 +2457,51 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         if (box) box.innerHTML = base64Data ? `<img src="${base64Data}" alt="Preview" />` : '';
       }
 
-      function perbaruiDropdownMapelFormSoal() {
+      function perbaruiDropdownKelasDanMapelFormSoal(kelasTarget = '', mapelTarget = '') {
         const guru = getGuruAktif();
-        const kelasDipilih = document.getElementById('soal-kelas').value;
+        const assignments = guru?.assignments || [];
+        const selKelas = document.getElementById('soal-kelas');
         const selMapel = document.getElementById('soal-mapel');
-        const mapelKelasIni = (guru?.assignments || [])
-          .filter((a) => a.kelas === kelasDipilih)
-          .map((a) => a.mapel);
 
-        const semuaMapelKelas = (state.mapelPerKelas[kelasDipilih] || []).map((m) => m.nama);
-        const sumber = mapelKelasIni.length ? mapelKelasIni : semuaMapelKelas;
+        const kelasDiampu = DAFTAR_KELAS.filter((k) => assignments.some((a) => a.kelas === k));
+        const daftarKelasTersedia = kelasDiampu.length ? kelasDiampu : DAFTAR_KELAS;
+
+        selKelas.innerHTML = '';
+        daftarKelasTersedia.forEach((k) => {
+          const opt = document.createElement('option');
+          opt.value = k;
+          opt.textContent = k;
+          selKelas.appendChild(opt);
+        });
+
+        if (kelasTarget && daftarKelasTersedia.includes(kelasTarget)) {
+          selKelas.value = kelasTarget;
+        }
+
+        const kelasAktif = selKelas.value;
+        const mapelKelasIni = assignments
+          .filter((a) => a.kelas === kelasAktif)
+          .map((a) => a.mapel);
+        const sumberMapel = mapelKelasIni.length
+          ? mapelKelasIni
+          : (state.mapelPerKelas[kelasAktif] || []).map((m) => m.nama);
 
         selMapel.innerHTML = '';
-        sumber.forEach((m) => {
+        sumberMapel.forEach((m) => {
           const opt = document.createElement('option');
-          opt.value = m; opt.textContent = m;
+          opt.value = m;
+          opt.textContent = m;
           selMapel.appendChild(opt);
         });
+
+        if (mapelTarget && sumberMapel.includes(mapelTarget)) {
+          selMapel.value = mapelTarget;
+        }
+      }
+
+      function perbaruiDropdownMapelFormSoal() {
+        const kelasSaatIni = document.getElementById('soal-kelas').value;
+        perbaruiDropdownKelasDanMapelFormSoal(kelasSaatIni, '');
       }
 
       document.getElementById('soal-kelas').addEventListener('change', perbaruiDropdownMapelFormSoal);
@@ -2545,9 +2597,7 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         if (soal) {
           document.getElementById('soal-id').value = soal.id;
           document.getElementById('judul-modal').textContent = '✏️ Edit Soal Misi';
-          document.getElementById('soal-kelas').value = soal.kelas || 'Kelas 1';
-          perbaruiDropdownMapelFormSoal();
-          document.getElementById('soal-mapel').value = soal.mapel || '';
+          perbaruiDropdownKelasDanMapelFormSoal(soal.kelas || 'Kelas 1', soal.mapel || '');
           selectTipe.value = soal.tipe;
           document.getElementById('pertanyaan').value = soal.pertanyaan || '';
           setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', soal.gambar_soal || '');
@@ -2567,12 +2617,13 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
           sesuaikanFormTipe(soal.tipe);
         } else {
           document.getElementById('soal-id').value = '';
-          document.getElementById('judul-modal').textContent = 'Buat Soal Baru';
-          const guru = getGuruAktif();
-          const firstAssign = guru?.assignments?.[0];
-          document.getElementById('soal-kelas').value = firstAssign ? firstAssign.kelas : 'Kelas 1';
-          perbaruiDropdownMapelFormSoal();
-          if (firstAssign) document.getElementById('soal-mapel').value = firstAssign.mapel;
+          const kelasDropdown = document.getElementById('filter-kelas-guru').value;
+          const mapelDropdown = document.getElementById('filter-mapel-guru').value;
+          document.getElementById('judul-modal').textContent =
+            kelasDropdown && mapelDropdown
+              ? `Buat Soal Baru — ${mapelDropdown} (${kelasDropdown})`
+              : 'Buat Soal Baru';
+          perbaruiDropdownKelasDanMapelFormSoal(kelasDropdown, mapelDropdown);
           setPreviewGambarEditor('preview-gambar-soal', 'data-gambar-soal', '');
           document.getElementById('btn-hapus-gambar-soal').classList.add('hidden');
           ['a', 'b', 'c', 'd'].forEach((k) => setPreviewGambarEditor(`prev-img-${k}`, `data-gambar-${k}`, ''));
@@ -2727,8 +2778,14 @@ CREATE POLICY "Akses publik school_kv_store" ON public.school_kv_store FOR ALL U
         await saveState();
 
         modalSoal.classList.add('hidden');
+        const filterKelasEl = document.getElementById('filter-kelas-guru');
+        const filterMapelEl = document.getElementById('filter-mapel-guru');
+        if (filterKelasEl && payload.kelas) {
+          filterKelasEl.value = payload.kelas;
+          perbaruiDropdownMapelDariKelasTerpilih(payload.mapel);
+        }
         renderDaftarSoalGuru();
-        alert('✅ Soal berhasil disimpan ke Database Supabase!');
+        alert(`✅ Soal ${payload.mapel} (${payload.kelas}) berhasil disimpan ke Database Supabase!`);
       });
 
       // ==================== RENDER KARTU SOAL INTERAKTIF SISWA ====================
